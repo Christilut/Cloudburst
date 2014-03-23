@@ -1,6 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
-from Lib import libvlc
+from Library import libvlc
 
 
 class Screen(QtGui.QWidget):
