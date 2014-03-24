@@ -13,8 +13,8 @@ class ScreenPhonon(Phonon.VideoWidget):
 
         Phonon.createPath(media_obj, self)
 
-        audio_out = Phonon.AudioOutput(Phonon.VideoCategory, self)
-        Phonon.createPath(media_obj, audio_out)
+        # audio_out = Phonon.AudioOutput(Phonon.VideoCategory, self)
+        # Phonon.createPath(media_obj, audio_out)
 
         self.resize(parent.size())
 

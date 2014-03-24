@@ -1,18 +1,20 @@
 import sys
 
-from PyQt4 import QtGui, uic, QtCore
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from PyQt4 import uic
 
 from src.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
 
 # MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
-class MainFrame(QtGui.QMainWindow):
+class MainFrame(QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
         uic.loadUi('src/Interface/ui/mainframe.ui', self)
         self.setWindowTitle("Cloudburst")
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setWindowIcon(QtGui.QIcon('res/images/icon.png'))
+        # self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowIcon(QIcon('res/images/icon.png'))
         self.show()
 
         # Create the frame that holds the content, there must be one central widget
@@ -23,7 +25,7 @@ class MainFrame(QtGui.QMainWindow):
         self.resize(mainwidget.size())
 
 # MainWidget is the container that can hold layouts and is the only content of MainFrame. MainWidget contains all other UI content
-class MainWidget(QtGui.QWidget):
+class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
         self.loadContent()
@@ -31,7 +33,7 @@ class MainWidget(QtGui.QWidget):
     def loadContent(self):
 
         # Create a layout to put the TestContent in and add it to the main widget
-        mainlayout = QtGui.QStackedLayout()
+        mainlayout = QStackedLayout()
         mainlayout.setContentsMargins(0, 0, 0, 0)
 
 
@@ -48,7 +50,7 @@ class MainWidget(QtGui.QWidget):
 if __name__ == '__main__':
 
     # Initialize the application
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     # Create an empty main window
     mainframe = MainFrame()
