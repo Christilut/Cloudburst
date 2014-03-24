@@ -1,17 +1,21 @@
 from PyQt4.QtGui import *
-import ScreenVLC, Controls
+import ScreenPhonon, Controls
+from PyQt4.phonon import *
+from PyQt4.QtOpenGL import *
 
 class StreamingPlayer(QWidget):
     def __init__(self, parent):
-        # super(StreamingPlayer, self).__init__()
         QWidget.__init__(self, parent)
 
         self.resize(parent.size())
 
+        screen = ScreenPhonon.ScreenPhonon(self)
+        screen.show()
 
-        # screen = ScreenVLC.ScreenVLC(self)
-        # screen.show()
 
-        controls = Controls.Controls(self)
-        controls.show()
+        # create overlay controls
+
+        # controls = Controls.Controls(screen)
+        # controls.show()
+
 

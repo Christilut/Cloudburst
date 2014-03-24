@@ -3,11 +3,14 @@ from PyQt4.QtCore import *
 import os
 class Controls(QWidget):
     def __init__(self, parent):
-        QWidget.__init__(self, parent)
+        QWidget.__init__(self)
 
         # Transparency is a bitch, this creates a mask based on the png. This is a dirty hack.
-        # self.setMask(QPixmap('images/transparent.png').createHeuristicMask())
+        # self.setMask(QPixmap('res/images/transparent.png').createHeuristicMask())
 
+        # btn = QPushButton('tasef', parent)
+        # btn.setAttribute(Qt.WA_NoSystemBackground)
+        # btn.show()
 
         self.resize(parent.size())
 
@@ -17,7 +20,7 @@ class Controls(QWidget):
                              parent.height() / 2 - buttonPlayPause.height() / 2)
 
 
-class ButtonPlayPause(QPushButton):
+class ButtonPlayPause(QLabel):
     IMAGE_PLAY = 'res/images/player_play.png'
     IMAGE_PAUSE = 'res/images/player_pause.png'
 
