@@ -18,17 +18,18 @@ class MainFrame(QMainWindow):
         self.show()
 
         # Create the frame that holds the content, there must be one central widget
-        mainwidget = MainWidget()
-        self.setCentralWidget(mainwidget)
+        self.mainWidget = MainWidget()
+        self.setCentralWidget(self.mainWidget)
 
         # Adjust main window size to contents
-        self.resize(mainwidget.size())
+        self.resize(self.mainWidget.size())
 
 # MainWidget is the container that can hold layouts and is the only content of MainFrame. MainWidget contains all other UI content
 class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
         self.loadContent()
+        self.setMinimumSize(QSize(640, 480))
 
     def loadContent(self):
 
@@ -38,13 +39,12 @@ class MainWidget(QWidget):
 
 
         # add more content here (be sure to add to a layout below)
-        streamingplayer = StreamingPlayer(self)
-        mainlayout.addWidget(streamingplayer)
+        self.streamingPlayer = StreamingPlayer(self)
+        mainlayout.addWidget(self.streamingPlayer)
 
 
         self.setLayout(mainlayout)
         self.resize(640, 480)
-
 
 
 if __name__ == '__main__':

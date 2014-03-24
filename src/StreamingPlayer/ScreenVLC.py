@@ -1,5 +1,5 @@
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 import libvlc
 
 
@@ -13,12 +13,12 @@ class ScreenVLC(QtGui.QWidget):
         self.instance = libvlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
 
+        self.mediaplayer.video_set_mouse_input(True)
+
         self.createUI()
 
     def createUI(self):
-        # self.widget = QtGui.QWidget(self)
 
-        # In this widget, the video will be drawn
         if sys.platform == "darwin": # for MacOS
             self.videoframe = QtGui.QMacCocoaViewContainer(0)
         else:
@@ -28,13 +28,10 @@ class ScreenVLC(QtGui.QWidget):
         self.videoframe.setPalette(self.palette)
         self.videoframe.setAutoFillBackground(True)
 
-
         self.vboxlayout = QtGui.QVBoxLayout()
         self.vboxlayout.setContentsMargins(0, 0, 0, 0)
         self.vboxlayout.addWidget(self.videoframe)
         self.setLayout(self.vboxlayout)
-
-
 
     def OpenFile(self):
         # create the media
@@ -53,6 +50,7 @@ class ScreenVLC(QtGui.QWidget):
             self.mediaplayer.set_hwnd(self.videoframe.winId())
         elif sys.platform == "darwin": # for MacOS
             self.mediaplayer.set_nsobject(self.videoframe.winId())
+
         self.mediaplayer.play()
 
 
@@ -72,12 +70,4 @@ class ScreenVLC(QtGui.QWidget):
 
     def setVolume(self, Volume):
         self.mediaplayer.audio_set_volume(Volume)
-
-    def setPosition(self, position):
-        # setting the position to where the slider was dragged
-        self.mediaplayer.set_position(position / 1000.0)
-        # the vlc MediaPlayer needs a float value between 0 and 1, Qt
-        # uses integer variables, so you need a factor; the higher the
-        # factor, the more precise are the results
-        # (1000 should be enough)
 
