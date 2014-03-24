@@ -1,6 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import ScreenVLC, Controls
+import os.path, time, threading
 
 class StreamingPlayer(QWidget):
 
@@ -9,6 +10,8 @@ class StreamingPlayer(QWidget):
     previousMousePos = None
     timeMouseNotMoving = 0
     showInterface = False
+
+    currentFilePath = ''
 
     def __init__(self, parent):
         QWidget.__init__(self, parent)
@@ -54,6 +57,39 @@ class StreamingPlayer(QWidget):
     def resizeEvent(self, event):
         self.screen.resize(self.size())
         self.controls.resize(self.size())
+
+    def OpenFile(self, path):
+        if not self.currentFilePath == '':
+            print 'File path already entered'
+            return
+
+        print 'Opening file: ' + path
+
+        self.currentFilePath = path
+
+        self.fileBufferTimer = QTimer(self)
+        self.fileBufferTimer.setInterval(1000)
+        self.connect(self.fileBufferTimer, SIGNAL("timeout()"), self.BufferFile)
+        self.fileBufferTimer.start()
+
+    def BufferFile(self):
+
+        if not os.path.isfile(self.currentFilePath):
+            print 'File does not yet exist, waiting 1 second...'
+            self.fileBufferTimer.start()
+            return
+
+        self.fileBufferTimer.stop()
+
+        print 'File found! Waiting another 10 sec for buffer time'
+
+        time.sleep(10) # TODO graceful
+
+        self.screen.OpenFile(self.currentFilePath)
+        self.updateTimer.start()
+        self.isPlaying = True
+
+
 
     def PlayPause(self):
         if self.isPlaying:

@@ -33,9 +33,9 @@ class ScreenVLC(QtGui.QWidget):
         self.vboxlayout.addWidget(self.videoframe)
         self.setLayout(self.vboxlayout)
 
-    def OpenFile(self):
+    def OpenFile(self, path):
         # create the media
-        self.media = self.instance.media_new('D:\\temp\\test.mkv')
+        self.media = self.instance.media_new(path)
         # put the media in the media player
         self.mediaplayer.set_media(self.media)
 

@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4 import uic
 
 from src.StreamingPlayer.StreamingPlayer import StreamingPlayer
+from src.Torrent.TorrentManager import TorrentManager
 
 
 # MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
@@ -54,6 +55,12 @@ if __name__ == '__main__':
 
     # Create an empty main window
     mainframe = MainFrame()
+
+    # Torrent tests
+    torrentManager = TorrentManager()
+    videoFile = 'D:\\temp\\torrent\\' + torrentManager.StartTorrent('res/torrents/big_movie.torrent')
+
+    mainframe.mainWidget.streamingPlayer.OpenFile(videoFile)
 
     # Terminate program when exit button is pressed
     sys.exit(app.exec_())
