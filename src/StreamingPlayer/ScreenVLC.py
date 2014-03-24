@@ -1,20 +1,20 @@
 import sys
 from PyQt4 import QtGui, QtCore
-from Library import libvlc
+import libvlc
 
 
-class Screen(QtGui.QWidget):
-    def __init__(self):
-        # QtGui.QWidget.__init__(self, master)
-        super(Screen, self).__init__()
-
+class ScreenVLC(QtGui.QWidget):
+    def __init__(self, parent):
+        QtGui.QWidget.__init__(self, parent)
+        # super(Screen, self).__init__()
+        self.resize(parent.size())
         self.instance = libvlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
 
         self.createUI()
         self.isPlaying = False
 
-        # self.PlayPause()
+        self.PlayPause()
 
     def createUI(self):
         # self.widget = QtGui.QWidget(self)

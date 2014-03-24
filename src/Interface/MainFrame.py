@@ -2,17 +2,17 @@ import sys
 
 from PyQt4 import QtGui, uic, QtCore
 
-from Interface.StreamingPlayer.StreamingPlayer import StreamingPlayer
+from src.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
 
 # MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
 class MainFrame(QtGui.QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
-        uic.loadUi('ui/mainframe.ui', self)
+        uic.loadUi('src/Interface/ui/mainframe.ui', self)
         self.setWindowTitle("Cloudburst")
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setWindowIcon(QtGui.QIcon('images/icon.png'))
+        self.setWindowIcon(QtGui.QIcon('res/images/icon.png'))
         self.show()
 
         # Create the frame that holds the content, there must be one central widget
@@ -36,7 +36,7 @@ class MainWidget(QtGui.QWidget):
 
 
         # add more content here (be sure to add to a layout below)
-        streamingplayer = StreamingPlayer()
+        streamingplayer = StreamingPlayer(self)
         mainlayout.addWidget(streamingplayer)
 
 
