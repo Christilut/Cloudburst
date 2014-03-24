@@ -4,15 +4,15 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4 import uic
 
-from src.StreamingPlayer.StreamingPlayer import StreamingPlayer
-from src.Torrent.TorrentManager import TorrentManager
+from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+from cloudburst.Torrent.TorrentManager import TorrentManager
 
 
 # MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
 class MainFrame(QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
-        uic.loadUi('src/Interface/ui/mainframe.ui', self)
+        uic.loadUi('res/ui/mainframe.ui', self)
         self.setWindowTitle("Cloudburst")
         # self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowIcon(QIcon('res/images/icon.png'))
