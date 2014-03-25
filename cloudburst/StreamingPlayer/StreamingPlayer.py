@@ -1,7 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-import ScreenVLC, Controls
-import os.path, time, threading
+import ScreenVLC, Controls, Torrent
+import os.path, time
 
 class StreamingPlayer(QWidget):
 
@@ -21,6 +21,9 @@ class StreamingPlayer(QWidget):
         # create the video player
         self.screen = ScreenVLC.ScreenVLC(self)
 
+        # create the torrent manager
+        self.torrent = Torrent.Torrent()
+
         # create overlay controls
         self.controls = Controls.Controls(self)
 
@@ -28,6 +31,9 @@ class StreamingPlayer(QWidget):
         self.updateTimer = QTimer(self)
         self.updateTimer.setInterval(self.updateTimerInterval)
         self.connect(self.updateTimer, SIGNAL("timeout()"), self.updateUI)
+
+        # TEMP test stuff below
+        self.OpenTorrent('')
 
     def updateUI(self):
         # setting the slider to the desired position
@@ -40,16 +46,19 @@ class StreamingPlayer(QWidget):
         # but we can constantly ask VLC where the mouse is and figure it out ourselves
         mousePos = self.screen.mediaplayer.video_get_cursor(0)
 
-        if mousePos == self.previousMousePos:
+        if mousePos == self.previousMousePos and QApplication.mouseButtons() == Qt.NoButton:
             self.timeMouseNotMoving += self.updateTimerInterval
 
             if self.timeMouseNotMoving >= 900 and self.showInterface:
                 self.controls.hide()
                 self.showInterface = False
+                self.timeMouseNotMoving = 0
 
-        elif not self.showInterface:
+        elif self.timeMouseNotMoving == 0 and not self.showInterface: # this causes a 200ms delay, which is what we want
             self.controls.show()
             self.showInterface = True
+
+        else:
             self.timeMouseNotMoving = 0
 
         self.previousMousePos = mousePos
@@ -58,7 +67,11 @@ class StreamingPlayer(QWidget):
         self.screen.resize(self.size())
         self.controls.resize(self.size())
 
-    def OpenFile(self, path):
+    def OpenTorrent(self, path): # TODO use path
+        # self.OpenFile('D:\\temp\\torrent\\' + self.torrent.StartTorrent('res/torrents/big_movie.torrent'))
+        self.OpenFile('D:\\temp\\torrent\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv') # TEMP
+
+    def OpenFile(self, path): # TODO remove this method, move into OpenTorrent()
         if not self.currentFilePath == '':
             print 'File path already entered'
             return
@@ -83,7 +96,7 @@ class StreamingPlayer(QWidget):
 
         print 'File found! Waiting another 10 sec for buffer time'
 
-        time.sleep(10) # TODO graceful
+        # time.sleep(10) # TODO graceful, currently blocks UI
 
         self.screen.OpenFile(self.currentFilePath)
         self.updateTimer.start()

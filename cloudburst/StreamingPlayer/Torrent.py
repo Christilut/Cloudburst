@@ -1,19 +1,14 @@
-from libtorrent import file_storage
 import libtorrent as lt
 import threading
 import time
-import shutil
 
-class TorrentManager():
+class Torrent():
 
     torrentHandle = None
 
     def __init__(self):
         self.session = lt.session()
         self.session.listen_on(6881, 6891)
-
-        # TEMP REMOVE DOWNLOADED TORRENT
-        shutil.rmtree('D:/temp/torrent', ignore_errors=True)
 
     def StartTorrent(self, path):
 
@@ -24,7 +19,7 @@ class TorrentManager():
         e = lt.bdecode(open(path, 'rb').read())
         info = lt.torrent_info(e)
 
-        self.torrentHandle = self.session.add_torrent({'ti': info, 'save_path': 'D:/temp/torrent'})
+        self.torrentHandle = self.session.add_torrent({'ti': info, 'save_path': 'D:/temp/torrent', 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
         self.torrentHandle.set_sequential_download(True)
 
         videoFile = self.FindVideoFile(info.files())
