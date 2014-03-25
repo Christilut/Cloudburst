@@ -35,26 +35,30 @@ class Torrent():
         videoFile = lt.file_entry()
 
         # Currently it is presumed the largest file is the video file. This should be true most of the time.
+        # TODO find better way to determine which file is the video, file extension?
         for f in fileList:
             if f.size > videoFile.size:
                 videoFile = f
 
         return videoFile
 
-    def DownloadTorrent(self):
+    def getBytesDownloaded(self):
+        return self.torrentStatus.total_wanted_done
+
+    def getBytesWanted(self):
+        return self.torrentStatus.total_wanted
+
+    def DownloadTorrent(self): # thread
 
         while (not self.torrentHandle.is_seed()):
-            torrentStatus = self.torrentHandle.status()
+            self.torrentStatus = self.torrentHandle.status()
 
             state_str = ['queued', 'checking', 'downloading metadata',
                     'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
             print '\r%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % \
-                (torrentStatus.progress * 100, torrentStatus.download_rate / 1000,
-                 torrentStatus.upload_rate / 1000,
-                torrentStatus.num_peers, state_str[torrentStatus.state])
-
-            # check if file exists, so we can start the stream
-
+                (self.torrentStatus.progress * 100, self.torrentStatus.download_rate / 1000,
+                 self.torrentStatus.upload_rate / 1000,
+                self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
 
             time.sleep(1)
 

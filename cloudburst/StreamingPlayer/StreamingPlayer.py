@@ -5,13 +5,15 @@ import os.path, time
 
 class StreamingPlayer(QWidget):
 
-    isPlaying = False
-    updateTimerInterval = 100
-    previousMousePos = None
-    timeMouseNotMoving = 0
-    showInterface = False
+    isPlaying = False # True if video file is being played
+    updateTimerInterval = 100   # Time in ms between GUI updates
+    bufferInterval = 1000   # Time in ms between buffer checks
+    previousMousePos = None # To keep track of the mouse, required to hide/show the GUI
+    timeMouseNotMoving = 0  # To delay hiding of GUI
+    showInterface = False   # True if GUI is being shown
 
-    currentFilePath = ''
+    currentFilePath = ''    # Full path of current video file
+    videoFileExists = False # True if video file is present on disk. Use this bool to prevent unnecessary disk access
 
     def __init__(self, parent):
         QWidget.__init__(self, parent)
@@ -32,13 +34,29 @@ class StreamingPlayer(QWidget):
         self.updateTimer.setInterval(self.updateTimerInterval)
         self.connect(self.updateTimer, SIGNAL("timeout()"), self.updateUI)
 
-        # TEMP test stuff below
-        self.OpenTorrent('')
+        # TEMP test stuff below --------------------------------------------------------
+
+        # TEMP REMOVE DOWNLOADED TORRENT
+        import shutil
+        shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
+
+        # TEMP open torrent
+        self.OpenTorrent('res/torrents/big_movie.torrent')
+
+    #     # TEMP run checkTorrent every second
+    #     self.checkTorrentTimer = QTimer(self)
+    #     self.checkTorrentTimer.setInterval(1000)
+    #     self.connect(self.checkTorrentTimer, SIGNAL('timeout()'), self.checkTorrent)
+    #     self.checkTorrentTimer.start()
+    #
+    # # TEMP method to check status of torrent
+    # def checkTorrent(self):
+    #     pass
 
     def updateUI(self):
         # setting the slider to the desired position
         self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000)
-        # self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
+        self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
         if not self.screen.mediaplayer.is_playing():
             self.Stop()
 
@@ -67,42 +85,48 @@ class StreamingPlayer(QWidget):
         self.screen.resize(self.size())
         self.controls.resize(self.size())
 
-    def OpenTorrent(self, path): # TODO use path
-        # self.OpenFile('D:\\temp\\torrent\\' + self.torrent.StartTorrent('res/torrents/big_movie.torrent'))
-        self.OpenFile('D:\\temp\\torrent\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv') # TEMP
-
-    def OpenFile(self, path): # TODO remove this method, move into OpenTorrent()
+    def OpenTorrent(self, path):
         if not self.currentFilePath == '':
             print 'File path already entered'
             return
 
-        print 'Opening file: ' + path
+        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path)
+        # self.currentFilePath = 'D:\\temp\\torrent\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv' # TEMP
 
-        self.currentFilePath = path
+        print 'Opening file: ' + self.currentFilePath
 
-        self.fileBufferTimer = QTimer(self)
-        self.fileBufferTimer.setInterval(1000)
-        self.connect(self.fileBufferTimer, SIGNAL("timeout()"), self.BufferFile)
-        self.fileBufferTimer.start()
+        QTimer.singleShot(self.bufferInterval, self.BufferFile)
 
-    def BufferFile(self):
 
-        if not os.path.isfile(self.currentFilePath):
-            print 'File does not yet exist, waiting 1 second...'
-            self.fileBufferTimer.start()
+    def OpenFile(self):
+        if self.currentFilePath == '':
+            print 'No file selected'
             return
-
-        self.fileBufferTimer.stop()
-
-        print 'File found! Waiting another 10 sec for buffer time'
-
-        # time.sleep(10) # TODO graceful, currently blocks UI
 
         self.screen.OpenFile(self.currentFilePath)
         self.updateTimer.start()
         self.isPlaying = True
 
+    def BufferFile(self):
 
+        if not self.videoFileExists:
+            if not os.path.isfile(self.currentFilePath):
+                print 'File does not yet exist, waiting 1 second...'
+                QTimer.singleShot(self.bufferInterval, self.BufferFile)
+                return
+            else:
+                print 'File found! Buffering...'
+                self.videoFileExists = True
+
+        # Video file exists here, wait for buffer
+        bytesDownloaded = self.torrent.getBytesDownloaded()
+        if bytesDownloaded < (5 * 1024 * 1024): # TODO variable and/or calculate required bytes for wanted bitrate
+            print 'Buffer not yet large enough, currently at: ', bytesDownloaded
+            QTimer.singleShot(self.bufferInterval, self.BufferFile)
+            return
+
+        # At this point, buffer is also large enough
+        self.OpenFile()
 
     def PlayPause(self):
         if self.isPlaying:

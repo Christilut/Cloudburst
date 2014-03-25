@@ -55,9 +55,5 @@ if __name__ == '__main__':
     # Create an empty main window
     mainframe = MainFrame()
 
-    # TEMP REMOVE DOWNLOADED TORRENT
-    # import shutil
-    # shutil.rmtree('D:/temp/torrent', ignore_errors=True)
-
     # Terminate program when exit button is pressed
     sys.exit(app.exec_())
