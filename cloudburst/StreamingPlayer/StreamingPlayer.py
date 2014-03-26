@@ -37,8 +37,8 @@ class StreamingPlayer(QWidget):
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP REMOVE DOWNLOADED TORRENT
-        import shutil
-        shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
+        # import shutil
+        # shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
 
         # TEMP open torrent
         self.OpenTorrent('res/torrents/big_movie.torrent')
@@ -104,6 +104,7 @@ class StreamingPlayer(QWidget):
             return
 
         self.screen.OpenFile(self.currentFilePath)
+        self.setPosition(510)
         self.updateTimer.start()
         self.isPlaying = True
 
@@ -121,7 +122,7 @@ class StreamingPlayer(QWidget):
         # Video file exists here, wait for buffer
         bytesDownloaded = self.torrent.getBytesDownloaded()
         if bytesDownloaded < (5 * 1024 * 1024): # TODO variable and/or calculate required bytes for wanted bitrate
-            print 'Buffer not yet large enough, currently at: ', bytesDownloaded
+            print 'Buffer not yet large enough, currently at: ', int(bytesDownloaded / 1024), 'kB'
             QTimer.singleShot(self.bufferInterval, self.BufferFile)
             return
 
