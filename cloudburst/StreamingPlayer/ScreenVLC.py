@@ -42,7 +42,7 @@ class ScreenVLC(QtGui.QWidget):
         # parse the metadata of the file
         self.media.parse()
         # set the title of the track as window title
-        self.setWindowTitle(self.media.get_meta(0))
+        # self.setWindowTitle(self.media.get_meta(0))
 
         if sys.platform == "linux2": # for Linux using the X Server
             self.mediaplayer.set_xwindow(self.videoframe.winId())
@@ -51,15 +51,13 @@ class ScreenVLC(QtGui.QWidget):
         elif sys.platform == "darwin": # for MacOS
             self.mediaplayer.set_nsobject(self.videoframe.winId())
 
-        self.mediaplayer.play()
 
-
-    def Play(self):
+    def Play(self, position = -1):  # from 0 to 1
         if not self.mediaplayer.is_playing():
-            if self.mediaplayer.get_media() == None:
-                self.OpenFile()
-
             self.mediaplayer.play()
+
+            if position != -1:
+                self.mediaplayer.set_position(position)
 
     def Pause(self):
         if self.mediaplayer.is_playing():

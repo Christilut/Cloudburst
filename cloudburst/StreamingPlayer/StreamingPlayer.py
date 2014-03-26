@@ -14,6 +14,9 @@ class StreamingPlayer(QWidget):
 
     currentFilePath = ''    # Full path of current video file
     videoFileExists = False # True if video file is present on disk. Use this bool to prevent unnecessary disk access
+    headerAvailable = False # True if header info of the video file is downloaded
+    seekPointAvailable = False  # True if a buffer exists from the seek point onward
+    desiredSeekPoint = 0
 
     def __init__(self, parent):
         QWidget.__init__(self, parent)
@@ -24,7 +27,7 @@ class StreamingPlayer(QWidget):
         self.screen = ScreenVLC.ScreenVLC(self)
 
         # create the torrent manager
-        self.torrent = Torrent.Torrent()
+        self.torrent = Torrent.Torrent(self)
 
         # create overlay controls
         self.controls = Controls.Controls(self)
@@ -37,25 +40,26 @@ class StreamingPlayer(QWidget):
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP REMOVE DOWNLOADED TORRENT
-        # import shutil
-        # shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
+        import shutil
+        shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
 
         # TEMP open torrent
         self.OpenTorrent('res/torrents/big_movie.torrent')
 
     #     # TEMP run checkTorrent every second
     #     self.checkTorrentTimer = QTimer(self)
-    #     self.checkTorrentTimer.setInterval(1000)
+    #     self.checkTorrentTimer.setInterval(100)
     #     self.connect(self.checkTorrentTimer, SIGNAL('timeout()'), self.checkTorrent)
     #     self.checkTorrentTimer.start()
     #
     # # TEMP method to check status of torrent
     # def checkTorrent(self):
-    #     pass
+    #     if self.torrent.torrentHandle.have_piece(0) and self.torrent.torrentHandle.have_piece(1677):
+    #         print 'READY'
 
     def updateUI(self):
         # setting the slider to the desired position
-        self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000)
+        # self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000) # TEMP disable auto update of progress slider
         self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
         if not self.screen.mediaplayer.is_playing():
             self.Stop()
@@ -85,6 +89,15 @@ class StreamingPlayer(QWidget):
         self.screen.resize(self.size())
         self.controls.resize(self.size())
 
+    def HeaderAvailable(self, available):
+        self.headerAvailable = available
+
+    def SeekPointAvailable(self, available):
+        self.seekPointAvailable = available
+
+    def SetDesiredSeekpoint(self, seekpoint): # from 0 to 1
+        self.desiredSeekPoint = seekpoint
+
     def OpenTorrent(self, path):
         if not self.currentFilePath == '':
             print 'File path already entered'
@@ -97,6 +110,44 @@ class StreamingPlayer(QWidget):
 
         QTimer.singleShot(self.bufferInterval, self.BufferFile)
 
+    def BufferFile(self):
+        if not self.videoFileExists:
+            if not os.path.isfile(self.currentFilePath):
+                print 'File does not yet exist, waiting 1 second...'
+            else:
+                print 'File exists! Buffering...'
+                self.videoFileExists = True
+
+                # Check cache once, if the file already existed
+                self.torrent.CheckHeaderCache()
+
+            QTimer.singleShot(self.bufferInterval, self.BufferFile)
+            return
+        else:
+            #  Video file exists here, wait for buffers
+
+            # Wait for the header
+            if not self.headerAvailable:
+                print 'Waiting for video header...'
+                QTimer.singleShot(self.bufferInterval, self.BufferFile)
+                return
+
+            # Header available
+            self.torrent.SetSeekPointPriority(self.desiredSeekPoint)
+
+            # Check cache for the seekpoint pieces
+            self.torrent.CheckSeekPointCache()
+
+            if not self.seekPointAvailable:
+                print 'Waiting for seekpoint buffer...'
+                QTimer.singleShot(self.bufferInterval, self.BufferFile)
+                return
+
+            # Header and seekpoint buffer are available, start buffering data while playing
+            self.torrent.SetDataPriority(self.desiredSeekPoint)
+
+            # At this point, buffer is large enough and the video should be playable
+            self.OpenFile()
 
     def OpenFile(self):
         if self.currentFilePath == '':
@@ -104,51 +155,38 @@ class StreamingPlayer(QWidget):
             return
 
         self.screen.OpenFile(self.currentFilePath)
-        self.setPosition(510)
-        self.updateTimer.start()
-        self.isPlaying = True
 
-    def BufferFile(self):
-
-        if not self.videoFileExists:
-            if not os.path.isfile(self.currentFilePath):
-                print 'File does not yet exist, waiting 1 second...'
-                QTimer.singleShot(self.bufferInterval, self.BufferFile)
-                return
-            else:
-                print 'File found! Buffering...'
-                self.videoFileExists = True
-
-        # Video file exists here, wait for buffer
-        bytesDownloaded = self.torrent.getBytesDownloaded()
-        if bytesDownloaded < (5 * 1024 * 1024): # TODO variable and/or calculate required bytes for wanted bitrate
-            print 'Buffer not yet large enough, currently at: ', int(bytesDownloaded / 1024), 'kB'
-            QTimer.singleShot(self.bufferInterval, self.BufferFile)
-            return
-
-        # At this point, buffer is also large enough
-        self.OpenFile()
+        self.Play()
 
     def PlayPause(self):
         if self.isPlaying:
-            self.screen.Pause()
-            self.controls.buttonPlayPause.setText('Play')
-            self.isPlaying = False
-            self.updateTimer.stop()
+            self.Pause()
         else:
-            self.screen.Play()
-            self.controls.buttonPlayPause.setText('Pause')
-            self.isPlaying = True
-            self.updateTimer.start()
+            self.Play()
+
+    def Play(self):
+        self.screen.Play(self.desiredSeekPoint)
+        self.controls.buttonPlayPause.setText('Pause')
+        self.isPlaying = True
+        self.updateTimer.start()
+
+    def Pause(self):
+        self.screen.Pause()
+        self.controls.buttonPlayPause.setText('Play')
+        self.isPlaying = False
+        self.updateTimer.stop()
 
     def Stop(self):
         self.screen.Stop()
         self.controls.buttonPlayPause.setText('Play')
         self.isPlaying = False
         self.updateTimer.stop()
+        self.desiredSeekPoint = 0
 
-    def setVolume(self, volume):
+    def SetVolume(self, volume):
         self.screen.setVolume(volume)
 
-    def setPosition(self, position):
+    def SetPosition(self):
+        position = self.controls.sliderProgress.value()
         self.screen.mediaplayer.set_position(position / 1000.0) # 1000 is for the precision
+        print 'Seekpoint:', float(position) / 10, '%'
