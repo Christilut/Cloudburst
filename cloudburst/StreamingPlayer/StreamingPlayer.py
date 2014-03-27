@@ -123,7 +123,7 @@ class StreamingPlayer(QWidget):
 
             # Wait for the header
             if not self.headerAvailable:
-                print 'Waiting for video header...'
+                # print 'Waiting for video header...'
                 QTimer.singleShot(self.bufferInterval, self.BufferFile)
                 return
 
@@ -143,7 +143,7 @@ class StreamingPlayer(QWidget):
             return
 
         self.screen.OpenFile(self.currentFilePath)
-
+        print 'Opening file:', self.currentFilePath
         self.Play()
 
     def PlayPause(self):
