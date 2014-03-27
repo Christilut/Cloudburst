@@ -92,9 +92,6 @@ class StreamingPlayer(QWidget):
     def HeaderAvailable(self, available):
         self.headerAvailable = available
 
-    def SeekPointAvailable(self, available):
-        self.seekPointAvailable = available
-
     def SetDesiredSeekpoint(self, seekpoint): # from 0 to 1
         self.desiredSeekPoint = seekpoint
 
@@ -113,13 +110,11 @@ class StreamingPlayer(QWidget):
     def BufferFile(self):
         if not self.videoFileExists:
             if not os.path.isfile(self.currentFilePath):
-                print 'File does not yet exist, waiting 1 second...'
+                # print 'File does not yet exist, waiting 1 second...'
+                pass
             else:
                 print 'File exists! Buffering...'
                 self.videoFileExists = True
-
-                # Check cache once, if the file already existed
-                self.torrent.CheckHeaderCache()
 
             QTimer.singleShot(self.bufferInterval, self.BufferFile)
             return
@@ -132,19 +127,12 @@ class StreamingPlayer(QWidget):
                 QTimer.singleShot(self.bufferInterval, self.BufferFile)
                 return
 
-            # Header available
-            self.torrent.SetSeekPointPriority(self.desiredSeekPoint)
+            # if not self.seekPointAvailable:
+            #     print 'Waiting for seekpoint buffer...'
+            #     QTimer.singleShot(self.bufferInterval, self.BufferFile)
+            #     return
 
-            # Check cache for the seekpoint pieces
-            self.torrent.CheckSeekPointCache()
-
-            if not self.seekPointAvailable:
-                print 'Waiting for seekpoint buffer...'
-                QTimer.singleShot(self.bufferInterval, self.BufferFile)
-                return
-
-            # Header and seekpoint buffer are available, start buffering data while playing
-            self.torrent.SetDataPriority(self.desiredSeekPoint)
+            # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
 
             # At this point, buffer is large enough and the video should be playable
             self.OpenFile()
