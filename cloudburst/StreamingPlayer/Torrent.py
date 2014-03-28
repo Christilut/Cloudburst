@@ -26,8 +26,21 @@ class Torrent():
 
 
     def __init__(self, parent):
+
+        if lt.version != '0.16.16.0':
+            print 'Wrong version of libtorrent detected, please install version 0.16.16.0, you have', lt.version
+            import sys
+            sys.exit(-1)
+
         self.torrentSession = lt.session()
         self.torrentSession.listen_on(6881, 6891)
+
+        # Allocation settings (these should be default but make sure they are correct)
+        settings = lt.session_settings()
+        settings.disk_io_write_mode = lt.io_buffer_mode_t.enable_os_cache
+        settings.disk_io_read_mode = lt.io_buffer_mode_t.enable_os_cache
+
+        self.torrentSession.set_settings(settings)
 
         self.parent = parent
 
@@ -42,9 +55,9 @@ class Torrent():
         e = lt.bdecode(open(path, 'rb').read())
         self.torrentInfo = lt.torrent_info(e)
 
-        self.torrentHandle = self.torrentSession.add_torrent({'ti': self.torrentInfo, 'save_path': 'D:/temp/torrent', 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
+        self.torrentHandle = self.torrentSession.add_torrent({'ti': self.torrentInfo, 'save_path': 'D:/temp/torrent', 'storage_mode' : lt.storage_mode_t.storage_mode_allocate})
 
-        # Set download speed limit
+        # Set download speed limit (apparently needs to be set after the torrent adding)
         self.torrentSession.set_download_rate_limit(2 * 1024 * 1024) # TODO calculate required speed based on VLC reported bitrate
 
         videoFile = self.FindVideoFile(self.torrentInfo.files())
