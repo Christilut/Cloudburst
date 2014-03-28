@@ -61,7 +61,7 @@ class StreamingPlayer(QWidget):
     def updateUI(self):
         # setting the slider to the desired position
         # self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000) # TEMP disable auto update of progress slider
-        self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
+        # self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
         # if not self.screen.mediaplayer.is_playing():
         #     self.Stop() # TODO this is so when the video is over, UI gets reset but it caused issues
 
