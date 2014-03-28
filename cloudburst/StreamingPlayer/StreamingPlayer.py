@@ -7,7 +7,7 @@ class StreamingPlayer(QWidget):
 
     isPlaying = False # True if video file is being played
     updateTimerInterval = 100   # Time in ms between GUI updates
-    bufferInterval = 1000   # Time in ms between buffer checks
+    bufferInterval = 500   # Time in ms between buffer checks
     previousMousePos = None # To keep track of the mouse, required to hide/show the GUI
     timeMouseNotMoving = 0  # To delay hiding of GUI
     showInterface = False   # True if GUI is being shown
@@ -44,6 +44,7 @@ class StreamingPlayer(QWidget):
         shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
 
         # TEMP open torrent
+        self.SetDesiredSeekpoint(0.03)
         self.OpenTorrent('res/torrents/big_movie.torrent')
 
     #     # TEMP run checkTorrent every second
@@ -61,8 +62,8 @@ class StreamingPlayer(QWidget):
         # setting the slider to the desired position
         # self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000) # TEMP disable auto update of progress slider
         self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
-        if not self.screen.mediaplayer.is_playing():
-            self.Stop()
+        # if not self.screen.mediaplayer.is_playing():
+        #     self.Stop() # TODO this is so when the video is over, UI gets reset but it caused issues
 
         # another nice hack here... since VLC consumes all mouse events, we cannot determine if the mouse is inside the video
         # but we can constantly ask VLC where the mouse is and figure it out ourselves
@@ -93,6 +94,7 @@ class StreamingPlayer(QWidget):
         self.headerAvailable = available
 
     def SetDesiredSeekpoint(self, seekpoint): # from 0 to 1
+        assert (seekpoint >= 0 and seekpoint < 1)
         self.desiredSeekPoint = seekpoint
 
     def OpenTorrent(self, path):
@@ -100,10 +102,10 @@ class StreamingPlayer(QWidget):
             print 'File path already entered'
             return
 
-        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path)
+        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path, self.desiredSeekPoint)
         # self.currentFilePath = 'D:\\temp\\torrent\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv' # TEMP
 
-        print 'Opening file: ' + self.currentFilePath
+        print 'Waiting for file: ' + self.currentFilePath
 
         QTimer.singleShot(self.bufferInterval, self.BufferFile)
 
@@ -113,7 +115,7 @@ class StreamingPlayer(QWidget):
                 # print 'File does not yet exist, waiting 1 second...'
                 pass
             else:
-                print 'File exists! Buffering...'
+                print 'File found! Buffering...'
                 self.videoFileExists = True
 
             QTimer.singleShot(self.bufferInterval, self.BufferFile)
@@ -123,14 +125,8 @@ class StreamingPlayer(QWidget):
 
             # Wait for the header
             if not self.headerAvailable:
-                # print 'Waiting for video header...'
                 QTimer.singleShot(self.bufferInterval, self.BufferFile)
                 return
-
-            # if not self.seekPointAvailable:
-            #     print 'Waiting for seekpoint buffer...'
-            #     QTimer.singleShot(self.bufferInterval, self.BufferFile)
-            #     return
 
             # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
 
@@ -144,6 +140,7 @@ class StreamingPlayer(QWidget):
 
         self.screen.OpenFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
+
         self.Play()
 
     def PlayPause(self):
@@ -175,6 +172,9 @@ class StreamingPlayer(QWidget):
         self.screen.setVolume(volume)
 
     def SetPosition(self):
-        position = self.controls.sliderProgress.value()
-        self.screen.mediaplayer.set_position(position / 1000.0) # 1000 is for the precision
-        print 'Seekpoint:', float(position) / 10, '%'
+        position = float(self.controls.sliderProgress.value()) / 1000
+
+        self.desiredSeekPoint = position
+
+        self.screen.mediaplayer.set_position(position) # 1000 is for the precision
+        print 'Seekpoint:', position * 100, '%'
