@@ -15,10 +15,14 @@ class Torrent():
 
     seekPointPieceNumber = 0
     currentPieceNumber = 0
-    bufferSize = 3 # in pieces
     seekPoint = 0 # from 0 to 1
     totalPieces = -1
     headerAvailable = False
+    bufferSize = 3 # in pieces, should be a minimum of 3
+    seekPointPreBuffer = 0 #  TODO this value should be based on .. something ? bitrate? i dont know... on mkv container details probably
+    seekPointPieceOffset = -25
+    headerSizePieces = 1
+    footerSizePieces = 1 # TODO fix for size > 1
 
     pieces = {}
     piecesRequired = 0
@@ -55,10 +59,7 @@ class Torrent():
         e = lt.bdecode(open(path, 'rb').read())
         self.torrentInfo = lt.torrent_info(e)
 
-        self.torrentHandle = self.torrentSession.add_torrent({'ti': self.torrentInfo, 'save_path': 'D:/temp/torrent', 'storage_mode' : lt.storage_mode_t.storage_mode_allocate})
-
-        # Set download speed limit (apparently needs to be set after the torrent adding)
-        self.torrentSession.set_download_rate_limit(2 * 1024 * 1024) # TODO calculate required speed based on VLC reported bitrate
+        self.torrentHandle = self.torrentSession.add_torrent({'ti': self.torrentInfo, 'save_path': 'D:/temp/torrent', 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
 
         videoFile = self.FindVideoFile(self.torrentInfo.files())
 
@@ -93,35 +94,41 @@ class Torrent():
 
         return videoFile
 
-    def getBytesDownloaded(self):
+    def GetBytesDownloaded(self):
         return self.torrentStatus.total_wanted_done
 
-    def getBytesWanted(self):
+    def GetBytesWanted(self):
         return self.torrentStatus.total_wanted
 
     def PrintTorrentDebug(self):
         print 'Avail.\t:',
-        for i in range(0, 100):
+        for i in range(0, 350):
 
             if self.torrentHandle.have_piece(i):
                 print '1',
             else:
                 print '0',
 
-        if self.torrentHandle.have_piece(self.totalPieces - 1):
-            print '1',
-        else:
-            print '0',
+        for n in range(0, self.footerSizePieces):
+            if self.torrentHandle.have_piece(self.totalPieces - 1 - n):
+                print '1',
+            else:
+                print '0',
 
         print ''
 
         print 'Prior.\t:',
-        for n in range(0, 100):
+        for n in range(0, 350):
             print self.torrentHandle.piece_priority(n),
 
         print self.torrentHandle.piece_priority(self.totalPieces - 1),
 
         print ''
+
+    # Enable the download limit # TODO base it on bitrate
+    def EnableDownloadLimit(self):
+        # Set download speed limit (apparently needs to be set after the torrent adding)
+        self.torrentSession.set_download_rate_limit(2 * 1024 * 1024)
 
     # Sets the torrent to download the video data starting from the seekpoint
     def IncreaseBuffer(self, missingPieces = None):
@@ -160,8 +167,26 @@ class Torrent():
 
         self.torrentHandle.prioritize_pieces(pieceList)
 
+    def SetSeekPoint(self, seekpoint):
+        self.seekPoint = seekpoint # TODO this even used?
+
+        # Seekpoint position
+        self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) - self.seekPointPreBuffer # TODO lower startpiece a bit
+        self.seekPointPieceNumber = self.currentPieceNumber
+
+        self.headerAvailable = False
+
+    # When header is in, call this function. Start to play movie and enable custom sequential download
+    def SetHeaderAvailable(self):
+        self.parent.HeaderAvailable(True)
+        self.headerAvailable = True
+        print 'Header available'
+        self.EnableDownloadLimit()
+        # self.PrintTorrentDebug()
 
     def IsHeaderAvailable(self):
+
+        print self.pieces
 
         available = True
         for n in iter(self.pieces):
@@ -169,15 +194,15 @@ class Torrent():
             if n < self.seekPointPieceNumber + self.bufferSize and not self.pieces[n]: # TODO confirm this works properly and/or improve it. bufferSize may not equal header size
                 available = False
 
-            if n == self.totalPieces - 1: # TODO assuming end header is 1 piece
-                if not self.pieces[self.totalPieces - 1]:
+            if n == self.totalPieces - self.footerSizePieces:   # TODO fix for size > 1
+                if not self.pieces[self.totalPieces - self.footerSizePieces]:
                     available = False
 
         return available
 
 
     def UpdatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
-        # print 'Updated piece', pieceNumber
+        print 'Updated piece', pieceNumber
         self.pieces[pieceNumber] = True
 
         pieceAvailableCount = 0
@@ -187,37 +212,42 @@ class Torrent():
 
         if not self.headerAvailable:
             if self.IsHeaderAvailable():
-                self.parent.HeaderAvailable(True)
-                self.headerAvailable = True
-                print 'Header available'
-                # self.PrintTorrentDebug()
+                self.SetHeaderAvailable()
 
         paddingSize = 3 # TODO calculate this
         assert self.bufferSize >= paddingSize
 
-        if pieceAvailableCount == (self.piecesRequired - paddingSize): # x pieces left
+        if self.headerAvailable:
+            if pieceAvailableCount >= (self.piecesRequired - paddingSize): # x pieces left
 
-            missingPieces = []
-            for n in iter(self.pieces):
-                if not self.pieces[n]:
-                    missingPieces.append(n)
+                missingPieces = []
+                for n in iter(self.pieces):
+                    if not self.pieces[n]:
+                        missingPieces.append(n)
 
-            # add missing piece as argument so they can be prioritized
-            self.IncreaseBuffer(missingPieces)
+                # add missing piece as argument so they can be prioritized
+                self.IncreaseBuffer(missingPieces)
 
     def InitializePieces(self):
+
+        # Some value checks
+        assert self.seekPointPreBuffer >= 0
 
         self.totalPieces = self.torrentInfo.num_pieces()
 
         # Check cache once, in case the file already existed
-        self.CheckCache()
+        self.CheckCache() # TODO test this works
 
         # Header pieces
-        self.pieces[0] = False                # start of the file
-        self.pieces[self.totalPieces - 1] = False  # end of the file (MKV needs this) # TODO not needed for avi?
+        for n in range(0, self.headerSizePieces):
+            self.pieces[n] = False                # start of the file
+
+        # Footer size (MKV Cueing data)
+        for n in range(0, self.footerSizePieces):
+            self.pieces[self.totalPieces - 1 - n] = False  # end of the file (MKV needs this) # TODO not needed for avi?
 
         # Seekpoint position
-        self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) - 1 # TODO lower startpiece a bit
+        self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) + self.seekPointPieceOffset
         self.seekPointPieceNumber = self.currentPieceNumber
 
         if self.currentPieceNumber < 0:
@@ -227,8 +257,9 @@ class Torrent():
         pieceList = [0] * self.totalPieces
 
         # Save priotitized pieces # TODO determine how large the buffer should be
-        for n in range(0, self.bufferSize):
-            self.pieces[self.currentPieceNumber + n] = False
+        for n in range(-self.seekPointPreBuffer, self.bufferSize):
+            if self.currentPieceNumber + n >= 0:
+                self.pieces[self.currentPieceNumber + n] = False
 
         # Save how many we set for later
         self.piecesRequired = len(self.pieces)
@@ -264,15 +295,15 @@ class Torrent():
         while (not self.torrentHandle.is_seed()):
             self.torrentStatus = self.torrentHandle.status()
 
-            if self.torrentStatus.progress != 1:
-                state_str = ['queued', 'checking', 'downloading metadata',
-                        'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
-                print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
-                    (self.torrentStatus.download_rate / 1000,
-                    self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
+            # if self.torrentStatus.progress != 1:
+            state_str = ['queued', 'checking', 'downloading metadata',
+                    'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
+            print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
+                (self.torrentStatus.download_rate / 1000,
+                self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
 
 
-                # self.PrintTorrentDebug()
+            self.PrintTorrentDebug()
 
 
             time.sleep(3)

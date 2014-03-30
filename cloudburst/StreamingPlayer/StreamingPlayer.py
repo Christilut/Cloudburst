@@ -44,7 +44,7 @@ class StreamingPlayer(QWidget):
         shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
 
         # TEMP open torrent
-        self.SetDesiredSeekpoint(0.03)
+        self.SetDesiredSeekpoint(0.113666014351)
         self.OpenTorrent('res/torrents/big_movie.torrent')
 
     #     # TEMP run checkTorrent every second
@@ -107,7 +107,8 @@ class StreamingPlayer(QWidget):
 
         print 'Waiting for file: ' + self.currentFilePath
 
-        QTimer.singleShot(self.bufferInterval, self.BufferFile)
+        # QTimer.singleShot(self.bufferInterval, self.BufferFile)
+        self.BufferFile()
 
     def BufferFile(self):
         if not self.videoFileExists:
@@ -132,6 +133,19 @@ class StreamingPlayer(QWidget):
 
             # At this point, buffer is large enough and the video should be playable
             self.OpenFile()
+
+    def ReBufferFile(self):
+
+            # Wait for the header
+            if not self.headerAvailable:
+                print 'Waiting ...'
+                QTimer.singleShot(self.bufferInterval, self.ReBufferFile)
+                return
+
+            # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
+
+            # At this point, buffer is large enough and the video should be playable
+            self.Play(self.desiredSeekPoint)
 
     def OpenFile(self):
         if self.currentFilePath == '':
@@ -162,11 +176,18 @@ class StreamingPlayer(QWidget):
         self.updateTimer.stop()
 
     def Stop(self):
-        self.screen.Stop()
-        self.controls.buttonPlayPause.setText('Play')
-        self.isPlaying = False
-        self.updateTimer.stop()
-        self.desiredSeekPoint = 0
+        # self.screen.Stop()
+        # self.controls.buttonPlayPause.setText('Play')
+        # self.isPlaying = False
+        # self.updateTimer.stop()
+        # self.desiredSeekPoint = 0
+        self.SetDesiredSeekpoint(0.03)
+
+        self.headerAvailable = False
+
+        self.Pause()
+
+        self.ReBufferFile()
 
     def SetVolume(self, volume):
         self.screen.setVolume(volume)
@@ -174,7 +195,6 @@ class StreamingPlayer(QWidget):
     def SetPosition(self):
         position = float(self.controls.sliderProgress.value()) / 1000
 
-        self.desiredSeekPoint = position
-
         self.screen.mediaplayer.set_position(position) # 1000 is for the precision
         print 'Seekpoint:', position * 100, '%'
+
