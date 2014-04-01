@@ -13,6 +13,8 @@ class Torrent():
     torrentStatus = None
     torrentSession = None
 
+    enableDebugInfo = True
+
     seekPointPieceNumber = 0 # TODO turn into properties, readonly
     currentPieceNumber = 0
     seekPoint = 0 # from 0 to 1
@@ -21,9 +23,9 @@ class Torrent():
     bufferSize = 5 # in pieces, should be a minimum of 3. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
     seekPointPreBuffer = 0 #  TODO this value should be based on .. something ? bitrate? i dont know... on mkv container details probably
     seekPointPieceOffset = 0
-    headerSizePieces = 1
-    footerSizePieces = 1 # TODO fix for size > 1
-
+    headerSize = 1
+    footerSize = 1 # TODO fix for size > 1
+#TODO if seekpoint = 0, no need for footer
     pieces = {}
     headerPieces = {}
     piecesRequired = 0
@@ -117,7 +119,7 @@ class Torrent():
             else:
                 print '0',
 
-        for n in range(0, self.footerSizePieces):
+        for n in range(0, self.footerSize):
             if self.torrentHandle.have_piece(self.totalPieces - 1 - n):
                 print '1',
             else:
@@ -137,7 +139,12 @@ class Torrent():
     def EnableDownloadLimit(self):
         # Set download speed limit (apparently needs to be set after the torrent adding)
         self.downloadLimitEnabled = True
-        self.torrentSession.set_download_rate_limit(2 * 1024 * 1024)
+
+        downSpeed = 2 * 1024 * 1024
+        self.torrentSession.set_download_rate_limit(downSpeed)
+
+        if self.enableDebugInfo:
+            print 'Download speed limit set to:', downSpeed / 1024, 'kB/s'
 
     # Sets the torrent to download the video data starting from the seekpoint
     def IncreaseBuffer(self, missingPieces = None):
@@ -201,22 +208,28 @@ class Torrent():
 
 
         pieceFront = min(self.currentPieceNumber + self.bufferSize + self.headerIncreaseSize - 1, self.totalPieces - 1) # - 1 because its zero index based
-        pieceBack = max(self.currentPieceNumber - self.headerIncreaseSize, 0)
+        pieceBack = self.currentPieceNumber - self.headerIncreaseSize
 
-        self.headerPieces[pieceFront] = False # to keep track of availability
-        pieceList[pieceFront] = 1 # priority
-        self.torrentHandle.set_piece_deadline(pieceFront, pieceDeadlineTime, 1) # set deadline and enable alert
+        if pieceFront < self.totalPieces - self.footerSize:
+            self.headerPieces[pieceFront] = False # to keep track of availability
+            pieceList[pieceFront] = 1 # priority
+            self.torrentHandle.set_piece_deadline(pieceFront, pieceDeadlineTime, 1) # set deadline and enable alert
 
-        self.headerPieces[pieceBack] = False # to keep track of availability
-        pieceList[pieceBack] = 1 # priority
-        self.torrentHandle.set_piece_deadline(pieceBack, pieceDeadlineTime, 1) # set deadline and enable alert
+        if pieceBack >= self.headerSize:
+            self.headerPieces[pieceBack] = False # to keep track of availability
+            pieceList[pieceBack] = 1 # priority
+            self.torrentHandle.set_piece_deadline(pieceBack, pieceDeadlineTime, 1) # set deadline and enable alert
 
         self.headerPiecesRequired = len(self.headerPieces)
 
         self.torrentHandle.prioritize_pieces(pieceList)
 
     def SetSeekPoint(self, seekpoint):
-        self.seekPoint = seekpoint # TODO this even used?
+
+        if self.enableDebugInfo:
+            print 'Seekpoint set to:', seekpoint
+
+        self.seekPoint = seekpoint
 
         # Seekpoint position
         self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) - self.seekPointPreBuffer # TODO lower startpiece a bit
@@ -229,27 +242,27 @@ class Torrent():
         self.parent.HeaderAvailable(True)
         self.headerAvailable = True
         print 'Header available'
-        # self.PrintTorrentDebug()
+
+        if self.enableDebugInfo:
+            self.PrintTorrentDebug()
 
     def IsHeaderAvailable(self):
-
-        # print self.pieces
-
         available = True
         for n in iter(self.headerPieces):
 
             if n < self.seekPointPieceNumber + self.bufferSize and not self.headerPieces[n]: # TODO confirm this works properly and/or improve it. bufferSize may not equal header size
                 available = False
 
-            if n == self.totalPieces - self.footerSizePieces:   # TODO fix for size > 1
-                if not self.headerPieces[self.totalPieces - self.footerSizePieces]:
+            if n == self.totalPieces - self.footerSize:   # TODO fix for size > 1
+                if not self.headerPieces[self.totalPieces - self.footerSize]:
                     available = False
 
         return available
 
 
     def UpdatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
-        # print 'Updated piece', pieceNumber
+        if self.enableDebugInfo:
+            print 'Updated piece', pieceNumber
 
         if self.pieces.has_key(pieceNumber):
             self.pieces[pieceNumber] = True # TODO remove instead of setting to true
@@ -313,17 +326,19 @@ class Torrent():
         self.CheckCache() # TODO test this works
 
         # Header pieces
-        for n in range(0, self.headerSizePieces):
+        for n in range(0, self.headerSize):
             self.headerPieces[n] = False                # start of the file
 
         # Footer size (MKV Cueing data)
-        for n in range(0, self.footerSizePieces):
+        for n in range(0, self.footerSize):
             self.headerPieces[self.totalPieces - 1 - n] = False  # end of the file (MKV needs this) # TODO not needed for avi?
 
         # Seekpoint position
         self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) + self.seekPointPieceOffset
         self.seekPointPieceNumber = self.currentPieceNumber
-        print 'Seekpoint piece:', self.seekPointPieceNumber
+
+        if self.enableDebugInfo:
+            print 'Seekpoint piece:', self.seekPointPieceNumber
 
         if self.currentPieceNumber < 0:
             self.currentPieceNumber = 0
@@ -377,8 +392,8 @@ class Torrent():
                 (self.torrentStatus.download_rate / 1000,
                 self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
 
-
-            self.PrintTorrentDebug()
+            if self.enableDebugInfo:
+                self.PrintTorrentDebug()
 
 
             time.sleep(3)
