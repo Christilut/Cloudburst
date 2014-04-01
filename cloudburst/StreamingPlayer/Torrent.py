@@ -13,20 +13,28 @@ class Torrent():
     torrentStatus = None
     torrentSession = None
 
-    seekPointPieceNumber = 0
+    seekPointPieceNumber = 0 # TODO turn into properties, readonly
     currentPieceNumber = 0
     seekPoint = 0 # from 0 to 1
     totalPieces = -1
     headerAvailable = False
-    bufferSize = 3 # in pieces, should be a minimum of 3
+    bufferSize = 5 # in pieces, should be a minimum of 3. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
     seekPointPreBuffer = 0 #  TODO this value should be based on .. something ? bitrate? i dont know... on mkv container details probably
-    seekPointPieceOffset = -25
+    seekPointPieceOffset = 0
     headerSizePieces = 1
     footerSizePieces = 1 # TODO fix for size > 1
 
     pieces = {}
+    headerPieces = {}
     piecesRequired = 0
+    headerPiecesRequired = 0
     piecesPadded = 0
+
+    headerIncreaseSize = 0 # starting value, do not edit # TODO figure out what to do with values that need not be edited
+    headerIncreaseSizeAmount = 1 # this many pieces are added to the front AND the back of the header buffer
+    headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
+
+    downloadLimitEnabled = False
 
 
     def __init__(self, parent):
@@ -128,10 +136,13 @@ class Torrent():
     # Enable the download limit # TODO base it on bitrate
     def EnableDownloadLimit(self):
         # Set download speed limit (apparently needs to be set after the torrent adding)
+        self.downloadLimitEnabled = True
         self.torrentSession.set_download_rate_limit(2 * 1024 * 1024)
 
     # Sets the torrent to download the video data starting from the seekpoint
     def IncreaseBuffer(self, missingPieces = None):
+
+        pieceDeadlineTime = 5000
 
         self.currentPieceNumber += self.bufferSize
 
@@ -144,26 +155,63 @@ class Torrent():
             for n in range(0, len(missingPieces)):
 
                 higherPriority = 2
-                deadlineTime = 2000 # in ms
-
-                # Make sure header pieces get even higher priority, since the video must wait for these before starting
-                if missingPieces[n] == self.totalPieces - 1 or missingPieces[n] == 0: # TODO header/footer may not always be 1
-                    higherPriority = 7
-                    deadlineTime = 5000
+                pieceDeadlineTime = 2000
 
                 pieceList[missingPieces[n]] = higherPriority # higher priority
 
                 self.pieces[missingPieces[n]] = False
-                self.torrentHandle.set_piece_deadline(missingPieces[n], deadlineTime, 1)
+                self.torrentHandle.set_piece_deadline(missingPieces[n], pieceDeadlineTime, 1)
 
         for n in range(0, self.bufferSize):
             piece = self.currentPieceNumber + n
 
             self.pieces[piece] = False
-            pieceList[piece] = 1
-            self.torrentHandle.set_piece_deadline(piece, 5000, 1)
+            pieceList[piece] = 1 # priority
+            self.torrentHandle.set_piece_deadline(piece, pieceDeadlineTime, 1) # set deadline and enable alert
 
         self.piecesRequired = len(self.pieces)
+
+        self.torrentHandle.prioritize_pieces(pieceList)
+
+    def IncreaseHeader(self, missingPieces = None):
+
+        pieceDeadlineTime = 5000
+
+        self.headerIncreaseSize += 1
+
+        pieceList = [0] * self.torrentInfo.num_pieces()
+
+        self.headerPieces.clear()
+
+        if missingPieces != None:
+
+            for n in range(0, len(missingPieces)):
+
+                higherPriority = 2
+
+                # Make sure header pieces get even higher priority, since the video must wait for these before starting
+                if missingPieces[n] == self.totalPieces - 1 or missingPieces[n] == 0: # TODO header/footer may not always be of size 1
+                    higherPriority = 3
+                    pieceDeadlineTime = 2000
+
+                pieceList[missingPieces[n]] = higherPriority # higher priority
+
+                self.headerPieces[missingPieces[n]] = False
+                self.torrentHandle.set_piece_deadline(missingPieces[n], pieceDeadlineTime, 1)
+
+
+        pieceFront = min(self.currentPieceNumber + self.bufferSize + self.headerIncreaseSize - 1, self.totalPieces - 1) # - 1 because its zero index based
+        pieceBack = max(self.currentPieceNumber - self.headerIncreaseSize, 0)
+
+        self.headerPieces[pieceFront] = False # to keep track of availability
+        pieceList[pieceFront] = 1 # priority
+        self.torrentHandle.set_piece_deadline(pieceFront, pieceDeadlineTime, 1) # set deadline and enable alert
+
+        self.headerPieces[pieceBack] = False # to keep track of availability
+        pieceList[pieceBack] = 1 # priority
+        self.torrentHandle.set_piece_deadline(pieceBack, pieceDeadlineTime, 1) # set deadline and enable alert
+
+        self.headerPiecesRequired = len(self.headerPieces)
 
         self.torrentHandle.prioritize_pieces(pieceList)
 
@@ -181,34 +229,43 @@ class Torrent():
         self.parent.HeaderAvailable(True)
         self.headerAvailable = True
         print 'Header available'
-        self.EnableDownloadLimit()
         # self.PrintTorrentDebug()
 
     def IsHeaderAvailable(self):
 
-        print self.pieces
+        # print self.pieces
 
         available = True
-        for n in iter(self.pieces):
+        for n in iter(self.headerPieces):
 
-            if n < self.seekPointPieceNumber + self.bufferSize and not self.pieces[n]: # TODO confirm this works properly and/or improve it. bufferSize may not equal header size
+            if n < self.seekPointPieceNumber + self.bufferSize and not self.headerPieces[n]: # TODO confirm this works properly and/or improve it. bufferSize may not equal header size
                 available = False
 
             if n == self.totalPieces - self.footerSizePieces:   # TODO fix for size > 1
-                if not self.pieces[self.totalPieces - self.footerSizePieces]:
+                if not self.headerPieces[self.totalPieces - self.footerSizePieces]:
                     available = False
 
         return available
 
 
     def UpdatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
-        print 'Updated piece', pieceNumber
-        self.pieces[pieceNumber] = True
+        # print 'Updated piece', pieceNumber
+
+        if self.pieces.has_key(pieceNumber):
+            self.pieces[pieceNumber] = True # TODO remove instead of setting to true
+
+        if self.headerPieces.has_key(pieceNumber):
+            self.headerPieces[pieceNumber] = True
 
         pieceAvailableCount = 0
         for n in iter(self.pieces):
             if self.pieces[n]:
                 pieceAvailableCount += 1
+
+        headerPieceAvailableCount = 0
+        for n in iter(self.headerPieces):
+            if self.headerPieces[n]:
+                headerPieceAvailableCount += 1
 
         if not self.headerAvailable:
             if self.IsHeaderAvailable():
@@ -217,7 +274,24 @@ class Torrent():
         paddingSize = 3 # TODO calculate this
         assert self.bufferSize >= paddingSize
 
-        if self.headerAvailable:
+        if self.parent.isPlaying:
+            assert self.headerAvailable
+
+        # if header available, the mkv may not yet play. increase the buffer on both ends and keep trying to play.
+        if not self.parent.isPlaying:
+
+            if headerPieceAvailableCount >= (self.headerPiecesRequired - self.headerIncreaseOffset):
+                missingPieces = []
+                for n in iter(self.headerPieces):
+                    if not self.headerPieces[n]:
+                        missingPieces.append(n)
+
+                self.IncreaseHeader(missingPieces)
+
+        else: # if header + extra pieces large enough (so actually playing), start sequential download
+            if not self.downloadLimitEnabled:
+                self.EnableDownloadLimit()
+
             if pieceAvailableCount >= (self.piecesRequired - paddingSize): # x pieces left
 
                 missingPieces = []
@@ -240,15 +314,16 @@ class Torrent():
 
         # Header pieces
         for n in range(0, self.headerSizePieces):
-            self.pieces[n] = False                # start of the file
+            self.headerPieces[n] = False                # start of the file
 
         # Footer size (MKV Cueing data)
         for n in range(0, self.footerSizePieces):
-            self.pieces[self.totalPieces - 1 - n] = False  # end of the file (MKV needs this) # TODO not needed for avi?
+            self.headerPieces[self.totalPieces - 1 - n] = False  # end of the file (MKV needs this) # TODO not needed for avi?
 
         # Seekpoint position
         self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint) + self.seekPointPieceOffset
         self.seekPointPieceNumber = self.currentPieceNumber
+        print 'Seekpoint piece:', self.seekPointPieceNumber
 
         if self.currentPieceNumber < 0:
             self.currentPieceNumber = 0
@@ -259,13 +334,13 @@ class Torrent():
         # Save priotitized pieces # TODO determine how large the buffer should be
         for n in range(-self.seekPointPreBuffer, self.bufferSize):
             if self.currentPieceNumber + n >= 0:
-                self.pieces[self.currentPieceNumber + n] = False
+                self.headerPieces[self.currentPieceNumber + n] = False
 
         # Save how many we set for later
-        self.piecesRequired = len(self.pieces)
+        self.headerPiecesRequired = len(self.headerPieces)
 
         # Set headers to high priority
-        for n in iter(self.pieces):
+        for n in iter(self.headerPieces):
             pieceList[n] = 1
             self.torrentHandle.set_piece_deadline(n, 5000, 1)   # 1 is alert_when_available
 

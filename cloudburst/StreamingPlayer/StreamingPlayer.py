@@ -2,6 +2,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import ScreenVLC, Controls, Torrent
 import os.path, time
+from cloudburst.StreamingPlayer import libvlc
+
 
 class StreamingPlayer(QWidget):
 
@@ -17,6 +19,10 @@ class StreamingPlayer(QWidget):
     headerAvailable = False # True if header info of the video file is downloaded
     seekPointAvailable = False  # True if a buffer exists from the seek point onward
     desiredSeekPoint = 0
+
+    lastMediaPosition = -1.0 # To determine if video is actually playing (based on media position difference)
+    tryTorrentPlayInterval = 5000 # Time in ms between attempts to play the file while the header is being downloaded
+
 
     def __init__(self, parent):
         QWidget.__init__(self, parent)
@@ -40,23 +46,17 @@ class StreamingPlayer(QWidget):
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP REMOVE DOWNLOADED TORRENT
-        import shutil
-        shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
+        # import shutil
+        # shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
 
         # TEMP open torrent
-        self.SetDesiredSeekpoint(0.113666014351)
+        # self.seconds = 5000
+        # self.SetDesiredSeekpoint(1 / (float(6132) / self.seconds))
+        # self.SetDesiredSeekpoint(0)
         self.OpenTorrent('res/torrents/big_movie.torrent')
 
-    #     # TEMP run checkTorrent every second
-    #     self.checkTorrentTimer = QTimer(self)
-    #     self.checkTorrentTimer.setInterval(100)
-    #     self.connect(self.checkTorrentTimer, SIGNAL('timeout()'), self.checkTorrent)
-    #     self.checkTorrentTimer.start()
-    #
-    # # TEMP method to check status of torrent
-    # def checkTorrent(self):
-    #     if self.torrent.torrentHandle.have_piece(0) and self.torrent.torrentHandle.have_piece(1677):
-    #         print 'READY'
+
+
 
     def updateUI(self):
         # setting the slider to the desired position
@@ -94,6 +94,7 @@ class StreamingPlayer(QWidget):
         self.headerAvailable = available
 
     def SetDesiredSeekpoint(self, seekpoint): # from 0 to 1
+
         assert (seekpoint >= 0 and seekpoint < 1)
         self.desiredSeekPoint = seekpoint
 
@@ -102,12 +103,10 @@ class StreamingPlayer(QWidget):
             print 'File path already entered'
             return
 
-        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path, self.desiredSeekPoint)
-        # self.currentFilePath = 'D:\\temp\\torrent\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv' # TEMP
+        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path, self.desiredSeekPoint) # TODO not hardcoded
 
         print 'Waiting for file: ' + self.currentFilePath
 
-        # QTimer.singleShot(self.bufferInterval, self.BufferFile)
         self.BufferFile()
 
     def BufferFile(self):
@@ -130,22 +129,33 @@ class StreamingPlayer(QWidget):
                 return
 
             # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
-
             # At this point, buffer is large enough and the video should be playable
             self.OpenFile()
+            self.TryTorrentFilePlay()
+            # QTimer.singleShot(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
 
-    def ReBufferFile(self):
+    def TryTorrentFilePlay(self):
+        print self.lastMediaPosition, self.screen.mediaplayer.get_position()
 
-            # Wait for the header
-            if not self.headerAvailable:
-                print 'Waiting ...'
-                QTimer.singleShot(self.bufferInterval, self.ReBufferFile)
-                return
+        if self.lastMediaPosition == -1.0:
+            self.Play()
+            QTimer.singleShot(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
+            print 'play'
 
-            # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
+        elif self.lastMediaPosition == self.screen.mediaplayer.get_position() or self.screen.mediaplayer.get_position() == 0:
 
-            # At this point, buffer is large enough and the video should be playable
-            self.Play(self.desiredSeekPoint)
+            self.Stop() # TODO try to use the fact that get_position() returns 0.0 when seeking fails
+            self.Play()
+            # self.OpenFile()
+
+            QTimer.singleShot(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
+            print 'again'
+
+        else:
+            self.isPlaying = True
+            print 'playing', self.lastMediaPosition, self.screen.mediaplayer.get_position()
+
+        self.lastMediaPosition = self.screen.mediaplayer.get_position()
 
     def OpenFile(self):
         if self.currentFilePath == '':
@@ -155,7 +165,7 @@ class StreamingPlayer(QWidget):
         self.screen.OpenFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
 
-        self.Play()
+        # self.Play()
 
     def PlayPause(self):
         if self.isPlaying:
@@ -166,7 +176,6 @@ class StreamingPlayer(QWidget):
     def Play(self):
         self.screen.Play(self.desiredSeekPoint)
         self.controls.buttonPlayPause.setText('Pause')
-        self.isPlaying = True
         self.updateTimer.start()
 
     def Pause(self):
@@ -176,18 +185,11 @@ class StreamingPlayer(QWidget):
         self.updateTimer.stop()
 
     def Stop(self):
-        # self.screen.Stop()
-        # self.controls.buttonPlayPause.setText('Play')
-        # self.isPlaying = False
-        # self.updateTimer.stop()
-        # self.desiredSeekPoint = 0
-        self.SetDesiredSeekpoint(0.03)
-
-        self.headerAvailable = False
-
-        self.Pause()
-
-        self.ReBufferFile()
+        self.screen.Stop()
+        self.controls.buttonPlayPause.setText('Play')
+        self.isPlaying = False
+        self.updateTimer.stop()
+        self.desiredSeekPoint = 0
 
     def SetVolume(self, volume):
         self.screen.setVolume(volume)
