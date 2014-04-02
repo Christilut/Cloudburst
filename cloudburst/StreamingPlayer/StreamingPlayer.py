@@ -1,9 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import ScreenVLC, Controls, Torrent
-import os.path, time
-from cloudburst.StreamingPlayer import libvlc
-
+import os.path
 
 class StreamingPlayer(QWidget):
 
@@ -23,6 +21,7 @@ class StreamingPlayer(QWidget):
     lastMediaPosition = None # To determine if video is actually playing (based on media position difference)
     tryTorrentPlayInterval = 5000 # Time in ms between attempts to play the file while the header is being downloaded
 
+    forwardBufferAvailable = False
 
     def __init__(self, parent):
         QWidget.__init__(self, parent)
@@ -45,15 +44,10 @@ class StreamingPlayer(QWidget):
 
         # TEMP test stuff below --------------------------------------------------------
 
-        # TEMP REMOVE DOWNLOADED TORRENT
-        import shutil
-        shutil.rmtree('D:\\temp\\torrent', ignore_errors=True)
-
         # TEMP open torrent
-        self.seconds = 3433
+        self.seconds = 233
         self.SetDesiredSeekpoint(1 / (float(6132) / self.seconds))
 
-        # self.SetDesiredSeekpoint(0)
         self.OpenTorrent('res/torrents/big_movie.torrent')
 
 
@@ -62,7 +56,7 @@ class StreamingPlayer(QWidget):
     def updateUI(self):
         # setting the slider to the desired position
         # self.controls.sliderProgress.setValue(self.screen.mediaplayer.get_position() * 1000) # TEMP disable auto update of progress slider
-        self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
+        # self.screen.mediaplayer.audio_set_volume(0)                                     # TEMP TO FORCE SOUND OFF FOR TESTING
         # if not self.screen.mediaplayer.is_playing():
         #     self.Stop() # TODO this is so when the video is over, UI gets reset but it caused issues
 
@@ -105,7 +99,7 @@ class StreamingPlayer(QWidget):
             print 'File path already entered'
             return
 
-        self.currentFilePath = 'D:\\temp\\torrent\\' + self.torrent.StartTorrent(path, self.desiredSeekPoint) # TODO not hardcoded
+        self.currentFilePath = self.torrent.StartTorrent(path, self.desiredSeekPoint)
 
         print 'Waiting for file: ' + self.currentFilePath
 
@@ -138,24 +132,35 @@ class StreamingPlayer(QWidget):
     def TryTorrentFilePlay(self):
 
         if self.lastMediaPosition == None:
-            self.Play()
+            self.PlayAtSeekpoint()
             QTimer.singleShot(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
 
         elif self.lastMediaPosition == self.screen.mediaplayer.get_position() or self.screen.mediaplayer.get_position() == 0:
 
             # TODO try to use the fact that get_position() returns 0.0 when seeking fails
-            # self.screen.mediaplayer.set_position(self.desiredSeekPoint)
             self.screen.mediaplayer.stop()
 
             # Add a small delay because calling play instantly after stop may freeze python
-            QTimer.singleShot(100, self.Play)
+            QTimer.singleShot(100, self.PlayAtSeekpoint)
 
             QTimer.singleShot(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
 
         else:
             self.isPlaying = True
+            self.Pause()
+            print 'Can succesfully play'
+
+            QTimer.singleShot(1000, self.WaitForForwardBuffer)
 
         self.lastMediaPosition = self.screen.mediaplayer.get_position()
+
+    def WaitForForwardBuffer(self):
+
+        if self.forwardBufferAvailable:
+            self.Play()
+        else:
+            QTimer.singleShot(100, self.WaitForForwardBuffer)
+
 
     def OpenFile(self):
         if self.currentFilePath == '':
@@ -165,21 +170,25 @@ class StreamingPlayer(QWidget):
         self.screen.OpenFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
 
-    def PlayPause(self):
+    def PlayPause(self): # TODO current not used, isPlaying is ambiguous
         if self.isPlaying:
             self.Pause()
         else:
             self.Play()
 
-    def Play(self):
+    def PlayAtSeekpoint(self):
         self.screen.Play(self.desiredSeekPoint)
+        self.controls.buttonPlayPause.setText('Pause')
+        self.updateTimer.start()
+
+    def Play(self):
+        self.screen.Play()
         self.controls.buttonPlayPause.setText('Pause')
         self.updateTimer.start()
 
     def Pause(self):
         self.screen.Pause()
         self.controls.buttonPlayPause.setText('Play')
-        self.isPlaying = False
         self.updateTimer.stop()
 
     def Stop(self):

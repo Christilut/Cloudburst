@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4 import uic
 
 from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+import appdirs
 
 
 # MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
@@ -51,6 +52,11 @@ if __name__ == '__main__':
 
     # Initialize the application
     app = QApplication(sys.argv)
+
+    # Set data dirs
+    appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
+    appdirs.appname = 'Cloudburst'
+    appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
 
     # Create an empty main window
     mainframe = MainFrame()

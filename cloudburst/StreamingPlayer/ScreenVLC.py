@@ -53,11 +53,13 @@ class ScreenVLC(QtGui.QWidget):
 
 
     def Play(self, position = -1):  # from 0 to 1
-        if not self.mediaplayer.is_playing():
-            self.mediaplayer.play()
+        # if not self.mediaplayer.is_playing():
+        self.mediaplayer.play()
 
-            if position != -1:
-                self.mediaplayer.set_position(position)
+        if position != -1:
+            self.mediaplayer.set_position(position)
+        # else:
+        #     print 'Cannot play, already playing'
 
     def Pause(self):
         if self.mediaplayer.is_playing():
