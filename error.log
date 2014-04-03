@@ -1,0 +1,190 @@
+
+[03-04-2014 16:40:50] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 81, in <module>
+    CefAdvanced()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 32, in CefAdvanced
+    raise Exception('Test')
+
+Exception: Test
+
+
+[03-04-2014 16:41:56] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 81, in <module>
+    CefAdvanced()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 32, in CefAdvanced
+    raise Exception('Test')
+
+Exception: Test
+
+
+[03-04-2014 16:54:43] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 41, in cloudburstMain
+    applicationSettings['browser_subprocess_path'] = '%s/%s' % cefpython.GetModuleDirectory(), 'subprocess'
+
+TypeError: not enough arguments for format string
+
+
+[03-04-2014 16:54:56] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 52, in cloudburstMain
+    win32con.WM_SETFOCUS: cefpython.WindowUtils.onSetFocus,
+
+AttributeError: class WindowUtils has no attribute 'onSetFocus'
+
+
+[03-04-2014 16:55:15] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 57, in cloudburstMain
+    icon='res/images/cloudburst.ico', windowProc=windowHandles)
+
+TypeError: CreateWindow() got an unexpected keyword argument 'classname'
+
+
+[03-04-2014 16:57:04] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 80, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 59, in cloudburstMain
+    icon='res/images/cloudburst.ico', windowProc=windowHandles)
+
+  File "D:\Dropbox\Workspaces\Python\Cloudburst\cloudburst\cefwindow.py", line 94, in CreateWindow
+    bigIcon = win32gui.LoadImage(0, icon, win32con.IMAGE_ICON, bigX, bigY, win32con.LR_LOADFROMFILE)
+
+error: (2, 'LoadImage', 'The system cannot find the file specified.')
+
+
+[03-04-2014 16:58:06] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 57, in cloudburstMain
+    icon='res/images/cloudburst.ico', windowProc=windowHandles)
+
+  File "D:\Dropbox\Workspaces\Python\Cloudburst\cloudburst\cefwindow.py", line 94, in CreateWindow
+    bigIcon = win32gui.LoadImage(0, icon, win32con.IMAGE_ICON, bigX, bigY, win32con.LR_LOADFROMFILE)
+
+error: (2, 'LoadImage', 'The system cannot find the file specified.')
+
+
+[03-04-2014 17:14:06] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 57, in cloudburstMain
+    icon=getApplicationPath('res/images/cloudburst.ico'), windowProc=windowHandles)
+
+TypeError: createWindow() got an unexpected keyword argument 'windowProc'
+
+
+[03-04-2014 17:14:18] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 57, in cloudburstMain
+    icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+
+  File "D:\Dropbox\Workspaces\Python\Cloudburst\cloudburst\window.py", line 85, in createWindow
+    0, 0, wndclass.hInstance, None)
+
+TypeError: an integer is required
+
+
+[03-04-2014 17:15:15] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 78, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 57, in cloudburstMain
+    icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+
+  File "D:\Dropbox\Workspaces\Python\Cloudburst\cloudburst\window.py", line 85, in createWindow
+    0, 0, wndclass.hInstance, None)
+
+TypeError: an integer is required
+
+
+[03-04-2014 18:50:33] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: this constructor takes no arguments
+
+
+[03-04-2014 18:52:19] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: this constructor takes no arguments
+
+
+[03-04-2014 18:52:53] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
+
+[03-04-2014 18:53:38] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 62, in cloudburstMain
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, browserSettings={"plugins_disabled": False}, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+
+  File "cefpython.pyx", line 273, in cefpython_py27.CreateBrowserSync (cefpython.cpp:71253)
+
+TypeError: CreateBrowserSync() got multiple values for keyword argument 'browserSettings'
+
+
+[03-04-2014 18:54:03] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
+
+[03-04-2014 18:54:55] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 92, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 70, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
