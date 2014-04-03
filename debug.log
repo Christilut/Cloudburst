@@ -330,3 +330,1250 @@ cefpython: del g_pyFrames[1]
 cefpython: del g_pyBrowsers[1]
 cefpython_app: Renderer: OnContextReleased()
 cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 656800
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="7092.0.43197949\1724650157" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 591500
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="5220.0.2025724987\185279413" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.py
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="3888.0.283635947\346352696" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=PyPrint
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.TestJSCallbackComplexArguments
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback2
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=7
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.py
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10304.0.1083364667\60589024" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextReleased
+cefpython_app: Renderer: OnContextReleased()
+cefpython: V8ContextHandler_OnContextReleased()
+cefpython: del g_pyFrames[1]
+cefpython_app: Browser: OnProcessMessageReceived(): RemovePythonCallbacksForFrame
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextReleased
+cefpython_app: Renderer: OnContextCreated()
+cefpython: V8ContextHandler_OnContextReleased()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: del g_pyFrames[1]
+cefpython_app: Browser: OnProcessMessageReceived(): RemovePythonCallbacksForFrame
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.py
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10896.0.1604179223\46037708" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.TestJSCallback
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 329804
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+[0403/184418:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 592052
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="7596.0.1389674692\1589305515" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/184437:INFO:CONSOLE(1)] "Uncaught ReferenceError: external is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 657500
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10820.0.226777100\857405747" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185029:INFO:CONSOLE(1)] "Uncaught ReferenceError: external is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: QuitMessageLoop()
+[0403/185033:ERROR_REPORT:context.cc(154)] Check failed: false. context not valid
+cefpython: Shutdown()
+[0403/185033:ERROR_REPORT:context.cc(102)] Check failed: false. context not valid
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 329826
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10380.0.939206383\1071785218" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185216:INFO:CONSOLE(1)] "Uncaught ReferenceError: external is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: QuitMessageLoop()
+[0403/185219:ERROR_REPORT:context.cc(154)] Check failed: false. context not valid
+cefpython: Shutdown()
+[0403/185219:ERROR_REPORT:context.cc(102)] Check failed: false. context not valid
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 985246
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10932.0.756002507\675164783" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185252:INFO:CONSOLE(1)] "Uncaught ReferenceError: external is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: QuitMessageLoop()
+[0403/185253:ERROR_REPORT:context.cc(154)] Check failed: false. context not valid
+cefpython: Shutdown()
+[0403/185253:ERROR_REPORT:context.cc(102)] Check failed: false. context not valid
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 788512
+cefpython: QuitMessageLoop()
+[0403/185338:ERROR_REPORT:message_loop.cc(334)] Check failed: false. Must be inside Run to call Quit
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 657074
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9180.0.225937939\1493094811" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185402:INFO:CONSOLE(1)] "Uncaught ReferenceError: external is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+[0403/185403:ERROR:ipc_channel_win.cc(132)] pipe error: 109
+cefpython: QuitMessageLoop()
+[0403/185403:ERROR_REPORT:context.cc(154)] Check failed: false. context not valid
+cefpython: Shutdown()
+[0403/185403:ERROR_REPORT:context.cc(102)] Check failed: false. context not valid
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 656772
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: QuitMessageLoop()
+[0403/185455:ERROR_REPORT:message_loop.cc(334)] Check failed: false. Must be inside Run to call Quit
+cefpython: Shutdown()
+cefpython: del g_pyBrowsers[1]
+[0403/185455:WARNING:ipc_channel_win.cc(263)] Unable to create pipe "\\.\pipe\chrome.1852.0.11562944" in client mode. Error :0
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 329752
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9796.0.638357748\633800467" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185545:INFO:CONSOLE(1)] "Uncaught ReferenceError: JSCallback is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 592074
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11084.0.1496801065\497986355" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/185629:INFO:CONSOLE(1)] "Uncaught ReferenceError: JSCallback is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1115524
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="2432.0.1971438138\1681226182" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.testJSCallback
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1116314
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10412.0.1207098666\770341151" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 723132
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+[0403/190019:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1181840
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+[0403/190023:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 788672
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+[0403/190031:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 919648
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+[0403/190040:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1181852
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+[0403/190054:ERROR:child_process_launcher.cc(326)] Failed to launch child process
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyBrowsers[1]
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1050824
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10580.0.1875145618\1968659509" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1706016
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="1636.0.27012727\1085310734" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1902624
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="6992.0.1657627371\1008101203" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 919576
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="5748.0.2112225969\473026225" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1181872
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9632.0.697761758\1243550659" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.py
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="8044.0.790675487\1762402704" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.TestPythonCallback
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback3
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython_app: Renderer: V8FunctionHandler::Execute(): python callback
+cefpython_app: Browser: OnProcessMessageReceived(): ExecutePythonCallback
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.TestJSCallbackComplexArguments
+cefpython: Created javascript callback, callbackId=2, functionName=JSCallback2
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=7
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.GetSource
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.GetText
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=PyPrint
+cefpython: RemovePythonCallbacksForBrowser(): removed python callback, callbackId = 1
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.py
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/wxpython.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11164.0.592585118\1617487341" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1640114
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="5088.0.748019876\1992808452" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1443952
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="4236.0.357599125\1727168690" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1837244
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9848.0.1688274176\992834564" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1116346
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10008.0.328062827\710306517" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 657624
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11136.0.1229291031\740242903" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+[0403/191137:INFO:CONSOLE(10)] "Uncaught TypeError: Cannot read property 'playlist' of null", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (10)
+cefpython_app: Renderer: ExecuteJavascriptCallback() FAILED: callback->ExecuteFunction() FAILED
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+[0403/191141:ERROR:ipc_channel_win.cc(132)] pipe error: 109
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 723158
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9356.0.1173494352\512967741" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 919762
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11696.0.1734253897\333106375" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+[0403/191235:INFO:CONSOLE(10)] "Uncaught SyntaxError: Unexpected token :", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (10)
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/191237:INFO:CONSOLE(1)] "Uncaught ReferenceError: JSCallback is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 2099294
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="12112.0.1834130093\1270787436" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+[0403/191258:INFO:CONSOLE(1)] "Uncaught ReferenceError: JSCallback is not defined", source: file:///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html (1)
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 919768
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11540.0.1266920191\1330349342" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=JSCallback
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 2033856
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="12084.0.1600358407\1968689066" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=loadAndPlay
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --multiproc --client --port --file --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox "C:\Program Files (x86)\JetBrains\PyCharm Community Edition 3.1.1\helpers\pydev\pydevd.py" 127.0.0.1 36121 D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1574986
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="9312.0.1202653992\715508805" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython_app: Renderer: V8FunctionHandler::Execute(): js binding
+cefpython_app: Browser: OnProcessMessageReceived(): V8FunctionHandler::Execute
+cefpython: V8FunctionHandler_Execute(): functionName=external.loadVideo
+cefpython: Created javascript callback, callbackId=1, functionName=loadAndPlay
+cefpython: SendProcessMessage(): message=ExecuteJavascriptCallback, arguments size=2
+cefpython_app: Renderer: OnProcessMessageReceived(): ExecuteJavascriptCallback
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()

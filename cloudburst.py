@@ -1,4 +1,5 @@
 import platform
+from cloudburst.vlcInterface import VlcInterface
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -58,9 +59,22 @@ def cloudburstMain():
 
     windowInfo = cefpython.WindowInfo()
     windowInfo.SetAsChild(windowHandle)
-    cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+
+    jsBindings = cefpython.JavascriptBindings(
+            bindToFrames=False, bindToPopups=True)
+    jsBindings.SetProperty("pyProperty", "This was set in Python")
+    jsBindings.SetProperty("pyConfig", ["This was set in Python",
+            {"name": "Nested dictionary", "isNested": True},
+            [1,"2", None]])
+    jsBindings.SetObject("external", VlcInterface(browser))
+    browser.SetJavascriptBindings(jsBindings)
+
     cefpython.MessageLoop()
     cefpython.Shutdown()
+
+
+
 
 
 def closeWindow(windowHandle, message, wparam, lparam):

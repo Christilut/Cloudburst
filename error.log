@@ -120,3 +120,71 @@ TypeError: an integer is required
 
 TypeError: an integer is required
 
+
+[03-04-2014 18:50:33] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: this constructor takes no arguments
+
+
+[03-04-2014 18:52:19] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: this constructor takes no arguments
+
+
+[03-04-2014 18:52:53] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
+
+[03-04-2014 18:53:38] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 62, in cloudburstMain
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, browserSettings={"plugins_disabled": False}, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+
+  File "cefpython.pyx", line 273, in cefpython_py27.CreateBrowserSync (cefpython.cpp:71253)
+
+TypeError: CreateBrowserSync() got multiple values for keyword argument 'browserSettings'
+
+
+[03-04-2014 18:54:03] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 90, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 73, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
+
+[03-04-2014 18:54:55] Traceback (most recent call last):
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 92, in <module>
+    cloudburstMain()
+
+  File "D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py", line 70, in cloudburstMain
+    jsBindings.SetObject("external", VlcInterface(browser))
+
+TypeError: __init__() takes exactly 1 argument (2 given)
+
