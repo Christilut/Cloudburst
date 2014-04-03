@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>VLC Test Page</title>
+
+    <script>
+        function loadAndPlay(arg) {
+            var vlc = document.getElementById("vlc");
+            var options = new Array(":aspect-ratio=4:3", "--rtsp-tcp");
+            var id = vlc.playlist.add(arg, "fancy name", options);
+            vlc.playlist.playItem(id);
+        }
+    </script>
+</head>
+<body>
+<embed type="application/x-vlc-plugin"
+       id="vlc"
+       name="vlc"
+       autoplay="no" loop="yes" width="720" height="540"
+       <!--target="file:///res/vids/big-buck-bunny_trailer.webm"-->/>
+
+<br/>
+<input type="button" name="Play" value="Play" onclick="vlc.playlist.play()"/>
+<input type="button" name="Pause" value="Pause" onclick="vlc.playlist.togglePause()"/>
+<input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
+<input type="button" name="Fullscreen" value="Fullscreen" onclick="vlc.video.toggleFullscreen()"/>
+<input type="button" name="LoadAndPlay" value="Load and play" onclick="javascript:external.loadVideo(loadAndPlay)"/>
+</body>
+</html>

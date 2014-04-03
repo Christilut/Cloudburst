@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Cloudburst</title>
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+
+<body>
+
+<section id="options" class="clearfix">
+
+    <h3>Sort direction</h3>
+
+    <button id="randomize" data-filter="*">Randomize</button>
+    <button id="sortByTitle" data-filter="*">Sort By Title</button>
+
+</section>
+
+<div id="container" class="photos clearfix">
+
+    <div class="photo" data-symbol="sherlock-holmes">
+        <img src="../images/covers/sherlock-holmes.jpg" alt="sherlock-holmes"/>
+    </div>
+
+    <div class="photo" data-symbol="ted">
+        <img src="../images/covers/ted.jpg" alt="ted"/>
+    </div>
+
+    <div class="photo" data-symbol="the-hunger-games">
+        <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games"/>
+    </div>
+
+    <div class="photo" data-symbol="the-hunger-games-mockingjay-part-1">
+        <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1"/>
+    </div>
+
+    <div class="photo" data-symbol="underworld-awakening">
+        <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening"/>
+    </div>
+
+    <div class="photo" data-symbol="world-war-z">
+        <img src="../images/covers/world-war-z.jpg" alt="world-war-z"/>
+    </div>
+</div>
+<!-- #container -->
+
+<script src="js/jquery-1.7.1.min.js"></script>
+<script src="js/jquery.isotope.js"></script>
+<script src="js/fake-element.js"></script>
+<script>
+            $(function(){
+                //Isotope base
+                var $container = jQuery('#container');
+                $container.imagesLoaded( function(){
+                    $container.isotope({
+                        itemSelector : '.photo',
+                        masonry: {
+                            coumnWidth: 270,
+                            gutterWidth: 10
+                        }
+                    });
+                });
+
+                //Isotope filter buttons
+                jQuery('#filters button').click(function(){
+                  var selector = jQuery(this).attr('data-filter');
+                  $container.isotope({ filter: selector });
+                  return false;
+                });
+
+                //Isotope sort data
+                $container.isotope({
+                  getSortData : {
+                    title : function ( $elem ) {
+                      return $elem.find('.title').text();
+                    }
+                  }
+                });
+
+                jQuery('#randomize').click(function(){
+                    $container.isotope( 'shuffle' );
+                });
+
+                jQuery('#sortByTitle').click(function(){
+                    $container.isotope({ sortBy : 'title'});
+                });
+            });
+
+</script>
+</body>
+</html>

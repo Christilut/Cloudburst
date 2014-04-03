@@ -1,65 +1,94 @@
+import platform, appdirs
+from cloudburst.vlcInterface import VlcInterface
+
+if platform.architecture()[0] != "32bit":
+    raise Exception("Architecture not supported: %s" % platform.architecture()[0])
+
+import os
 import sys
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from PyQt4 import uic
+libcefDll = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'libcef.dll')
+if os.path.exists(libcefDll):  # If the libcef dll exists use that for imports
+    if 0x02070000 <= sys.hexversion < 0x03000000:
+        import cefpython_py27 as cefpython  # Import for python 2.7
+    elif 0x03000000 <= sys.hexversion < 0x04000000:
+        import cefpython_py32 as cefpython  # Import for python 3.2
+    else:
+        raise Exception('Unsupported python version: %s' % sys.version)
+else:
+    from cefpython3 import cefpython  # Import cefpython from package
 
-from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
-import appdirs
+import win32con
+import win32gui
 
+from cloudburst import window
+from cloudburst.exceptions.exceptionHook import exceptionHook
+from cloudburst.util.applicationPath import getApplicationPath
 
-# MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
-class MainFrame(QMainWindow):
-    def __init__(self):
-        super(MainFrame, self).__init__()
-        uic.loadUi('res/ui/mainframe.ui', self)
-        self.setWindowTitle("Cloudburst")
-        # self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setWindowIcon(QIcon('res/images/icon.png'))
-        self.show()
-
-        # Create the frame that holds the content, there must be one central widget
-        self.mainWidget = MainWidget()
-        self.setCentralWidget(self.mainWidget)
-
-        # Adjust main window size to contents
-        self.resize(self.mainWidget.size())
-
-# MainWidget is the container that can hold layouts and is the only content of MainFrame. MainWidget contains all other UI content
-class MainWidget(QWidget):
-    def __init__(self):
-        super(MainWidget, self).__init__()
-        self.loadContent()
-        self.setMinimumSize(QSize(640, 480))
-
-    def loadContent(self):
-
-        # Create a layout to put the TestContent in and add it to the main widget
-        mainlayout = QStackedLayout()
-        mainlayout.setContentsMargins(0, 0, 0, 0)
+DEBUG = True
 
 
-        # add more content here (be sure to add to a layout below)
-        self.streamingPlayer = StreamingPlayer(self)
-        mainlayout.addWidget(self.streamingPlayer)
-
-
-        self.setLayout(mainlayout)
-        self.resize(640, 480)
-
-
-if __name__ == '__main__':
-
-    # Initialize the application
-    app = QApplication(sys.argv)
-
-    # Set data dirs
+def cloudburstMain():
+    sys.excepthook = exceptionHook
+    applicationSettings = dict()
+	
+	# Set data dirs
     appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
     appdirs.appname = 'Cloudburst'
     appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
 
-    # Create an empty main window
-    mainframe = MainFrame()
+    if DEBUG:
+        window.g_debug = True
+        applicationSettings['debug'] = True
+        applicationSettings['release_dcheck_enabled'] = True
 
-    # Terminate program when exit button is pressed
-    sys.exit(app.exec_())
+    applicationSettings['log_file'] = getApplicationPath('debug.log')
+    applicationSettings['log_severity'] = cefpython.LOGSEVERITY_INFO
+    applicationSettings['browser_subprocess_path'] = '%s/%s' % (cefpython.GetModuleDirectory(), 'subprocess')
+    cefpython.Initialize(applicationSettings)
+
+    browserSettings = dict()
+    browserSettings['file_access_from_file_urls_allowed'] = True
+    browserSettings['universal_access_from_file_urls_allowed'] = True
+
+    windowHandles = {
+        win32con.WM_CLOSE: closeWindow,
+        win32con.WM_DESTROY: quitApplication,
+        win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
+        win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
+        win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
+    }
+
+    windowHandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
+                                       icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+
+    windowInfo = cefpython.WindowInfo()
+    windowInfo.SetAsChild(windowHandle)
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+
+    jsBindings = cefpython.JavascriptBindings(
+            bindToFrames=False, bindToPopups=True)
+    jsBindings.SetProperty("pyProperty", "This was set in Python")
+    jsBindings.SetProperty("pyConfig", ["This was set in Python",
+            {"name": "Nested dictionary", "isNested": True},
+            [1,"2", None]])
+    jsBindings.SetObject("external", VlcInterface(browser))
+    browser.SetJavascriptBindings(jsBindings)
+
+    cefpython.MessageLoop()
+    cefpython.Shutdown()
+
+
+def closeWindow(windowHandle, message, wparam, lparam):
+    browser = cefpython.GetBrowserByWindowHandle(windowHandle)
+    browser.CloseBrowser()
+    return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
+
+
+def quitApplication(windowHandle, message, wparam, lparam):
+    win32gui.PostQuitMessage(0)
+    return 0
+
+
+if __name__ == "__main__":
+    cloudburstMain()
