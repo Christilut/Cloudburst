@@ -1,4 +1,4 @@
-import platform, appdirs
+import platform
 from cloudburst.vlcInterface import VlcInterface
 
 if platform.architecture()[0] != "32bit":
@@ -20,10 +20,13 @@ else:
 
 import win32con
 import win32gui
+import appdirs
 
 from cloudburst import window
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
+from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+
 
 DEBUG = True
 
@@ -31,11 +34,6 @@ DEBUG = True
 def cloudburstMain():
     sys.excepthook = exceptionHook
     applicationSettings = dict()
-	
-	# Set data dirs
-    appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
-    appdirs.appname = 'Cloudburst'
-    appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
 
     if DEBUG:
         window.g_debug = True
@@ -72,9 +70,18 @@ def cloudburstMain():
     jsBindings.SetProperty("pyConfig", ["This was set in Python",
             {"name": "Nested dictionary", "isNested": True},
             [1,"2", None]])
-    jsBindings.SetObject("external", VlcInterface(browser))
+
+    vlcInterface = VlcInterface(browser)
+
+    jsBindings.SetObject("external", vlcInterface)
     browser.SetJavascriptBindings(jsBindings)
 
+
+    # vlcInterface.loadVideo2()
+
+
+
+    # blocking loop
     cefpython.MessageLoop()
     cefpython.Shutdown()
 
@@ -91,4 +98,16 @@ def quitApplication(windowHandle, message, wparam, lparam):
 
 
 if __name__ == "__main__":
+
+    # Set data dirs
+    appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
+    appdirs.appname = 'Cloudburst'
+    appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
+
+    streamingPlayer = StreamingPlayer()
+    streamingPlayer.OpenTorrent('res/torrents/big_movie.torrent')
+
     cloudburstMain()
+
+    # Shuts down threads and cancels running timers (these would otherwise block)
+    streamingPlayer.Shutdown()

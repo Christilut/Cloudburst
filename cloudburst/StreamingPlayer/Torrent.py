@@ -24,6 +24,8 @@ class Torrent():
     torrentStatus = None
     torrentSession = None
 
+    isRunning = False
+
     seekPointPieceNumber = 0 # TODO turn into properties, readonly
     currentPieceNumber = 0
     seekPoint = 0 # from 0 to 1
@@ -55,6 +57,8 @@ class Torrent():
         assert self.bufferSize >= self.paddingSize
         # TODO add more
 
+        self.isRunning = True
+
         self.downloadDirectory = appdirs.dirs.user_cache_dir + '\\Download\\'
 
         # TODO do not remove downloaded torrent but check it instead
@@ -77,6 +81,9 @@ class Torrent():
         self.torrentSession.set_settings(settings)
 
         self.parent = parent
+
+    def Shutdown(self):
+        self.isRunning = False
 
     # Start the torrent and the required threads
     def StartTorrent(self, path, seekpoint = 0):
@@ -150,6 +157,7 @@ class Torrent():
         return self.torrentStatus.total_wanted
 
     def PrintTorrentDebug(self):
+
         print 'Avail.\t:',
 
         # Header
@@ -162,7 +170,7 @@ class Torrent():
         print '#',
 
         # Seekpoint
-        for n in range(self.seekPointPieceNumber - 50, self.seekPointPieceNumber + 50):
+        for n in range(max(self.seekPointPieceNumber - 50, 0), min(self.seekPointPieceNumber + 50, self.totalPieces - 1)):
             if self.torrentHandle.have_piece(n):
                 print '1',
             else:
@@ -192,7 +200,7 @@ class Torrent():
         print '#',
 
         # Seekpoint
-        for n in range(self.seekPointPieceNumber - 50, self.seekPointPieceNumber + 50):
+        for n in range(max(self.seekPointPieceNumber - 50, 0), min(self.seekPointPieceNumber + 50, self.totalPieces - 1)):
             if self.torrentHandle.piece_priority(n):
                 print '1',
             else:
@@ -335,7 +343,7 @@ class Torrent():
                 if not self.headerPieces[n]:
                     available = False
 
-            for n in range(self.totalPieces - self.footerSize - 1, self.totalPieces):
+            for n in range(self.totalPieces - self.footerSize, self.totalPieces):
                 if not self.headerPieces[n]:
                     available = False
 
@@ -482,7 +490,7 @@ class Torrent():
     def Alert(self):    # Thread. Checks torrent alert messages (like piece ready) and processes them
         pieceTextToFind = 'piece successful' # Libtorrent always reports this when a piece is succesful, with an int attached
 
-        while not self.torrentHandle.is_seed():
+        while not self.torrentHandle.is_seed() and self.isRunning:
             if self.torrentSession.wait_for_alert(10) is not None: # None means no alert, timeout
                 alert = str(self.torrentSession.pop_alert())
 
@@ -499,15 +507,15 @@ class Torrent():
 
         self.InitializePieces()
 
-        while not self.torrentHandle.is_seed(): # while not finished
+        while not self.torrentHandle.is_seed() and self.isRunning: # while not finished
             self.torrentStatus = self.torrentHandle.status()
 
-            # if self.torrentStatus.progress != 1:
-            state_str = ['queued', 'checking', 'downloading metadata',
-                    'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
-            print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
-                (self.torrentStatus.download_rate / 1000,
-                self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
+            if self.torrentStatus.progress != 1:
+                state_str = ['queued', 'checking', 'downloading metadata',
+                        'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
+                print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
+                    (self.torrentStatus.download_rate / 1000,
+                    self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
 
             if self.enableDebugInfo:
                 self.PrintTorrentDebug()
