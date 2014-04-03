@@ -7,7 +7,6 @@ import time
 import math
 import win32gui
 import win32api
-
 import win32con
 
 if sys.version_info.major == 2:

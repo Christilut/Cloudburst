@@ -249,3 +249,84 @@ cefpython: del g_pyFrames[1]
 cefpython: del g_pyBrowsers[1]
 cefpython_app: Renderer: OnContextReleased()
 cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/181219:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 3147686
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="11632.0.1352882589\1185126738" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/181230:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 29756540
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="8932.0.166556252\459255390" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/181510:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 5116070
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="12628.0.309776304\237423508" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
