@@ -10,9 +10,10 @@ import win32api
 
 import win32con
 
-
-if sys.version_info.major == 2: \
-        else:
+if sys.version_info.major == 2:
+    from urllib import pathname2url as urllib_pathname2url
+else:
+    from urllib.request import pathname2url as urllib_pathname2url
 
 from cloudburst.util.applicationPath import getApplicationPath
 
