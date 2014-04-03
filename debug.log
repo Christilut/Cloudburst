@@ -1,0 +1,65 @@
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/132319:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+cefpython: QuitMessageLoop()
+[0403/132319:ERROR_REPORT:message_loop.cc(334)] Check failed: false. Must be inside Run to call Quit
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/132348:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+cefwindow: win32gui.RegisterClass(cefpython3_example)
+cefwindow: Centering window on the screen.
+cefwindow: windowID = 2822036
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/example.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="10284.0.1691244864\850216959" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Python27\python.exe" --browser-subprocess-path="D:\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+[0403/132451:WARNING:dns_config_service_win.cc(669)] Failed to read DnsHosts.
+cefwindow: win32gui.RegisterClass(cefpython3_example)
+cefwindow: Centering window on the screen.
+cefwindow: windowID = 12979088
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/example.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="12992.0.1526223445\124063877" /prefetch:673131151
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython: Shutdown()
+cefpython_app: Renderer: OnBrowserDestroyed()

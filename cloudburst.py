@@ -1,59 +1,136 @@
-import sys
+# CEF Python 3 example application.
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from PyQt4 import uic
+# Checking whether python architecture and version are valid, otherwise an obfuscated error
+# will be thrown when trying to load cefpython.pyd with a message "DLL load failed".
+import platform
 
-from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+if platform.architecture()[0] != "32bit":
+    raise Exception("Architecture not supported: %s" % platform.architecture()[0])
 
+import os, sys
 
-# MainFrame is the container in which MainWidget resides, can also include statusbar, menubar, etc
-class MainFrame(QMainWindow):
-    def __init__(self):
-        super(MainFrame, self).__init__()
-        uic.loadUi('res/ui/mainframe.ui', self)
-        self.setWindowTitle("Cloudburst")
-        # self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setWindowIcon(QIcon('res/images/icon.png'))
-        self.show()
+libcef_dll = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          'libcef.dll')
+if os.path.exists(libcef_dll):
+    # Import the local module.
+    if 0x02070000 <= sys.hexversion < 0x03000000:
+        import cefpython_py27 as cefpython
+    elif 0x03000000 <= sys.hexversion < 0x04000000:
+        import cefpython_py32 as cefpython
+    else:
+        raise Exception("Unsupported python version: %s" % sys.version)
+else:
+    # Import the package.
+    from cefpython3 import cefpython
 
-        # Create the frame that holds the content, there must be one central widget
-        self.mainWidget = MainWidget()
-        self.setCentralWidget(self.mainWidget)
+import cefwindow
+import win32con
+import win32gui
 
-        # Adjust main window size to contents
-        self.resize(self.mainWidget.size())
-
-# MainWidget is the container that can hold layouts and is the only content of MainFrame. MainWidget contains all other UI content
-class MainWidget(QWidget):
-    def __init__(self):
-        super(MainWidget, self).__init__()
-        self.loadContent()
-        self.setMinimumSize(QSize(640, 480))
-
-    def loadContent(self):
-
-        # Create a layout to put the TestContent in and add it to the main widget
-        mainlayout = QStackedLayout()
-        mainlayout.setContentsMargins(0, 0, 0, 0)
+DEBUG = True
 
 
-        # add more content here (be sure to add to a layout below)
-        self.streamingPlayer = StreamingPlayer(self)
-        mainlayout.addWidget(self.streamingPlayer)
+def GetApplicationPath(file=None):
+    import re, os
+    # If file is None return current directory without trailing slash.
+    if file is None:
+        file = ""
+    # Only when relative path.
+    if not file.startswith("/") and not file.startswith("\\") and (
+            not re.search(r"^[\w-]+:", file)):
+        if hasattr(sys, "frozen"):
+            path = os.path.dirname(sys.executable)
+        elif "__file__" in globals():
+            path = os.path.dirname(os.path.realpath(__file__))
+        else:
+            path = os.getcwd()
+        path = path + os.sep + file
+        path = re.sub(r"[/\\]+", re.escape(os.sep), path)
+        path = re.sub(r"[/\\]+$", "", path)
+        return path
+    return str(file)
 
 
-        self.setLayout(mainlayout)
-        self.resize(640, 480)
+def ExceptHook(excType, excValue, traceObject):
+    import traceback, os, time, codecs
+    # This hook does the following: in case of exception write it to
+    # the "error.log" file, display it to the console, shutdown CEF
+    # and exit application immediately by ignoring "finally" (_exit()).
+    errorMsg = "\n".join(traceback.format_exception(excType, excValue,
+                                                    traceObject))
+    errorFile = GetApplicationPath("error.log")
+    try:
+        appEncoding = cefpython.g_applicationSettings["string_encoding"]
+    except:
+        appEncoding = "utf-8"
+    if type(errorMsg) == bytes:
+        errorMsg = errorMsg.decode(encoding=appEncoding, errors="replace")
+    try:
+        with codecs.open(errorFile, mode="a", encoding=appEncoding) as fp:
+            fp.write("\n[%s] %s\n" % (
+                time.strftime("%Y-%m-%d %H:%M:%S"), errorMsg))
+    except:
+        print("cefpython: WARNING: failed writing to error file: %s" % (
+            errorFile))
+    # Convert error message to ascii before printing, otherwise
+    # you may get error like this:
+    # | UnicodeEncodeError: 'charmap' codec can't encode characters
+    errorMsg = errorMsg.encode("ascii", errors="replace")
+    errorMsg = errorMsg.decode("ascii", errors="replace")
+    print("\n" + errorMsg + "\n")
+    cefpython.QuitMessageLoop()
+    cefpython.Shutdown()
+    os._exit(1)
 
 
-if __name__ == '__main__':
+def CefAdvanced():
+    sys.excepthook = ExceptHook
 
-    # Initialize the application
-    app = QApplication(sys.argv)
+    appSettings = dict()
+    if DEBUG:
+        # cefpython debug messages in console and in log_file
+        appSettings["debug"] = True
+        cefwindow.g_debug = True
+    appSettings["log_file"] = GetApplicationPath("debug.log")
+    appSettings["log_severity"] = cefpython.LOGSEVERITY_INFO
+    appSettings["release_dcheck_enabled"] = True  # Enable only when debugging
+    appSettings["browser_subprocess_path"] = "%s/%s" % (
+        cefpython.GetModuleDirectory(), "subprocess")
+    cefpython.Initialize(appSettings)
 
-    # Create an empty main window
-    mainframe = MainFrame()
+    wndproc = {
+        win32con.WM_CLOSE: CloseWindow,
+        win32con.WM_DESTROY: QuitApplication,
+        win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
+        win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
+        win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
+    }
 
-    # Terminate program when exit button is pressed
-    sys.exit(app.exec_())
+    browserSettings = dict()
+    browserSettings["universal_access_from_file_urls_allowed"] = True
+    browserSettings["file_access_from_file_urls_allowed"] = True
+
+    windowHandle = cefwindow.CreateWindow(title="CEF Python 3 example",
+                                          className="cefpython3_example", width=800, height=700,
+                                          icon="res/images/cloudburst.ico", windowProc=wndproc)
+    windowInfo = cefpython.WindowInfo()
+    windowInfo.SetAsChild(windowHandle)
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings,
+                                          navigateUrl=GetApplicationPath("example.html"))
+    cefpython.MessageLoop()
+    cefpython.Shutdown()
+
+
+def CloseWindow(windowHandle, message, wparam, lparam):
+    browser = cefpython.GetBrowserByWindowHandle(windowHandle)
+    browser.CloseBrowser()
+    return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
+
+
+def QuitApplication(windowHandle, message, wparam, lparam):
+    win32gui.PostQuitMessage(0)
+    return 0
+
+
+if __name__ == "__main__":
+    CefAdvanced()

@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>VLC Test Page</title>
+</head>
+<body>
+<embed type="application/x-vlc-plugin"
+       name="vlc"
+       autoplay="no" loop="yes" width="720" height="540"
+       target="file:///vids/big-buck-bunny_trailer.webm"/>
+
+<br/>
+<input type="button" name="Play" value="Play" onclick="vlc.playlist.play()"/>
+<input type="button" name="Pause" value="Pause" onclick="vlc.playlist.togglePause()"/>
+<input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
+<input type="button" name="Fullscreen" value="Fullscreen" onclick="vlc.video.toggleFullscreen()"/>
+
+</body>
+</html>
