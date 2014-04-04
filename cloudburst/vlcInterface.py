@@ -5,7 +5,7 @@ class VlcInterface:
         self.browser = browser
 
     def loadVideo(self, jsCallback):
-        jsCallback.Call('D:\\temp\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv')
+        jsCallback.Call('file:///D:\\temp\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv')
 
     def loadVideo2(self):
-        self.browser.GetMainFrame().CallFunction('loadAndPlay', 'D:\\temp\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv')
+        self.browser.GetMainFrame().CallFunction('loadAndPlay', 'file:///D:\\temp\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv')

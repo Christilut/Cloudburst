@@ -1,8 +1,8 @@
 import Torrent
-import os.path
+import os.path, threading
 from threading import Timer
 
-class StreamingPlayer():
+class StreamingPlayer(threading.Thread):
 
     isPlaying = False # True if video file is being played
     bufferInterval = 0.5   # Time in s between buffer checks
@@ -25,8 +25,9 @@ class StreamingPlayer():
     bufferTimer = None
     waitForForwardBufferTimer = None
 
-    def __init__(self):
-        isRunning = True
+    def __init__(self, parent):
+        self.parent = parent
+        threading.Thread.__init__(self)
 
         # create the torrent manager
         self.torrent = Torrent.Torrent(self)
@@ -36,6 +37,14 @@ class StreamingPlayer():
         # TEMP open torrent
         # self.seconds = 233
         # self.SetDesiredSeekpoint(1 / (float(6132) / self.seconds))
+
+    def run(self):
+
+        while not self.parent.isLoaded: # TEMP
+            pass
+
+        # self.parent.vlcInterface.loadVideo2()
+
 
     def Shutdown(self):
 
