@@ -85,10 +85,11 @@ class Cloudburst():
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
 
+
         # Start the streaming back end
         streamingPlayer = StreamingPlayer(self)
         streamingPlayer.start()
-        # streamingPlayer.OpenTorrent('res/torrents/big_movie.torrent') # TEMP
+        # streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
@@ -96,7 +97,7 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        streamingPlayer.Shutdown()
+        streamingPlayer.shutdown()
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)

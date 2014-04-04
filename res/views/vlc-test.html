@@ -4,12 +4,29 @@
     <title>VLC Test Page</title>
 
     <script>
-        function loadAndPlay(arg) {
+        var fileID;
+
+        function openFile(arg)  {
             var vlc = document.getElementById("vlc");
+
+            vlc.playlist.items.clear();
             var options = new Array(":aspect-ratio=4:3", "--rtsp-tcp");
-            var id = vlc.playlist.add(arg, "fancy name", options);
-            vlc.playlist.playItem(id);
+            fileID = vlc.playlist.add(arg, "fancy name", options);
         }
+
+        function getPosition()  {
+            return vlc.input.position;
+        }
+
+        function setTime(ms)    {
+            vlc.input.time = ms;
+        }
+
+        function test() {
+            window.testVal = "TEST"
+        }
+
+
     </script>
 </head>
 <body>
@@ -23,6 +40,6 @@
 <input type="button" name="Pause" value="Pause" onclick="vlc.playlist.togglePause()"/>
 <input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
 <input type="button" name="Fullscreen" value="Fullscreen" onclick="vlc.video.toggleFullscreen()"/>
-<input type="button" name="LoadAndPlay" value="Load and play" onclick="javascript:external.loadVideo(loadAndPlay)"/>
+<input type="button" name="LoadAndPlay" value="Load and play" onclick="javascript:external.loadVideo(test)"/>
 </body>
 </html>

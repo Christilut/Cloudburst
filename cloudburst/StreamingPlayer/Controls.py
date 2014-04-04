@@ -57,24 +57,24 @@ class Controls(QWidget):
 
     def initButtonPlayPause(self):
         self.buttonPlayPause = QPushButton('Play', self.parent)
-        self.buttonPlayPause.clicked.connect(self.parent.Play)
+        self.buttonPlayPause.clicked.connect(self.parent.play)
         self.buttonPlayPause.show()
 
     def initButtonStop(self):
         self.buttonStop = QPushButton('Stop', self.parent)
-        self.buttonStop.clicked.connect(self.parent.Stop)
+        self.buttonStop.clicked.connect(self.parent.stop)
         self.buttonStop.show()
 
     def initSliderProgress(self):
         self.sliderProgress = QSlider(Qt.Horizontal, self.parent)
         self.sliderProgress.setMaximum(1000)
-        self.sliderProgress.sliderReleased.connect(self.parent.SetPosition)
+        self.sliderProgress.sliderReleased.connect(self.parent.setPosition)
 
     def initSliderVolume(self):
         self.sliderVolume = QSlider(Qt.Horizontal, self.parent)
         self.sliderVolume.setMaximum(100)
         self.sliderVolume.setValue(100)
-        self.sliderVolume.valueChanged.connect(self.parent.SetVolume)
+        self.sliderVolume.valueChanged.connect(self.parent.setVolume)
         self.sliderVolume.show()
 
 

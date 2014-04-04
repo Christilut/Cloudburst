@@ -1,5 +1,5 @@
 import Torrent
-import os.path, threading
+import os.path, threading, time
 from threading import Timer
 
 class StreamingPlayer(threading.Thread):
@@ -29,6 +29,8 @@ class StreamingPlayer(threading.Thread):
         self.parent = parent
         threading.Thread.__init__(self)
 
+        self.isRunning = True
+
         # create the torrent manager
         self.torrent = Torrent.Torrent(self)
 
@@ -43,10 +45,15 @@ class StreamingPlayer(threading.Thread):
         while not self.parent.isLoaded: # TEMP
             pass
 
-        # self.parent.vlcInterface.loadVideo2()
+        while self.isRunning:
+            self.parent.vlcInterface.test()
+            time.sleep(1)
 
 
-    def Shutdown(self):
+
+    def shutdown(self):
+
+        self.isRunning = False
 
         if self.bufferTimer is not None:
             self.bufferTimer.cancel()
@@ -57,30 +64,30 @@ class StreamingPlayer(threading.Thread):
         if self.waitForForwardBufferTimer is not None:
             self.waitForForwardBufferTimer.cancel()
 
-        self.torrent.Shutdown()
+        self.torrent.shutdown()
 
 
-    def HeaderAvailable(self, available):
+    def setHeaderAvailable(self, available):
         self.headerAvailable = available
 
-    def SetDesiredSeekpoint(self, seekpoint): # from 0 to 1
+    def setDesiredSeekpoint(self, seekpoint): # from 0 to 1
 
         assert (seekpoint >= 0 and seekpoint < 1)
         print 'Seekpoint set to:', seekpoint
         self.desiredSeekPoint = seekpoint
 
-    def OpenTorrent(self, path):
+    def openTorrent(self, path):
         if not self.currentFilePath == '':
             print 'File path already entered'
             return
 
-        self.currentFilePath = self.torrent.StartTorrent(path, self.desiredSeekPoint)
+        self.currentFilePath = self.torrent.startTorrent(path, self.desiredSeekPoint)
 
         print 'Waiting for file: ' + self.currentFilePath
 
-        self.BufferFile()
+        self.waitForFileBuffer()
 
-    def BufferFile(self):
+    def waitForFileBuffer(self):
         if not self.videoFileExists:
             if not os.path.isfile(self.currentFilePath):
                 # print 'File does not yet exist, waiting 1 second...'
@@ -89,7 +96,7 @@ class StreamingPlayer(threading.Thread):
                 print 'File found! Buffering...'
                 self.videoFileExists = True
 
-            self.bufferTimer = Timer(self.bufferInterval, self.BufferFile)
+            self.bufferTimer = Timer(self.bufferInterval, self.waitForFileBuffer)
             self.bufferTimer.start()
 
             return
@@ -98,93 +105,82 @@ class StreamingPlayer(threading.Thread):
 
             # Wait for the header
             if not self.headerAvailable:
-                self.bufferTimer = Timer(self.bufferInterval, self.BufferFile)
+                self.bufferTimer = Timer(self.bufferInterval, self.waitForFileBuffer)
                 self.bufferTimer.start()
                 return
 
             # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
             # At this point, buffer is large enough and the video should be playable
-            # self.OpenFile()
-            # self.TryTorrentFilePlay()
+            self.openFile()
+            self.tryTorrentFilePlay()
 
-            # TEMP
-            # VlcInterface.loadVideo()
-
-    def TryTorrentFilePlay(self):
+    def tryTorrentFilePlay(self):
 
         if self.lastMediaPosition == None:
-            self.PlayAtSeekpoint()
-            self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
+            self.playAtSeekpoint()
+            self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.tryTorrentFilePlay)
             self.torrentPlayTimer.start()
 
-        elif self.lastMediaPosition == self.screen.mediaplayer.get_position() or self.screen.mediaplayer.get_position() == 0:
+        elif self.lastMediaPosition == self.getPosition() or self.getPosition() == 0:
 
             # TODO try to use the fact that get_position() returns 0.0 when seeking fails
-            self.screen.mediaplayer.stop()
+            self.stop()
 
             # Add a small delay because calling play instantly after stop may freeze python
-            Timer(0.1, self.PlayAtSeekpoint).start()
+            Timer(0.1, self.playAtSeekpoint).start()
 
-            self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.TryTorrentFilePlay)
+            self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.tryTorrentFilePlay)
             self.torrentPlayTimer.start()
 
         else:
             self.isPlaying = True
-            self.Pause()
+            self.pause()
             print 'Can succesfully play'
 
-            self.waitForForwardBufferTimer = Timer(1, self.WaitForForwardBuffer)
+            self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
             self.waitForForwardBufferTimer.start()
 
-        self.lastMediaPosition = self.screen.mediaplayer.get_position()
+        self.lastMediaPosition = self.getPosition()
+        print 'Called TryTorrent'
 
-    def WaitForForwardBuffer(self):
+    def waitForForwardBuffer(self):
 
         if self.forwardBufferAvailable:
-            self.Play()
+            self.play()
         else:
-            self.waitForForwardBufferTimer = Timer(0.1, self.WaitForForwardBuffer)
+            self.waitForForwardBufferTimer = Timer(0.1, self.waitForForwardBuffer)
             self.waitForForwardBufferTimer.start()
 
 
-    def OpenFile(self):
+    def openFile(self):
         if self.currentFilePath == '':
             print 'No file selected'
             return
 
-        self.screen.OpenFile(self.currentFilePath)
+        self.parent.vlcInterface.openFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
 
-    def PlayPause(self): # TODO current not used, isPlaying is ambiguous
-        if self.isPlaying:
-            self.Pause()
-        else:
-            self.Play()
+    def playPause(self): # TODO current not used, isPlaying is ambiguous
+        self.parent.vlcInterface.playPause()
 
-    def PlayAtSeekpoint(self):
-        self.screen.Play(self.desiredSeekPoint)
-        self.controls.buttonPlayPause.setText('Pause')
+    def playAtSeekpoint(self):
+        self.play()
+        self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
 
-    def Play(self):
-        self.screen.Play()
-        self.controls.buttonPlayPause.setText('Pause')
+    def play(self):
+        self.parent.vlcInterface.play()
 
-    def Pause(self):
-        self.screen.Pause()
-        self.controls.buttonPlayPause.setText('Play')
+    def pause(self):
+        self.parent.vlcInterface.pause()
 
-    def Stop(self):
-        self.screen.Stop()
-        self.controls.buttonPlayPause.setText('Play')
+    def stop(self):
+        self.parent.vlcInterface.stop()
         self.isPlaying = False
         self.desiredSeekPoint = 0
 
-    def SetVolume(self, volume):
-        self.screen.setVolume(volume)
+    def setVolume(self, volume):
+        pass
 
-    def SetPosition(self):
-        position = float(self.controls.sliderProgress.value()) / 1000
-
-        self.screen.mediaplayer.set_position(position) # 1000 is for the precision
-        print 'Seekpoint:', position * 100, '%'
+    def getPosition(self):
+        return self.parent.vlcInterface.getPosition()
 
