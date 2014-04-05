@@ -68,7 +68,7 @@ class Cloudburst():
 
         windowInfo = cefpython.WindowInfo()
         windowInfo.SetAsChild(windowHandle)
-        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/index.html"))
 
         jsBindings = cefpython.JavascriptBindings(
                 bindToFrames=False, bindToPopups=True)
@@ -84,6 +84,7 @@ class Cloudburst():
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
+        print ">>>>>>>>>>>>>>>>> "+ str(browser.GetClientCallback('getPostion'))
 
         # Start the streaming back end
         streamingPlayer = StreamingPlayer(self)

@@ -10,6 +10,10 @@
             var id = vlc.playlist.add(arg, "fancy name", options);
             vlc.playlist.playItem(id);
         }
+
+        function getPostion() {
+            return vlc.input.position
+        }
     </script>
 </head>
 <body>
