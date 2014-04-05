@@ -29,7 +29,7 @@ from cloudburst.util.applicationPath import getApplicationPath
 from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
 class Cloudburst():
-    DEBUG = False
+    CEF_DEBUG = False # If true, spams console with CEFPython debug messages
     isLoaded = False # True is HTML page is done loading
     isRunning = False # Thread running
     vlcInterface = None
@@ -41,7 +41,7 @@ class Cloudburst():
         sys.excepthook = exceptionHook
         applicationSettings = dict()
 
-        if self.DEBUG:
+        if self.CEF_DEBUG:
             window.g_debug = True
             applicationSettings['debug'] = True
             applicationSettings['release_dcheck_enabled'] = True
@@ -77,7 +77,7 @@ class Cloudburst():
                 {"name": "Nested dictionary", "isNested": True},
                 [1,"2", None]])
 
-        self.vlcInterface = VlcInterface(browser)
+        self.vlcInterface = VlcInterface(self, browser)
 
         jsBindings.SetObject("external", self.vlcInterface)
         browser.SetJavascriptBindings(jsBindings)
@@ -87,9 +87,9 @@ class Cloudburst():
 
 
         # Start the streaming back end
-        streamingPlayer = StreamingPlayer(self)
-        streamingPlayer.start()
-        streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
+        self.streamingPlayer = StreamingPlayer(self)
+        self.streamingPlayer.start() # thread, not used atm, but for testing purposes. Torrent is already in a seperate thread
+        self.streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
@@ -97,7 +97,7 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        streamingPlayer.shutdown()
+        self.streamingPlayer.shutdown()
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)

@@ -4,8 +4,9 @@ class VlcInterface:
 
     videoPosition = 0.0
 
-    def __init__(self, browser):
+    def __init__(self, parent, browser):
         self.browser = browser
+        self.parent = parent
         self.frame = browser.GetMainFrame()
 
     def loadVideo(self, jsCallback):
@@ -41,10 +42,11 @@ class VlcInterface:
     def getPosition(self):
         return self.videoPosition
 
-    def positionCallback(self, position):
+    def positionCallback(self, position): # JS calls this #TODO change 100ms timer to VLC event
         self.videoPosition = position
 
     def setTime(self, ms):
         self.frame.ExecuteJavascript('vlc.input.time = ' + str(ms) + ';')
 
-
+    def changePositionCallback(self, position):
+        self.parent.streamingPlayer.setDesiredSeekpoint(position)

@@ -4,20 +4,20 @@ from threading import Timer
 
 class StreamingPlayer(threading.Thread):
 
-    isPlaying = False # True if video file is being played
+    canPlay = False # True if video file is being played
     bufferInterval = 0.5   # Time in s between buffer checks
     previousMousePos = None # To keep track of the mouse, required to hide/show the GUI
     timeMouseNotMoving = 0  # To delay hiding of GUI
     showInterface = False   # True if GUI is being shown
 
-    currentFilePath = ''    # Full path of current video file
+    currentFilePath = None    # Full path of current video file
     videoFileExists = False # True if video file is present on disk. Use this bool to prevent unnecessary disk access
     headerAvailable = False # True if header info of the video file is downloaded
     seekPointAvailable = False  # True if a buffer exists from the seek point onward
     desiredSeekPoint = 0
 
     lastMediaPosition = None # To determine if video is actually playing (based on media position difference)
-    tryTorrentPlayInterval = 5 # Time in s between attempts to play the file while the header is being downloaded
+    tryTorrentPlayInterval = 3 # Time in s between attempts to play the file while the header is being downloaded
 
     forwardBufferAvailable = False
 
@@ -38,7 +38,7 @@ class StreamingPlayer(threading.Thread):
 
         # TEMP open torrent
         # self.seconds = 233
-        # self.SetDesiredSeekpoint(1 / (float(6132) / self.seconds))
+        # self.setDesiredSeekpoint(1 / (float(6132) / self.seconds))
 
     def run(self):
 
@@ -76,8 +76,14 @@ class StreamingPlayer(threading.Thread):
         print 'Seekpoint set to:', seekpoint
         self.desiredSeekPoint = seekpoint
 
+        if self.currentFilePath is not None:
+            self.stop()
+            self.torrent.setSeekPoint(seekpoint)
+
+            self.waitForFileBuffer()
+
     def openTorrent(self, path):
-        if not self.currentFilePath == '':
+        if self.currentFilePath is not None:
             print 'File path already entered'
             return
 
@@ -112,6 +118,8 @@ class StreamingPlayer(threading.Thread):
             # Seekpoint data is available so we can start streaming, next data pieces are downloaded one by one from now on
             # At this point, buffer is large enough and the video should be playable
             self.openFile()
+
+            self.lastMediaPosition = None # initial value for tryTorrentFilePlay, reset here incase of seeking
             self.tryTorrentFilePlay()
 
     def tryTorrentFilePlay(self):
@@ -133,32 +141,35 @@ class StreamingPlayer(threading.Thread):
             self.torrentPlayTimer.start()
 
         else:
-            self.isPlaying = True
+            self.canPlay = True
             self.pause()
+            self.torrent.updatePieceList(self.torrent.seekPointPieceNumber)
             print 'Can succesfully play'
 
             self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
             self.waitForForwardBufferTimer.start()
 
         self.lastMediaPosition = self.getPosition()
-        print 'Called TryTorrent'
 
     def waitForForwardBuffer(self):
 
         if self.forwardBufferAvailable:
-            self.play()
+            self.playAtSeekpoint()
         else:
             self.waitForForwardBufferTimer = Timer(0.1, self.waitForForwardBuffer)
             self.waitForForwardBufferTimer.start()
 
 
     def openFile(self):
-        if self.currentFilePath == '':
+        if self.currentFilePath is None:
             print 'No file selected'
             return
 
         self.parent.vlcInterface.openFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
+
+
+
 
     def playPause(self): # TODO current not used, isPlaying is ambiguous
         self.parent.vlcInterface.playPause()
@@ -175,8 +186,8 @@ class StreamingPlayer(threading.Thread):
 
     def stop(self):
         self.parent.vlcInterface.stop()
-        self.isPlaying = False
-        self.desiredSeekPoint = 0
+        self.canPlay = False
+        # self.desiredSeekPoint = 0
 
     def setVolume(self, volume):
         pass

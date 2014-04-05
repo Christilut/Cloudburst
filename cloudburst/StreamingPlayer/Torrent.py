@@ -6,10 +6,14 @@ import appdirs
 class Torrent():
 
     # CONFIG VARS (can edit)
-    bufferSize = 10 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
-    paddingSize = 3
-    headerSize = 1
-    footerSize = 1
+    bufferSize = 5 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
+    paddingSize = 3 # when this many pieces are left missing, the buffer is increased
+    headerSize = 1 # size of the header (first x pieces)
+    footerSize = 1 # size of the footer (last x pieces)
+
+    headerIncreaseSizeAmount = 1 # this many pieces are added to the front AND the back of the header buffer
+    headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
+
 
     enableDebugInfo = True
 
@@ -22,22 +26,22 @@ class Torrent():
 
     isRunning = False
 
+    videoFileType = None # should be set to MKV, MP4 or AVI, see findVideoFile()
+
     seekPointPieceNumber = 0 # TODO turn into properties, readonly
     currentPieceNumber = 0
     seekPoint = 0 # from 0 to 1
     totalPieces = -1 # Total amount of pieces in the torrent
     headerAvailable = False
 
+    headerPiecesAddedToBuffer = False
 
     pieces = {}
     headerPieces = {}
     piecesRequired = 0
     headerPiecesRequired = 0
-    piecesPadded = 0
 
     headerIncreaseSizeCurrent = 0 # starting value, do not edit # TODO figure out what to do with values that need not be edited
-    headerIncreaseSizeAmount = 1 # this many pieces are added to the front AND the back of the header buffer
-    headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
 
     downloadLimitEnabled = False
 
@@ -67,7 +71,7 @@ class Torrent():
             sys.exit(-1)
 
         self.torrentSession = lt.session()
-        self.torrentSession.listen_on(6881, 6891)
+        self.torrentSession.listen_on(6881, 6882)
 
         # Allocation settings (these should be default but make sure they are correct)
         settings = lt.session_settings()
@@ -101,10 +105,13 @@ class Torrent():
 
         self.torrentHandle = self.torrentSession.add_torrent({'ti': self.torrentInfo, 'save_path': self.downloadDirectory, 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
 
+        self.totalPieces = self.torrentInfo.num_pieces()
         videoFile = self.findVideoFile(self.torrentInfo.files())
 
+        self.initializePieces()
+
         # start download thread
-        downloadThread = threading.Thread(target=self.threadDownloadTorrent)
+        downloadThread = threading.Thread(target=self.threadTorrentInfo)
         downloadThread.daemon = True
         downloadThread.start()
 
@@ -120,7 +127,8 @@ class Torrent():
     def checkCache(self):
         for n in iter(self.pieces):
             if self.torrentHandle.have_piece(n):
-                self.UpdateHeaderProgress(n, True)  # ignore False state
+                if self.pieces[n]:
+                    self.updatePieceList(n)
 
     # Determine which file in the torrent is the video file. Currently based on size and is checked for extension.
     def findVideoFile(self, fileList):
@@ -143,6 +151,8 @@ class Torrent():
             print 'Video file has invalid file extension:', fileExtension
             import sys
             sys.exit(-1)
+
+        self.videoFileType = fileExtension.upper()
 
         return videoFile
 
@@ -214,15 +224,19 @@ class Torrent():
         print ''
 
     # Enable the download limit # TODO base it on bitrate
-    def setDownloadLimit(self):
+    def setDownloadLimit(self, limited):
         # Set download speed limit (apparently needs to be set after the torrent adding)
-        self.downloadLimitEnabled = True
+        self.downloadLimitEnabled = limited
 
-        downSpeed = 2 * 1024 * 1024
-        self.torrentSession.set_download_rate_limit(downSpeed)
+        if limited:
+            downSpeed = 2 * 1024 * 1024
+            self.torrentSession.set_download_rate_limit(downSpeed)
 
-        if self.enableDebugInfo:
-            print 'Download speed limit set to:', downSpeed / 1024, 'kB/s'
+            if self.enableDebugInfo:
+                print 'Download speed limit set to:', downSpeed / 1024, 'kB/s'
+        else:
+            print 'Disabled speed limit'
+            self.torrentSession.set_download_rate_limit(-1)
 
     # Sets the torrent to download the video data starting from the seekpoint
     def increaseBuffer(self, missingPieces = None, increasePiecePosition = True):
@@ -319,13 +333,16 @@ class Torrent():
         self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint)
         self.seekPointPieceNumber = self.currentPieceNumber
 
-        self.headerAvailable = False
+        self.setHeaderAvailable(False)
+
+        self.initializePieces()
+
 
     # When header is in, call this function. Start to play movie and enable custom sequential download
-    def setHeaderAvailable(self):
-        self.parent.setHeaderAvailable(True)
-        self.headerAvailable = True
-        print 'Header available'
+    def setHeaderAvailable(self, available):
+        self.parent.setHeaderAvailable(available)
+        self.headerAvailable = available
+        print 'Header available?', available
 
         if self.enableDebugInfo:
             self.printTorrentDebug()
@@ -333,20 +350,20 @@ class Torrent():
     def isHeaderAvailable(self):
         available = True
 
-        for n in iter(self.headerPieces):
-
-            for n in range(0, self.headerSize):
+        for n in range(0, self.headerSize):
+            if n in self.headerPieces: # if not in headerPieces, it was set to True and is already removed
                 if not self.headerPieces[n]:
                     available = False
 
-            if self.seekPointPieceNumber != 0: # footer does not get added when playing starts from 0
-                for n in range(self.totalPieces - self.footerSize, self.totalPieces):
+        if self.seekPointPieceNumber in self.headerPieces:
+            if not self.headerPieces[self.seekPointPieceNumber]:
+                available = False
+
+        if self.seekPointPieceNumber != 0: # footer does not get added when playing starts from 0, so dont check it
+            for n in range(self.totalPieces - self.footerSize, self.totalPieces):
+                if n in self.headerPieces: # if not in headerPieces, it was set to True and is already removed
                     if not self.headerPieces[n]:
                         available = False
-
-            if n == self.seekPointPieceNumber:
-                if not self.headerPieces[self.seekPointPieceNumber]:
-                    available = False
 
         return available
 
@@ -355,7 +372,7 @@ class Torrent():
         self.parent.forwardBufferAvailable = True
 
         if not self.downloadLimitEnabled:
-            self.setDownloadLimit()
+            self.setDownloadLimit(True)
 
         print 'Forward buffer available'
 
@@ -405,14 +422,15 @@ class Torrent():
 
         if not self.headerAvailable:
             if self.isHeaderAvailable():
-                self.setHeaderAvailable()
+                self.setHeaderAvailable(True)
+                return # dont add new pieces, wait for player
 
 
-        if self.parent.isPlaying:
+        if self.parent.canPlay:
             assert self.headerAvailable
 
         # if header available, the mkv may not yet play. increase the buffer on both ends and keep trying to play.
-        if not self.parent.isPlaying:
+        if not self.parent.canPlay:
 
             if headerPieceAvailableCount >= (self.headerPiecesRequired - self.headerIncreaseOffset):
                 missingPieces = []
@@ -423,10 +441,20 @@ class Torrent():
                 self.increaseHeader(missingPieces)
 
         else: # if header + extra pieces large enough (so actually playing), start sequential download
-
+            print 'pieces count', pieceAvailableCount, self.piecesRequired
             if pieceAvailableCount >= (self.piecesRequired - self.paddingSize): # x pieces left
 
                 missingPieces = []
+
+                # the header may still contain some missing pieces, add them the first time this is called
+                if not self.headerPiecesAddedToBuffer:
+                    self.headerPiecesAddedToBuffer = True
+
+                    for n in iter(self.headerPieces):
+                        if not self.headerPieces[n]:
+                            missingPieces.append(n)
+
+                # and get the missing pieces from the regular pieces
                 for n in iter(self.pieces):
                     if not self.pieces[n]:
                         missingPieces.append(n)
@@ -443,14 +471,23 @@ class Torrent():
 
     def initializePieces(self):
 
-        self.totalPieces = self.torrentInfo.num_pieces()
+        # Reset some vars incase of seeking
+        self.setDownloadLimit(False)
+        self.piecesRequired = 0
+        self.headerPiecesAddedToBuffer = False
+        self.headerIncreaseSizeCurrent = 0
+        self.forwardBufferRequested = False
+        self.forwardBufferAvailable = False
 
         # Check cache once, in case the file already existed
-        self.checkCache() # TODO test this works
+        # self.checkCache() # TODO test this works
 
         # Seekpoint position
         self.currentPieceNumber = int(float(self.totalPieces) / 1 * self.seekPoint)
         self.seekPointPieceNumber = self.currentPieceNumber
+
+        # Clear header list incase of seeking an already playing video
+        self.headerPieces.clear()
 
         # Header pieces
         for n in range(0, self.headerSize):
@@ -500,9 +537,7 @@ class Torrent():
 
                 # print alert # Uncomment this to see all alerts
 
-    def threadDownloadTorrent(self): # thread
-
-        self.initializePieces()
+    def threadTorrentInfo(self): # thread
 
         while not self.torrentHandle.is_seed() and self.isRunning: # while not finished
             self.torrentStatus = self.torrentHandle.status()
