@@ -1577,3 +1577,35 @@ cefpython_app: Renderer: OnContextReleased()
 cefpython_app: Renderer: RemoveJavascriptCallbacksForFrame(): removed js callback from the map
 cefpython: Shutdown()
 cefpython_app: Renderer: OnBrowserDestroyed()
+cefpython: ------------------------------------------------------------
+cefpython: Initialize() called
+cefpython: CefExecuteProcess(): exitCode = -1
+cefpython: CefInitialize()
+cefpython: App_OnBeforeCommandLineProcessing_BrowserProcess()
+cefpython_app: Command line: "D:\Dev\Python27\python.exe" --browser-subprocess-path="D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --no-sandbox D:/Dropbox/Workspaces/Python/Cloudburst/cloudburst.py
+Cloudburst > Window: win32gui..RegisterClass(Cloudburst)
+Cloudburst > Window: Centering window on screen.
+Cloudburst > Window: windowId = 1706668
+cefpython: CreateBrowserSync() called
+cefpython: navigateUrl: ///D:/Dropbox/Workspaces/Python/Cloudburst/res/views/vlc-test.html
+cefpython: CefBrowser::CreateBrowserSync()
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: GetPyBrowser(): creating new PyBrowser, browserId=1
+cefpython: CefBrowser::CreateBrowserSync() succeeded
+cefpython: SendProcessMessage(): message=DoJavascriptBindings, arguments size=1
+cefpython: MessageLoop()
+cefpython_app: Command line: "D:\Dev\Python27\lib\site-packages\cefpython3/subprocess" --type=renderer --no-sandbox --lang=en-US --lang=en-US --log-file="D:\Dropbox\Workspaces\Python\Cloudburst\debug.log" --log-severity=info --enable-release-dcheck --channel="13116.0.1824322141\954073854" /prefetch:673131151
+cefpython_app: Renderer: OnProcessMessageReceived(): DoJavascriptBindings
+cefpython_app: Renderer: OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython_app: Browser: OnProcessMessageReceived(): OnContextCreated
+cefpython: V8ContextHandler_OnContextCreated()
+cefpython_app: Renderer: DoJavascriptBindingsForFrame(): bindings are set
+cefpython: BrowserProcessHandler_OnBeforeChildProcessLaunch()
+cefpython: CefBrowser::CloseBrowser(False)
+cefpython: del g_pyFrames[1]
+cefpython: del g_pyBrowsers[1]
+cefpython_app: Renderer: OnContextReleased()
+cefpython_app: Renderer: OnBrowserDestroyed()
+[0405/202554:ERROR:ipc_channel_win.cc(132)] pipe error: 109
+cefpython: Shutdown()
