@@ -20,73 +20,105 @@ else:
 
 import win32con
 import win32gui
+import appdirs
+import threading
 
 from cloudburst import window
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
+from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
-DEBUG = True
+class Cloudburst():
+    DEBUG = True
+    isLoaded = False # True is HTML page is done loading
+    isRunning = False # Thread running
+    vlcInterface = None
+
+    def __init__(self):
+
+        self.isRunning = True
+
+        sys.excepthook = exceptionHook
+        applicationSettings = dict()
+
+        if self.DEBUG:
+            window.g_debug = True
+            applicationSettings['debug'] = True
+            applicationSettings['release_dcheck_enabled'] = True
+
+        applicationSettings['log_file'] = getApplicationPath('debug.log')
+        applicationSettings['log_severity'] = cefpython.LOGSEVERITY_INFO
+        applicationSettings['browser_subprocess_path'] = '%s/%s' % (cefpython.GetModuleDirectory(), 'subprocess')
+        cefpython.Initialize(applicationSettings)
+
+        browserSettings = dict()
+        browserSettings['file_access_from_file_urls_allowed'] = True
+        browserSettings['universal_access_from_file_urls_allowed'] = True
+
+        windowHandles = {
+            win32con.WM_CLOSE: self.closeWindow,
+            win32con.WM_DESTROY: self.quitApplication,
+            win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
+            win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
+            win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
+        }
+
+        windowHandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
+                                           icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+
+        windowInfo = cefpython.WindowInfo()
+        windowInfo.SetAsChild(windowHandle)
+        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/index.html"))
+
+        jsBindings = cefpython.JavascriptBindings(
+                bindToFrames=False, bindToPopups=True)
+        jsBindings.SetProperty("pyProperty", "This was set in Python")
+        jsBindings.SetProperty("pyConfig", ["This was set in Python",
+                {"name": "Nested dictionary", "isNested": True},
+                [1,"2", None]])
+
+        self.vlcInterface = VlcInterface(browser)
+
+        jsBindings.SetObject("external", self.vlcInterface)
+        browser.SetJavascriptBindings(jsBindings)
+
+        browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
+
+        print ">>>>>>>>>>>>>>>>> "+ str(browser.GetClientCallback('getPostion'))
+
+        # Start the streaming back end
+        streamingPlayer = StreamingPlayer(self)
+        streamingPlayer.start()
+        # streamingPlayer.OpenTorrent('res/torrents/big_movie.torrent') # TEMP
+
+        # blocking loop
+        cefpython.MessageLoop()
+        cefpython.Shutdown()
 
 
-def cloudburstMain():
-    sys.excepthook = exceptionHook
-    applicationSettings = dict()
+        # Shuts down threads and cancels running timers (these would otherwise block)
+        streamingPlayer.Shutdown()
 
-    if DEBUG:
-        window.g_debug = True
-        applicationSettings['debug'] = True
-        applicationSettings['release_dcheck_enabled'] = True
-
-    applicationSettings['log_file'] = getApplicationPath('debug.log')
-    applicationSettings['log_severity'] = cefpython.LOGSEVERITY_INFO
-    applicationSettings['browser_subprocess_path'] = '%s/%s' % (cefpython.GetModuleDirectory(), 'subprocess')
-    cefpython.Initialize(applicationSettings)
-
-    browserSettings = dict()
-    browserSettings['file_access_from_file_urls_allowed'] = True
-    browserSettings['universal_access_from_file_urls_allowed'] = True
-
-    windowHandles = {
-        win32con.WM_CLOSE: closeWindow,
-        win32con.WM_DESTROY: quitApplication,
-        win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
-        win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
-        win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
-    }
-
-    windowHandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
-                                       icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
-
-    windowInfo = cefpython.WindowInfo()
-    windowInfo.SetAsChild(windowHandle)
-    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
-
-    jsBindings = cefpython.JavascriptBindings(
-            bindToFrames=False, bindToPopups=True)
-    jsBindings.SetProperty("pyProperty", "This was set in Python")
-    jsBindings.SetProperty("pyConfig", ["This was set in Python",
-            {"name": "Nested dictionary", "isNested": True},
-            [1,"2", None]])
-    jsBindings.SetObject("external", VlcInterface(browser))
-    browser.SetJavascriptBindings(jsBindings)
-
-    cefpython.MessageLoop()
-    cefpython.Shutdown()
+    def closeWindow(self, windowHandle, message, wparam, lparam):
+        browser = cefpython.GetBrowserByWindowHandle(windowHandle)
+        browser.CloseBrowser()
+        return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
 
 
+    def quitApplication(self, windowHandle, message, wparam, lparam):
+        self.isRunning = False
+        win32gui.PostQuitMessage(0)
+        return 0
 
-
-
-def closeWindow(windowHandle, message, wparam, lparam):
-    browser = cefpython.GetBrowserByWindowHandle(windowHandle)
-    browser.CloseBrowser()
-    return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
-
-
-def quitApplication(windowHandle, message, wparam, lparam):
-    win32gui.PostQuitMessage(0)
-    return 0
-
+    def OnLoadEnd(self, browser, frame, httpCode):
+        self.isLoaded = True
 
 if __name__ == "__main__":
-    cloudburstMain()
+
+    # Set data dirs
+    appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
+    appdirs.appname = 'Cloudburst'
+    appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
+
+
+    Cloudburst() # blocking until window closed

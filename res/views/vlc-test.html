@@ -10,14 +10,17 @@
             var id = vlc.playlist.add(arg, "fancy name", options);
             vlc.playlist.playItem(id);
         }
+
+        function getPostion() {
+            return vlc.input.position
+        }
     </script>
 </head>
 <body>
 <embed type="application/x-vlc-plugin"
        id="vlc"
        name="vlc"
-       autoplay="no" loop="yes" width="720" height="540"
-       <!--target="file:///res/vids/big-buck-bunny_trailer.webm"-->/>
+       autoplay="no" loop="yes" width="720" height="540"/>
 
 <br/>
 <input type="button" name="Play" value="Play" onclick="vlc.playlist.play()"/>

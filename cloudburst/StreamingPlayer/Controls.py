@@ -56,8 +56,8 @@ class Controls(QWidget):
         self.sliderVolume.move(self.parent.size().width() / 2 - sliderVolumeWidth / 2, self.parent.size().height() - sliderVolumeWidthOffset)
 
     def initButtonPlayPause(self):
-        self.buttonPlayPause = QPushButton('Pause', self.parent)
-        self.buttonPlayPause.clicked.connect(self.parent.PlayPause)
+        self.buttonPlayPause = QPushButton('Play', self.parent)
+        self.buttonPlayPause.clicked.connect(self.parent.Play)
         self.buttonPlayPause.show()
 
     def initButtonStop(self):
