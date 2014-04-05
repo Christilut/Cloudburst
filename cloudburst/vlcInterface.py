@@ -1,6 +1,9 @@
 
 
 class VlcInterface:
+
+    videoPosition = 0.0
+
     def __init__(self, browser):
         self.browser = browser
         self.frame = browser.GetMainFrame()
@@ -32,16 +35,16 @@ class VlcInterface:
         self.frame.ExecuteJavascript('vlc.playlist.stop();')
 
     def setPosition(self, position):
-        print str(position)
+        print 'Pos set to:', str(position)
         self.frame.ExecuteJavascript('vlc.input.position = ' + str(position) + ';')
 
     def getPosition(self):
-        pass
+        return self.videoPosition
+
+    def positionCallback(self, position):
+        self.videoPosition = position
 
     def setTime(self, ms):
         self.frame.ExecuteJavascript('vlc.input.time = ' + str(ms) + ';')
 
-    def test(self):
-        print "Test method"
-        # print self.frame.ExecuteJavascript('return vlc.input.position')
-        pass
+

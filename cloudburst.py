@@ -29,7 +29,7 @@ from cloudburst.util.applicationPath import getApplicationPath
 from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
 class Cloudburst():
-    DEBUG = True
+    DEBUG = False
     isLoaded = False # True is HTML page is done loading
     isRunning = False # Thread running
     vlcInterface = None
@@ -89,7 +89,7 @@ class Cloudburst():
         # Start the streaming back end
         streamingPlayer = StreamingPlayer(self)
         streamingPlayer.start()
-        # streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
+        streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()

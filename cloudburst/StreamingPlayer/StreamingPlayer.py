@@ -45,9 +45,9 @@ class StreamingPlayer(threading.Thread):
         while not self.parent.isLoaded: # TEMP
             pass
 
-        while self.isRunning:
-            self.parent.vlcInterface.test()
-            time.sleep(1)
+        # while self.isRunning:
+        #     self.parent.vlcInterface.test()
+        #     time.sleep(1)
 
 
 
