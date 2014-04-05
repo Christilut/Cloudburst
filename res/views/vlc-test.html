@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>VLC Test Page</title>
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/jquery.timer.js"></script>
 
     <script>
         var fileID;
@@ -26,7 +28,11 @@
             window.testVal = "TEST"
         }
 
+        var timer = $.timer(function() {
+                alert('This message was sent by a timer.');
+        });
 
+        timer.set({ time : 100, autostart : true });
     </script>
 </head>
 <body>
@@ -41,5 +47,9 @@
 <input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
 <input type="button" name="Fullscreen" value="Fullscreen" onclick="vlc.video.toggleFullscreen()"/>
 <input type="button" name="LoadAndPlay" value="Load and play" onclick="javascript:external.loadVideo(test)"/>
+
+<p>timer has been executed <span id='counter' style='font-weight:500; font-size:20px; padding:0px 2px;'>0</span> times.</p>
+
+
 </body>
 </html>
