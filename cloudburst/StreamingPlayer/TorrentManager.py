@@ -12,6 +12,8 @@ class TorrentManager():
 
     isRunning = False
 
+    videoFile = lt.file_entry()
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -32,6 +34,9 @@ class TorrentManager():
     def shutdown(self):
         self.isRunning = False
         self.torrent.shutdown()
+
+    def diskSpaceCheck(self):
+        pass
 
     def openTorrent(self, path, seekpoint = 0):
 
@@ -60,7 +65,7 @@ class TorrentManager():
 
         self.torrentHandle = self.torrentSession.add_torrent({'ti': torrentInfo, 'save_path': self.downloadDirectory, 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
 
-        videoFile = self.findVideoFile(torrentInfo.files())
+        self.videoFile = self.findVideoFile(torrentInfo.files())
 
         if self.videoFileType == 'MKV':
             self.torrent = MKVTorrent(self, self.torrentHandle)
@@ -78,7 +83,7 @@ class TorrentManager():
         alertThread.daemon = True
         alertThread.start()
 
-        return self.downloadDirectory + videoFile.path
+        return self.downloadDirectory + self.videoFile.path
 
 
     # Determine which file in the torrent is the video file. Currently based on size and is checked for extension.
@@ -137,9 +142,24 @@ class TorrentManager():
         self.downloadLimitEnabled = limited
 
         if limited:
-            downSpeed = 2 * 1024 * 1024
-            self.torrentSession.set_download_rate_limit(downSpeed)
 
+            videoFileSize = float(self.videoFile.size) # in bytes
+            videoFileLength = float(self.parent.getVideoLength()) / 1000 # in s
+
+            print 'size:', videoFileSize
+            print 'length:', videoFileLength
+
+            if videoFileLength > 0: # VLC may report -1 or 0 if it cant find the file length (seems to happen on AVI's)
+
+                downSpeed = videoFileSize / videoFileLength
+
+                # add 20% speed to be sure
+                downSpeed *= 1.2
+
+            else: # incase of no known length, set it to a default of 2MBps
+                downSpeed = 2 * 1024 * 1024
+
+            self.torrentSession.set_download_rate_limit(int(downSpeed))
             print 'Download speed limit set to:', downSpeed / 1024, 'kB/s'
 
         else:

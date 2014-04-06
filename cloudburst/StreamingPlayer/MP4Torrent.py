@@ -9,7 +9,7 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
     # TODO calc header size with mp4file (moov)
     headerSize = 3 # size of the header (first x pieces) (min of 3 for test mp4)
     seekPointSize = 50 # size of the seekpoint and amount of pieces after it (point + x pieces)
-    footerSize = 0 # size of the footer (last x pieces)
+    footerSize = 3 # size of the footer (last x pieces)
 
     headerIncreaseSizeAmount = 1 # this many pieces are added to the front AND the back of the header buffer
     headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
@@ -71,7 +71,7 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
         pieceList = [0] * self.totalPieces # This fills a list of size videoPieces with 0's
 
         # Save pieces so we can check them later
-        if self.seekPointPieceNumber != 0: # if not starting at 0
+        if self.seekPointPieceNumber != self.filePiecesOffset: # if not starting at 0
             for n in range(0, self.seekPointSize): # create additional buffer
                 self.headerPieces[self.currentPieceNumber + n] = False
 

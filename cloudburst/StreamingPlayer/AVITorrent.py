@@ -3,6 +3,13 @@ import Torrent
 
 class AVITorrent(Torrent.Torrent): # inherit from Torrent
     # VARS (can edit)
+    # TODO calc buffer size or slowly increasing buffer so it sometimes plays sooner
+    bufferSize = 5 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
+    seekPointOffset = 0
+    # TODO calc header size with mp4file (moov)
+    headerSize = 3 # size of the header (first x pieces) (min of 3 for test mp4)
+    seekPointSize = 50 # size of the seekpoint and amount of pieces after it (point + x pieces)
+    footerSize = 0 # size of the footer (last x pieces)
 
     headerIncreaseSizeAmount = 1 # this many pieces are added to the front AND the back of the header buffer
     headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
@@ -20,6 +27,8 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
     def __init__(self, parent, torrentHandle):
 
         Torrent.Torrent.__init__(self, parent, torrentHandle)
+
+        self.firstBufferRequested = False
 
     def initializePieces(self):
 
@@ -54,6 +63,7 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
         if self.enableDebugInfo:
             print 'Seekpoint piece:', self.seekPointPieceNumber
 
+        # Make sure the current piece cant go below the first piece of the video
         if self.currentPieceNumber < self.filePiecesOffset:
             self.currentPieceNumber = self.filePiecesOffset
 
@@ -61,7 +71,9 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
         pieceList = [0] * self.totalPieces # This fills a list of size videoPieces with 0's
 
         # Save pieces so we can check them later
-        self.headerPieces[self.currentPieceNumber] = False
+        if self.seekPointPieceNumber != self.filePiecesOffset: # if not starting at 0
+            for n in range(0, self.seekPointSize): # create additional buffer
+                self.headerPieces[self.currentPieceNumber + n] = False
 
         # Save how many we set for later
         self.headerPiecesRequired = len(self.headerPieces)
@@ -74,14 +86,40 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
         # Set the list to the torrent handle
         self.torrentHandle.prioritize_pieces(pieceList)
 
+    # When header is in, call this function. Start to play movie and enable custom sequential download
+    def setHeaderAvailable(self, available):
+        self.parent.parent.setHeaderAvailable(available)
+        self.headerAvailable = available
+        self.parent.setDownloadLimit(True)
+
+        if self.enableDebugInfo:
+            print 'Header available?', available
+            self.printTorrentDebug()
+
+    def isHeaderAvailable(self):
+        available = True
+
+        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+            if n in self.headerPieces: # if not in headerPieces, it was set to True and is already removed
+                if not self.headerPieces[n]:
+                    available = False
+
+        for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
+            if n in self.headerPieces:
+                if not self.headerPieces[n]:
+                    available = False
+
+        if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
+            for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
+                if n in self.headerPieces: # if not in headerPieces, it was set to True and is already removed
+                    if not self.headerPieces[n]:
+                        available = False
+
+        return available
+
     def updatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
         if self.enableDebugInfo:
             print 'Updated piece', pieceNumber
-
-
-        if not self.forwardBufferAvailable and self.forwardBufferRequested:
-            if self.isForwardBufferAvailable(pieceNumber):
-                self.setForwardBufferAvailable()
 
         if pieceNumber in self.pieces:
             if not self.pieces[pieceNumber]:
@@ -91,131 +129,25 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
             if not self.headerPieces[pieceNumber]:
                 self.headerPieces[pieceNumber] = True
 
-        pieceAvailableCount = 0
+        piecesMissing = 0
         for n in iter(self.pieces):
-            if self.pieces[n]:
-                pieceAvailableCount += 1
-
-        headerPieceAvailableCount = 0
-        for n in iter(self.headerPieces):
-            if self.headerPieces[n]:
-                headerPieceAvailableCount += 1
+            if not self.pieces[n]:
+                piecesMissing += 1
 
         if not self.headerAvailable:
+            headerPieceAvailableCount = 0
+            for n in iter(self.headerPieces):
+                if self.headerPieces[n]:
+                    headerPieceAvailableCount += 1
+
             if self.isHeaderAvailable():
                 self.setHeaderAvailable(True)
-                return # dont add new pieces, wait for player
 
+        # if all pieces we currently want are downloaded
+        if self.headerAvailable and piecesMissing == 0:
 
-        if self.parent.parent.canPlay: # TODO fix this nastyness
-            assert self.headerAvailable
-
-        # if header available, the mkv may not yet play. increase the buffer on both ends and keep trying to play.
-        if not self.parent.parent.canPlay:
-
-            if headerPieceAvailableCount >= (self.headerPiecesRequired - self.headerIncreaseOffset):
-                missingPieces = []
-                for n in iter(self.headerPieces):
-                    if not self.headerPieces[n]:
-                        missingPieces.append(n)
-
-                self.increaseHeader(missingPieces)
-
-        else: # if header + extra pieces large enough (so actually playing), start sequential download
-
-            if pieceAvailableCount >= (self.piecesRequired - self.paddingSize): # x pieces left
-
-                missingPieces = []
-
-                # the header may still contain some missing pieces, add them the first time this is called
-                if not self.headerPiecesAddedToBuffer:
-                    self.headerPiecesAddedToBuffer = True
-
-                    for n in iter(self.headerPieces):
-                        if not self.headerPieces[n]:
-                            missingPieces.append(n)
-
-                # and get the missing pieces from the regular pieces
-                for n in iter(self.pieces):
-                    if not self.pieces[n]:
-                        missingPieces.append(n)
-
-                # add missing piece as argument so they can be prioritized
-                if not self.forwardBufferRequested:
-                    self.currentPieceNumber += self.headerIncreaseSizeCurrent # add the additional pieces amount
-                    self.forwardBufferPieces = self.increaseBuffer(missingPieces=missingPieces, increasePiecePosition=False)
-                    self.forwardBufferRequested = True
-                else:
-                    self.increaseBuffer(missingPieces=missingPieces)
-
-    # Increase the header at the front and the back of the header, in order to find the point from where mkv can play.
-    # The missingPieces argument contains pieces that were not yet in and will be priotized.
-    def increaseHeader(self, missingPieces = None):
-
-        # Deadline in ms for normal pieces (not the missing ones)
-        pieceDeadlineTime = 5000
-
-        # Increase the header, this will be reflected in the priorities
-        self.headerIncreaseSizeCurrent += 1
-
-        # Create a new list of priorities, initially set to 0 (skip)
-        pieceList = [0] * self.totalPieces
-
-        # Clear the header piece list, this removes all the pieces (True and False) but the ones that were False, are the missingPieces and will be added again
-        self.headerPieces.clear()
-
-        if missingPieces is not None:
-
-            for n in range(0, len(missingPieces)):
-
-                higherPriority = 2 # The priority for missing pieces
-
-                # Make sure header pieces get even higher priority, since the video must wait for these before starting
-                if missingPieces[n] > self.videoPieces + self.filePiecesOffset - self.footerSize - 1 or missingPieces[n] < self.filePiecesOffset + self.headerSize:
-                    higherPriority = 3 # The priority for missing header pieces
-                    pieceDeadlineTime = 2000
-
-                pieceList[missingPieces[n]] = higherPriority # higher priority
-
-                self.headerPieces[missingPieces[n]] = False
-                self.torrentHandle.set_piece_deadline(missingPieces[n], pieceDeadlineTime, 1)
-
-        # Increase the header by adding x to the back and x to the front of the header.
-        pieceFront = self.currentPieceNumber + self.headerIncreaseSizeCurrent
-        pieceBack = self.currentPieceNumber - self.headerIncreaseSizeCurrent
-
-        if pieceFront < self.videoPieces + self.filePiecesOffset - self.footerSize:
-            self.headerPieces[pieceFront] = False # to keep track of availability
-            pieceList[pieceFront] = 1 # priority
-            self.torrentHandle.set_piece_deadline(pieceFront, pieceDeadlineTime, 1) # set deadline and enable alert
-
-        if pieceBack >= self.filePiecesOffset + self.headerSize:
-            self.headerPieces[pieceBack] = False # to keep track of availability
-            pieceList[pieceBack] = 1 # priority
-            self.torrentHandle.set_piece_deadline(pieceBack, pieceDeadlineTime, 1) # set deadline and enable alert
-
-        # Save the amount of pieces that we currently want
-        self.headerPiecesRequired = len(self.headerPieces)
-
-        # Tell libtorrent to prioritize this list
-        self.torrentHandle.prioritize_pieces(pieceList)
-
-    def setForwardBufferAvailable(self):
-        self.forwardBufferAvailable = True
-        self.parent.parent.forwardBufferAvailable = True
-
-        self.parent.setDownloadLimit(True)
-
-        print 'Forward buffer available'
-
-    def isForwardBufferAvailable(self, pieceNumber):
-
-        if pieceNumber in self.forwardBufferPieces:
-            self.forwardBufferPieces[pieceNumber] = True
-
-        available = True
-        for n in iter(self.forwardBufferPieces):
-            if not self.forwardBufferPieces[n]:
-                available = False
-
-        return available
+            if self.firstBufferRequested == False:
+                self.increaseBuffer(increasePiecePosition=self.headerSize)
+                self.firstBufferRequested = True
+            else:
+                self.increaseBuffer(increasePiecePosition=self.bufferSize)

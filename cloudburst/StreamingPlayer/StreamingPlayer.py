@@ -1,5 +1,5 @@
 from TorrentManager import TorrentManager
-import os.path, threading
+import os.path, threading, time
 from threading import Timer
 
 class StreamingPlayer(threading.Thread):
@@ -42,8 +42,8 @@ class StreamingPlayer(threading.Thread):
             pass
 
         # while self.isRunning:
-        #     self.parent.vlcInterface.test()
-        #     time.sleep(1)
+        #     self.parent.vlcInterface.getVideoLength()
+        #     time.sleep(3)
 
 
 
@@ -62,6 +62,8 @@ class StreamingPlayer(threading.Thread):
 
         self.torrentManager.shutdown()
 
+    def getVideoLength(self):
+        return self.parent.vlcInterface.getVideoLength()
 
     def setHeaderAvailable(self, available):
         self.headerAvailable = available
@@ -165,14 +167,16 @@ class StreamingPlayer(threading.Thread):
         self.parent.vlcInterface.openFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
 
-    def playPause(self): # TODO current not used, isPlaying is ambiguous
+    def playPause(self):
         self.parent.vlcInterface.playPause()
 
     def playAtSeekpoint(self):
+        print 'Playing at seekpoint:', self.desiredSeekPoint
         self.play()
         self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
 
     def play(self):
+        print 'Playing'
         self.parent.vlcInterface.play()
 
     def pause(self):

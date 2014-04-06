@@ -225,5 +225,3 @@ class Torrent():
                 self.printTorrentDebug()
 
             time.sleep(3)
-
-        print self.torrentHandle.name(), 'completed'

@@ -16,19 +16,6 @@
             fileID = vlc.playlist.add(arg, "fancy name", options);
         }
 
-        function getPosition()  {
-            return vlc.input.position;
-        }
-
-        function setTime(ms)    {
-            vlc.input.time = ms;
-        }
-
-        var positionCheckTimer = $.timer(function() {
-            javascript:external.positionCallback(vlc.input.position)
-        });
-
-        positionCheckTimer.set({ time : 100, autostart : true });
     </script>
 </head>
 <body>

@@ -1,18 +1,20 @@
-
+import time
 
 class VlcInterface:
 
+
+    videoLength = -1 # in ms
+    videoLengthReceived = False # workaround for the async js operation
+
+
+
     videoPosition = 0.0
+    videoPositionReceived = False
 
     def __init__(self, parent, browser):
         self.browser = browser
         self.parent = parent
         self.frame = browser.GetMainFrame()
-
-    def loadVideo(self, jsCallback):
-        # jsCallback.Call('file:///D:\\temp\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH\\Frozen.2013.FRENCH.720p.BluRay.x264-ROUGH.mkv')
-        # jsCallback.Call(self.callback)
-        pass
 
     def openFile(self, path):
         fullPath = 'file:///' + path
@@ -36,17 +38,36 @@ class VlcInterface:
         self.frame.ExecuteJavascript('vlc.playlist.stop();')
 
     def setPosition(self, position):
-        print 'Pos set to:', position
+        print 'Position set to:', position
         self.frame.ExecuteJavascript('vlc.input.position = ' + str(position) + ';')
 
     def getPosition(self):
+        self.frame.ExecuteJavascript('javascript:external.videoPositionCallback(vlc.input.position)')
+
+        while not self.videoPositionReceived: # hacky but tests show it takes ~1ms during no load situations
+            time.sleep(0.001)
+
+        self.videoPositionReceived = False
+
         return self.videoPosition
 
-    def positionCallback(self, position): # JS calls this #TODO change 100ms timer to VLC event
-        # if position != self.videoPosition:
-        #     print position
-
+    def videoPositionCallback(self, position): # JS calls this
         self.videoPosition = position
+        self.videoPositionReceived = True
+
+    def getVideoLength(self): # TODO can this be less hacky?
+        self.frame.ExecuteJavascript('javascript:external.videoLengthCallback(vlc.input.length)')
+
+        while not self.videoLengthReceived: # hacky but tests show it takes ~1ms during no load situations
+            time.sleep(0.001)
+
+        self.videoLengthReceived = False
+        print self.videoLength
+        return self.videoLength
+
+    def videoLengthCallback(self, length):
+        self.videoLength = length
+        self.videoLengthReceived = True
 
     def setTime(self, ms):
         self.frame.ExecuteJavascript('vlc.input.time = ' + str(ms) + ';')
