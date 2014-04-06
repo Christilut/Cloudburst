@@ -17,7 +17,7 @@ class StreamingPlayer(threading.Thread):
     desiredSeekPoint = 0
 
     lastMediaPosition = None # To determine if video is actually playing (based on media position difference)
-    tryTorrentPlayInterval = 3 # Time in s between attempts to play the file while the header is being downloaded
+    tryTorrentPlayInterval = 5 # Time in s between attempts to play the file while the header is being downloaded
 
     forwardBufferAvailable = False
 
@@ -37,8 +37,8 @@ class StreamingPlayer(threading.Thread):
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP open torrent
-        # self.seconds = 233
-        # self.setDesiredSeekpoint(1 / (float(6132) / self.seconds))
+        self.seconds = 233
+        self.setDesiredSeekpoint(1 / (float(6132) / self.seconds))
 
     def run(self):
 
@@ -78,7 +78,7 @@ class StreamingPlayer(threading.Thread):
 
         if self.currentFilePath is not None:
             self.stop()
-            self.torrent.setSeekPoint(seekpoint)
+            self.torrent.setVideoPosition(seekpoint)
 
             self.waitForFileBuffer()
 

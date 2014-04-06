@@ -36,7 +36,6 @@ class VlcInterface:
         self.frame.ExecuteJavascript('vlc.playlist.stop();')
 
     def setPosition(self, position):
-        print 'Pos set to:', str(position)
         self.frame.ExecuteJavascript('vlc.input.position = ' + str(position) + ';')
 
     def getPosition(self):

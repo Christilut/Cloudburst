@@ -89,7 +89,7 @@ class Cloudburst():
         # Start the streaming back end
         self.streamingPlayer = StreamingPlayer(self)
         self.streamingPlayer.start() # thread, not used atm, but for testing purposes. Torrent is already in a seperate thread
-        self.streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
+        self.streamingPlayer.openTorrent('res/torrents/avi_movie.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
