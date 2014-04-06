@@ -1,14 +1,11 @@
-import Torrent
-import os.path, threading, time
+from TorrentManager import TorrentManager
+import os.path, threading
 from threading import Timer
 
 class StreamingPlayer(threading.Thread):
 
     canPlay = False # True if video file is being played
     bufferInterval = 0.5   # Time in s between buffer checks
-    previousMousePos = None # To keep track of the mouse, required to hide/show the GUI
-    timeMouseNotMoving = 0  # To delay hiding of GUI
-    showInterface = False   # True if GUI is being shown
 
     currentFilePath = None    # Full path of current video file
     videoFileExists = False # True if video file is present on disk. Use this bool to prevent unnecessary disk access
@@ -32,13 +29,12 @@ class StreamingPlayer(threading.Thread):
         self.isRunning = True
 
         # create the torrent manager
-        self.torrent = Torrent.Torrent(self)
+        self.torrentManager = TorrentManager(self)
 
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP open torrent
-        self.seconds = 233
-        self.setDesiredSeekpoint(1 / (float(6132) / self.seconds))
+        # self.setDesiredSeekpoint(0.9)
 
     def run(self):
 
@@ -64,7 +60,7 @@ class StreamingPlayer(threading.Thread):
         if self.waitForForwardBufferTimer is not None:
             self.waitForForwardBufferTimer.cancel()
 
-        self.torrent.shutdown()
+        self.torrentManager.shutdown()
 
 
     def setHeaderAvailable(self, available):
@@ -78,7 +74,7 @@ class StreamingPlayer(threading.Thread):
 
         if self.currentFilePath is not None:
             self.stop()
-            self.torrent.setVideoPosition(seekpoint)
+            self.torrentManager.torrent.setVideoPosition(seekpoint)
 
             self.waitForFileBuffer()
 
@@ -87,7 +83,7 @@ class StreamingPlayer(threading.Thread):
             print 'File path already entered'
             return
 
-        self.currentFilePath = self.torrent.startTorrent(path, self.desiredSeekPoint)
+        self.currentFilePath = self.torrentManager.openTorrent(path, self.desiredSeekPoint)
 
         print 'Waiting for file: ' + self.currentFilePath
 
@@ -130,7 +126,6 @@ class StreamingPlayer(threading.Thread):
             self.torrentPlayTimer.start()
 
         elif self.lastMediaPosition == self.getPosition() or self.getPosition() == 0:
-
             # TODO try to use the fact that get_position() returns 0.0 when seeking fails
             self.stop()
 
@@ -142,13 +137,15 @@ class StreamingPlayer(threading.Thread):
 
         else:
             self.canPlay = True
-            self.pause()
-            self.torrent.updatePieceList(self.torrent.seekPointPieceNumber)
             print 'Can succesfully play'
+            self.torrentManager.torrent.updatePieceList(self.torrentManager.torrent.seekPointPieceNumber)
 
-            self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
-            self.waitForForwardBufferTimer.start()
+            if self.desiredSeekPoint != 0 and self.torrentManager.videoFileType == 'MKV':
+                self.pause()
 
+                self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
+                self.waitForForwardBufferTimer.start()
+        print 'called tryTorrentPlay'
         self.lastMediaPosition = self.getPosition()
 
     def waitForForwardBuffer(self):
@@ -167,9 +164,6 @@ class StreamingPlayer(threading.Thread):
 
         self.parent.vlcInterface.openFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
-
-
-
 
     def playPause(self): # TODO current not used, isPlaying is ambiguous
         self.parent.vlcInterface.playPause()
