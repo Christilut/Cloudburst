@@ -34,7 +34,9 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
     # When header is in, call this function. Start to play movie and enable custom sequential download
     def setHeaderAvailable(self, available):
         super(AVITorrent, self).setHeaderAvailable(available)
-        self.parent.setDownloadLimit(True)
+
+        if available:
+            self.parent.setDownloadLimit(True)
 
     def isHeaderAvailable(self):
         available = True

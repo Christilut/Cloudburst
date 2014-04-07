@@ -74,3 +74,7 @@ class VlcInterface: # TODO make static
     def changePositionCallback(self, position):
         self.parent.streamingPlayer.setDesiredSeekpoint(position)
 
+    def test(self):
+        self.jsBindings.SetProperty('testProperty', 'hello')
+
+        self.frame.ExecuteJavascript('test()')

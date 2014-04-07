@@ -19,6 +19,8 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
 
     def initializePieces(self):
 
+        self.firstBufferRequested = False
+
         # Set the entire priority list to skip
         pieceList = [0] * self.totalPieces # This fills a list of size videoPieces with 0's
 
@@ -37,10 +39,25 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
         # Set the list to the torrent handle
         self.torrentHandle.prioritize_pieces(pieceList)
 
+    def isHeaderAvailable(self):
+        available = True
+
+        super(MP4Torrent, self).isHeaderAvailable()
+
+        for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.seekPointSize):
+            if n in self.pieces:
+                if not self.pieces[n]:
+                    available = False
+
+        return available
+
     # When header is in, call this function. Start to play movie and enable custom sequential download
     def setHeaderAvailable(self, available):
         super(MP4Torrent, self).setHeaderAvailable(available)
-        self.parent.setDownloadLimit(True)
+
+        if available:
+            self.parent.setDownloadLimit(True)
+
 
     def updatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
         super(MP4Torrent, self).updatePieceList(pieceNumber)

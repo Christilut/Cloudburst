@@ -75,7 +75,7 @@ class Torrent(object):
 
     def printTorrentDebug(self):
 
-        infoSize = 20
+        infoSize = 55
 
         print 'Avail.\t(', self.currentPieceNumber, ')\t:',
 
@@ -184,17 +184,17 @@ class Torrent(object):
         return self.pieces.copy()
 
     def isHeaderAvailable(self):
-        available = True
+        # available = True
 
         for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
             if n in self.pieces: # if not in pieces, it was set to True and is already removed
                 if not self.pieces[n]:
                     available = False
 
-        for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
-            if n in self.pieces:
-                if not self.pieces[n]:
-                    available = False
+        # for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
+        #     if n in self.pieces:
+        #         if not self.pieces[n]:
+        #             available = False
 
         if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
             for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
@@ -202,16 +202,17 @@ class Torrent(object):
                     if not self.pieces[n]:
                         available = False
 
-        return available
+        # return available
 
-        # When header is in, call this function. Start to play movie and enable custom sequential download
+    # When header is in, call this function. Start to play movie and enable custom sequential download
     def setHeaderAvailable(self, available):
-        self.parent.parent.setHeaderAvailable(available)
+        self.parent.setHeaderAvailable(available)
         self.headerAvailable = available
 
         if self.enableDebugInfo:
             print 'Header available?', available
             self.printTorrentDebug()
+
 
     # Seekpoint is the float from 0 to 1 where the video should play from
     def setVideoPosition(self, position):
@@ -221,9 +222,9 @@ class Torrent(object):
 
         self.setSeekpoint(position)
 
-        self.setHeaderAvailable(False)
-
         self.initializePieces()
+
+        self.setHeaderAvailable(False)
 
     def updatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
         if self.enableDebugInfo:
@@ -243,7 +244,6 @@ class Torrent(object):
         self.seekPoint = seekpoint
         self.currentPieceNumber = int(float(self.videoPieces) / 1 * seekpoint) + self.filePiecesOffset + self.seekPointOffset
         self.seekPointPieceNumber = self.currentPieceNumber
-        print self.seekPointPieceNumber
 
     def initializePieces(self):
 

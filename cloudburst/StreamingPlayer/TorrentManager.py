@@ -35,8 +35,11 @@ class TorrentManager():
         self.isRunning = False
         self.torrent.shutdown()
 
-    def diskSpaceCheck(self):
+    def diskSpaceCheck(self): # TODO
         pass
+
+    def setHeaderAvailable(self, available):
+        self.parent.setHeaderAvailable(available)
 
     def openTorrent(self, path, seekpoint = 0):
 
@@ -58,14 +61,15 @@ class TorrentManager():
         e = lt.bdecode(open(path, 'rb').read())
         torrentInfo = lt.torrent_info(e)
 
+        self.torrentHandle = self.torrentSession.add_torrent({'ti': torrentInfo, 'save_path': self.downloadDirectory, 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
+
+        self.videoFile = self.findVideoFile(torrentInfo.files())
+
         # Print some torrent stats
         print 'Torrent piece size:', torrentInfo.piece_size(0) / 1024, 'kB'
         print 'Torrent total pieces:', torrentInfo.num_pieces()
         print 'Torrent total files:', torrentInfo.num_files()
-
-        self.torrentHandle = self.torrentSession.add_torrent({'ti': torrentInfo, 'save_path': self.downloadDirectory, 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
-
-        self.videoFile = self.findVideoFile(torrentInfo.files())
+        print 'Video file offset pieces', self.filePiecesOffset
 
         if self.videoFileType == 'MKV':
             self.torrent = MKVTorrent(self, self.torrentHandle)

@@ -2,7 +2,7 @@ from TorrentManager import TorrentManager
 import os.path, threading, time
 from threading import Timer
 
-class StreamingPlayer(threading.Thread):
+class StreamingPlayer():
 
     canPlay = False # True if video file is being played
     bufferInterval = 0.5   # Time in s between buffer checks
@@ -24,7 +24,6 @@ class StreamingPlayer(threading.Thread):
 
     def __init__(self, parent):
         self.parent = parent
-        threading.Thread.__init__(self)
 
         self.isRunning = True
 
@@ -35,17 +34,6 @@ class StreamingPlayer(threading.Thread):
 
         # TEMP open torrent
         # self.setDesiredSeekpoint(0.4)
-
-    def run(self):
-
-        while not self.parent.isLoaded: # TEMP
-            pass
-
-        # while self.isRunning:
-        #     self.parent.vlcInterface.test()
-        #     time.sleep(3)
-
-
 
     def shutdown(self):
 
@@ -76,13 +64,11 @@ class StreamingPlayer(threading.Thread):
             print '.avi files do not support seeking'
             return # abort seeking
 
-        print 'Seekpoint set to:', seekpoint
         self.desiredSeekPoint = seekpoint
 
         if self.currentFilePath is not None:
-            self.stop()
+            self.stop() # TODO perhaps delete torrent object and start a new one when seeking?
             self.torrentManager.torrent.setVideoPosition(seekpoint)
-
             self.waitForFileBuffer()
 
     def openTorrent(self, path):
@@ -111,7 +97,6 @@ class StreamingPlayer(threading.Thread):
             return
         else:
             #  Video file exists here, wait for buffers
-
             # Wait for the header
             if not self.headerAvailable:
                 self.bufferTimer = Timer(self.bufferInterval, self.waitForFileBuffer)
@@ -178,8 +163,7 @@ class StreamingPlayer(threading.Thread):
     def playAtSeekpoint(self):
         print 'Playing at seekpoint:', self.desiredSeekPoint
         self.play()
-        # self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
-        self.parent.vlcInterface.setTime(2448000)
+        self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
 
     def play(self):
         print 'Playing'

@@ -71,7 +71,7 @@ class Cloudburst():
         browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
 
         jsBindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
-        # jsBindings.SetProperty("pyProperty", "This was set in Python")
+        # jsBindings.SetProperty("pyProperty", "This was set in Python") # TODO figure out how to set these properties in js
         # self.jsBindings.SetProperty("pyConfig", ["This was set in Python",
         #         {"name": "Nested dictionary", "isNested": True},
         #         [1,"2", None]])
@@ -83,12 +83,9 @@ class Cloudburst():
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
-        jsBindings.SetProperty('testVar', 6)
-
         # Start the streaming back end
-        self.streamingPlayer = StreamingPlayer(self)
-        self.streamingPlayer.start() # thread, not used atm, but for testing purposes. Torrent is already in a seperate thread
-        self.streamingPlayer.openTorrent('res/torrents/mp42.torrent') # TEMP
+        # self.streamingPlayer = StreamingPlayer(self)
+        # self.streamingPlayer.openTorrent('res/torrents/mp42.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
@@ -111,6 +108,7 @@ class Cloudburst():
 
     def OnLoadEnd(self, browser, frame, httpCode):
         self.isLoaded = True
+        self.vlcInterface.test()
 
 if __name__ == "__main__":
 
