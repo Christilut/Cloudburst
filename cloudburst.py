@@ -1,5 +1,4 @@
 import platform
-from cloudburst.vlcInterface import VlcInterface
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -21,6 +20,7 @@ else:
 import win32con
 import win32gui
 import appdirs
+import urllib2
 import threading
 
 from cloudburst import window
@@ -28,8 +28,11 @@ from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
 from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
 
+from cloudburst.trakt.trakt import Trakt
+from cloudburst.vlcInterface import VlcInterface
+
 class Cloudburst():
-    DEBUG = True
+    DEBUG = False
     isLoaded = False # True is HTML page is done loading
     isRunning = False # Thread running
     vlcInterface = None
@@ -85,17 +88,16 @@ class Cloudburst():
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
         # Start the streaming back end
-        streamingPlayer = StreamingPlayer(self)
-        streamingPlayer.start()
-        # streamingPlayer.OpenTorrent('res/torrents/big_movie.torrent') # TEMP
+        #streamingPlayer = StreamingPlayer(self)
+        #streamingPlayer.start()
+        #streamingPlayer.openTorrent('res/torrents/big_movie.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
         cefpython.Shutdown()
 
-
         # Shuts down threads and cancels running timers (these would otherwise block)
-        streamingPlayer.Shutdown()
+        #streamingPlayer.shutdown()
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)
@@ -112,6 +114,12 @@ class Cloudburst():
         self.isLoaded = True
 
 if __name__ == "__main__":
+
+    trakt = Trakt('D:/temp/cache/')
+    trending = trakt.request('movies/trending')
+    #for item in trending['data']:
+    #   print item
+    #Trakt.request('search/movies', params=['batman', '2'])
 
     # Set data dirs
     appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
