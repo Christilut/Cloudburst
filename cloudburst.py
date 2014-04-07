@@ -79,6 +79,7 @@ class Cloudburst():
         self.vlcInterface = VlcInterface(self, browser, jsBindings)
 
         jsBindings.SetObject("python", self.vlcInterface)
+        jsBindings.SetProperty('testProperty', 'hello')
         browser.SetJavascriptBindings(jsBindings)
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
@@ -93,7 +94,7 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        self.streamingPlayer.shutdown()
+        #self.streamingPlayer.shutdown()
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)
