@@ -14,6 +14,7 @@
             vlc.playlist.items.clear();
             var options = new Array(":aspect-ratio=4:3", "--rtsp-tcp");
             fileID = vlc.playlist.add(arg, "fancy name", options);
+
         }
 
     </script>
@@ -28,7 +29,7 @@
 <input type="button" name="Play" value="Play" onclick="vlc.playlist.play()"/>
 <input type="button" name="Pause" value="Pause" onclick="vlc.playlist.togglePause()"/>
 <input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
-<input type="button" name="setPosTest" value="Set to 50%" onclick="javascript:external.changePositionCallback(0.5)"/>
+<input type="button" name="setPosTest" value="Set to 50%" onclick="javascript:python.changePositionCallback(0.5)"/>
 
 </body>
 </html>

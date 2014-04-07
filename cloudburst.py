@@ -70,21 +70,20 @@ class Cloudburst():
         windowInfo.SetAsChild(windowHandle)
         browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
 
-        jsBindings = cefpython.JavascriptBindings(
-                bindToFrames=False, bindToPopups=True)
-        jsBindings.SetProperty("pyProperty", "This was set in Python")
-        jsBindings.SetProperty("pyConfig", ["This was set in Python",
-                {"name": "Nested dictionary", "isNested": True},
-                [1,"2", None]])
+        jsBindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
+        # jsBindings.SetProperty("pyProperty", "This was set in Python")
+        # self.jsBindings.SetProperty("pyConfig", ["This was set in Python",
+        #         {"name": "Nested dictionary", "isNested": True},
+        #         [1,"2", None]])
 
-        self.vlcInterface = VlcInterface(self, browser)
+        self.vlcInterface = VlcInterface(self, browser, jsBindings)
 
-        jsBindings.SetObject("external", self.vlcInterface)
+        jsBindings.SetObject("python", self.vlcInterface)
         browser.SetJavascriptBindings(jsBindings)
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
-
+        jsBindings.SetProperty('testVar', 6)
 
         # Start the streaming back end
         self.streamingPlayer = StreamingPlayer(self)

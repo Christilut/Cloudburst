@@ -34,7 +34,7 @@ class StreamingPlayer(threading.Thread):
         # TEMP test stuff below --------------------------------------------------------
 
         # TEMP open torrent
-        # self.setDesiredSeekpoint(0.9)
+        # self.setDesiredSeekpoint(0.4)
 
     def run(self):
 
@@ -42,7 +42,7 @@ class StreamingPlayer(threading.Thread):
             pass
 
         # while self.isRunning:
-        #     self.parent.vlcInterface.getVideoLength()
+        #     self.parent.vlcInterface.test()
         #     time.sleep(3)
 
 
@@ -71,6 +71,11 @@ class StreamingPlayer(threading.Thread):
     def setDesiredSeekpoint(self, seekpoint): # from 0 to 1
 
         assert (seekpoint >= 0 and seekpoint < 1)
+
+        if self.torrentManager.videoFileType == 'AVI':
+            print '.avi files do not support seeking'
+            return # abort seeking
+
         print 'Seekpoint set to:', seekpoint
         self.desiredSeekPoint = seekpoint
 
@@ -147,7 +152,7 @@ class StreamingPlayer(threading.Thread):
 
                 self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
                 self.waitForForwardBufferTimer.start()
-        print 'called tryTorrentPlay'
+
         self.lastMediaPosition = self.getPosition()
 
     def waitForForwardBuffer(self):
@@ -173,7 +178,8 @@ class StreamingPlayer(threading.Thread):
     def playAtSeekpoint(self):
         print 'Playing at seekpoint:', self.desiredSeekPoint
         self.play()
-        self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
+        # self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
+        self.parent.vlcInterface.setTime(2448000)
 
     def play(self):
         print 'Playing'

@@ -146,21 +146,18 @@ class TorrentManager():
             videoFileSize = float(self.videoFile.size) # in bytes
             videoFileLength = float(self.parent.getVideoLength()) / 1000 # in s
 
-            print 'size:', videoFileSize
-            print 'length:', videoFileLength
-
             if videoFileLength > 0: # VLC may report -1 or 0 if it cant find the file length (seems to happen on AVI's)
 
                 downSpeed = videoFileSize / videoFileLength
 
-                # add 20% speed to be sure
-                downSpeed *= 1.2
+                # add speed to be sure
+                downSpeed *= 1.5
 
             else: # incase of no known length, set it to a default of 2MBps
                 downSpeed = 2 * 1024 * 1024
 
             self.torrentSession.set_download_rate_limit(int(downSpeed))
-            print 'Download speed limit set to:', downSpeed / 1024, 'kB/s'
+            print 'Download speed limit set to:', int(downSpeed) / 1024, 'kB/s'
 
         else:
             print 'Disabled speed limit'

@@ -2,13 +2,11 @@ import libtorrent as lt
 import threading
 import time
 
-class Torrent():
+class Torrent(object):
 
     # CONFIG VARS (can edit)
     # TODO base buffersize on bitrate and pieceSize
     paddingSize = 3 # when this many pieces are left missing, the buffer is increased
-
-
 
     enableDebugInfo = True
 
@@ -29,10 +27,6 @@ class Torrent():
     totalPieces  = -1 # Total amount of pieces in the torrent
 
     pieces = {}
-    headerPieces = {}
-    piecesRequired = 0
-    headerPiecesRequired = 0
-
 
     def __init__(self, parent, torrentHandle):
 
@@ -53,7 +47,7 @@ class Torrent():
 
         assert seekpoint is not None
 
-        self.seekPoint = seekpoint
+        self.setSeekpoint(seekpoint)
         self.totalPieces = totalPieces
         self.videoPieces = videoPieces
         self.filePiecesOffset = filePiecesOffset
@@ -83,62 +77,64 @@ class Torrent():
 
         infoSize = 20
 
-        print 'Avail.\t:',
+        print 'Avail.\t(', self.currentPieceNumber, ')\t:',
 
         # Header
-        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
-            if self.torrentHandle.have_piece(n):
-                print '1',
-            else:
-                print '0',
+        if hasattr(self, 'headerSize') and self.headerSize != 0:
+            for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+                if self.torrentHandle.have_piece(n):
+                    print '1',
+                else:
+                    print '0',
 
-        print '#',
+            print '#',
 
         # Seekpoint
-        for n in range(max(self.seekPointPieceNumber - infoSize, self.filePiecesOffset), min(self.seekPointPieceNumber + infoSize, self.videoPieces + self.filePiecesOffset - 1)):
+        for n in range(max(self.currentPieceNumber - infoSize, self.filePiecesOffset), min(self.currentPieceNumber + infoSize, self.videoPieces + self.filePiecesOffset - 1)):
             if self.torrentHandle.have_piece(n):
                 print '1',
             else:
                 print '0',
 
-        print '#',
-
         # Footer
-        for n in range(0, self.footerSize):
-            if self.torrentHandle.have_piece(self.videoPieces + self.filePiecesOffset - 1 - n):
-                print '1',
-            else:
-                print '0',
+        if hasattr(self, 'footerSize') and self.footerSize != 0:
+            print '#',
+            for n in range(0, self.footerSize):
+                if self.torrentHandle.have_piece(self.videoPieces + self.filePiecesOffset - 1 - n):
+                    print '1',
+                else:
+                    print '0',
 
         print ''
 
         # Priorities
+        print 'Prior.\t\t\t:',
 
-        print 'Prior.\t:',
         # Header
-        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
-            if self.torrentHandle.piece_priority(n):
-                print '1',
-            else:
-                print '0',
+        if hasattr(self, 'headerSize') and self.headerSize != 0:
+            for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+                if self.torrentHandle.piece_priority(n):
+                    print '1',
+                else:
+                    print '0',
 
-        print '#',
+            print '#',
 
         # Seekpoint
-        for n in range(max(self.seekPointPieceNumber - infoSize, self.filePiecesOffset), min(self.seekPointPieceNumber + infoSize, self.videoPieces + self.filePiecesOffset - 1)):
+        for n in range(max(self.currentPieceNumber - infoSize, self.filePiecesOffset), min(self.currentPieceNumber + infoSize, self.videoPieces + self.filePiecesOffset - 1)):
             if self.torrentHandle.piece_priority(n):
                 print '1',
             else:
                 print '0',
 
-        print '#',
-
         # Footer
-        for n in range(0, self.footerSize):
-            if self.torrentHandle.piece_priority(self.videoPieces + self.filePiecesOffset - 1 - n):
-                print '1',
-            else:
-                print '0',
+        if hasattr(self, 'footerSize') and self.footerSize != 0:
+            print '#',
+            for n in range(0, self.footerSize):
+                if self.torrentHandle.piece_priority(self.videoPieces + self.filePiecesOffset - 1 - n):
+                    print '1',
+                else:
+                    print '0',
 
         print ''
 
@@ -181,15 +177,41 @@ class Torrent():
                 pieceList[piece] = 1 # Set priority
                 self.torrentHandle.set_piece_deadline(piece, pieceDeadlineTime, 1) # Set deadline and enable alert
 
-        # Save the amount of pieces that we currently want
-        self.piecesRequired = len(self.pieces) # TODO not used anymore?
-
         # Tell libtorrent to prioritize this list
         self.torrentHandle.prioritize_pieces(pieceList)
 
         # Return the list but use a copy otherwise a reference is used which will reflect changes in both ends
         return self.pieces.copy()
 
+    def isHeaderAvailable(self):
+        available = True
+
+        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+            if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                if not self.pieces[n]:
+                    available = False
+
+        for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
+            if n in self.pieces:
+                if not self.pieces[n]:
+                    available = False
+
+        if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
+            for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
+                if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                    if not self.pieces[n]:
+                        available = False
+
+        return available
+
+        # When header is in, call this function. Start to play movie and enable custom sequential download
+    def setHeaderAvailable(self, available):
+        self.parent.parent.setHeaderAvailable(available)
+        self.headerAvailable = available
+
+        if self.enableDebugInfo:
+            print 'Header available?', available
+            self.printTorrentDebug()
 
     # Seekpoint is the float from 0 to 1 where the video should play from
     def setVideoPosition(self, position):
@@ -203,11 +225,55 @@ class Torrent():
 
         self.initializePieces()
 
+    def updatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
+        if self.enableDebugInfo:
+            print 'Updated piece', pieceNumber
+
+        if pieceNumber in self.pieces:
+            if not self.pieces[pieceNumber]:
+                self.pieces[pieceNumber] = True
+
+        if not self.headerAvailable:
+            if self.isHeaderAvailable():
+                self.setHeaderAvailable(True)
+
+
     def setSeekpoint(self, seekpoint):
         # Seekpoint position
         self.seekPoint = seekpoint
         self.currentPieceNumber = int(float(self.videoPieces) / 1 * seekpoint) + self.filePiecesOffset + self.seekPointOffset
         self.seekPointPieceNumber = self.currentPieceNumber
+        print self.seekPointPieceNumber
+
+    def initializePieces(self):
+
+        # Reset some vars incase of seeking
+        self.parent.setDownloadLimit(False)
+        self.headerIncreaseSizeCurrent = 0
+
+        # Check cache once, in case the file already existed
+        # self.checkCache() # TODO test this works
+
+        # Clear header list incase of seeking an already playing video
+        self.pieces.clear()
+
+        # Header pieces
+        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+            self.pieces[n] = False                # start of the file
+
+        # Footer size (MKV Cueing data)
+        if self.seekPointPieceNumber > self.filePiecesOffset: # footer is only required for seeking # TODO make sure the footer does get downloaded when seeking after playing from 0
+            for n in range(0, self.footerSize):
+                self.pieces[self.videoPieces + self.filePiecesOffset - 1 - n] = False  # end of the file (MKV needs this) # TODO not needed for avi?
+
+        if self.enableDebugInfo:
+            print 'Seekpoint piece:', self.seekPointPieceNumber
+
+        # Make sure the current piece cant go below the first piece of the video
+        if self.currentPieceNumber < self.filePiecesOffset:
+            self.currentPieceNumber = self.filePiecesOffset
+
+
 
     def threadTorrentInfo(self): # thread
 

@@ -1,19 +1,18 @@
 import time
 
-class VlcInterface:
-
+class VlcInterface: # TODO make static
+# TODO replace with jsBinding properties
 
     videoLength = -1 # in ms
     videoLengthReceived = False # workaround for the async js operation
 
-
-
     videoPosition = 0.0
     videoPositionReceived = False
 
-    def __init__(self, parent, browser):
+    def __init__(self, parent, browser, jsbindings):
         self.browser = browser
         self.parent = parent
+        self.jsBindings = jsbindings
         self.frame = browser.GetMainFrame()
 
     def openFile(self, path):
@@ -42,7 +41,7 @@ class VlcInterface:
         self.frame.ExecuteJavascript('vlc.input.position = ' + str(position) + ';')
 
     def getPosition(self):
-        self.frame.ExecuteJavascript('javascript:external.videoPositionCallback(vlc.input.position)')
+        self.frame.ExecuteJavascript('javascript:python.videoPositionCallback(vlc.input.position)')
 
         while not self.videoPositionReceived: # hacky but tests show it takes ~1ms during no load situations
             time.sleep(0.001)
@@ -56,13 +55,13 @@ class VlcInterface:
         self.videoPositionReceived = True
 
     def getVideoLength(self): # TODO can this be less hacky?
-        self.frame.ExecuteJavascript('javascript:external.videoLengthCallback(vlc.input.length)')
+        self.frame.ExecuteJavascript('javascript:python.videoLengthCallback(vlc.input.length)')
 
         while not self.videoLengthReceived: # hacky but tests show it takes ~1ms during no load situations
             time.sleep(0.001)
 
         self.videoLengthReceived = False
-        print self.videoLength
+
         return self.videoLength
 
     def videoLengthCallback(self, length):
@@ -74,3 +73,4 @@ class VlcInterface:
 
     def changePositionCallback(self, position):
         self.parent.streamingPlayer.setDesiredSeekpoint(position)
+
