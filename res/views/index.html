@@ -7,50 +7,52 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
-    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
     <ul id="filters" class="clearfix">
-        <li><a href="#" data-filter="*">show all</a></li>
-        <li><a href="#" data-filter=".plants">plants</a></li>
-        <li><a href="#" data-filter=".flower">flowers</a></li>
-        <li><a href="#" data-filter=".beach">beach</a></li>
-        <li><a href="#" data-filter=".landscape">landscape</a></li>
-        <li><a href="#" data-filter=".building">buildings</a></li>
-        <li><a href="#" data-filter=":not(.flower)">not flowers</a></li>
-        <li><a href="#" data-filter=":not(.beach, .building)">not beach or buildings</a></li>
+        <li><a href="#" data-filter=".trending-movies">Trending movies</a><li>
+        <li><a href="#" data-filter=".trending-series">Trending series</a></li>
+        <li><input type="text" placeholder="Search" name="search" /></li>
     </ul>
+
+    <div class="demo-content">
+      <button class="toggle-loading">Toggle Overlay</button>
+    </div>
 
     <div style="clear: both"></div>
     <div id="isotopegallery" class="photos clearfix">
-       <div class="photo plants" data-symbol="sherlock-holmes">
+       <div class="photo trending-movies" data-symbol="sherlock-holmes">
             <img src="../images/covers/sherlock-holmes.jpg" alt="sherlock-holmes" width="134" height="197" />
         </div>
 
-        <div class="photo" data-symbol="ted">
+        <div class="photo trending-movies" data-symbol="ted">
             <img src="../images/covers/ted.jpg" alt="ted" width="134" height="197" />
         </div>
 
-        <div class="photo" data-symbol="the-hunger-games">
+        <div class="photo trending-series" data-symbol="the-hunger-games">
             <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games" width="134" height="197" />
         </div>
 
-        <div class="photo" data-symbol="the-hunger-games-mockingjay-part-1">
+        <div class="photo trending-movies" data-symbol="the-hunger-games-mockingjay-part-1">
             <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1" width="134" height="197" />
         </div>
 
-        <div class="photo" data-symbol="underworld-awakening">
+        <div class="photo trending-movies" data-symbol="underworld-awakening">
             <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening" width="134" height="197" />
         </div>
 
-        <div class="photo" data-symbol="world-war-z">
+        <div class="photo trending-movies" data-symbol="world-war-z">
             <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="134" height="197" />
         </div>
+
+         <div id="target"></div>
     </div>
 
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.isotope.js"></script>
+    <script src="js/loading-overlay.min.js"></script>
     <script>
         $(function(){
             var $container = $('#isotopegallery');
@@ -63,6 +65,18 @@
                 var selector = $(this).attr('data-filter');
                 $container.isotope({ filter: selector });
                 return false;
+            });
+        });
+
+        jQuery(function ($) {
+            var target = $('#target');
+
+            $('.toggle-loading').click(function () {
+                if (target.hasClass('loading')) {
+                    target.loadingOverlay('remove');
+                } else {
+                    target.loadingOverlay();
+                };
             });
         });
     </script>

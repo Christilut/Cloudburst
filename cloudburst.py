@@ -84,8 +84,6 @@ class Cloudburst():
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
-        print ">>>>>>>>>>>>>>>>> "+ str(browser.GetClientCallback('getPostion'))
-
         # Start the streaming back end
         streamingPlayer = StreamingPlayer(self)
         streamingPlayer.start()
@@ -119,6 +117,5 @@ if __name__ == "__main__":
     appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
     appdirs.appname = 'Cloudburst'
     appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
-
 
     Cloudburst() # blocking until window closed
