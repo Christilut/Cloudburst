@@ -1,11 +1,12 @@
 import os
 import time
-import urllib
+import shutil
 import requests
 from hashlib import md5
 import cPickle as pickle
+from urlparse import urlsplit
+from StringIO import StringIO
 
-import sys
 from PIL import Image
 
 API_KEY = 'f4ec57f2eeb651e5719cc1adf8b3944c'
@@ -47,6 +48,8 @@ class Trakt(object):
             response = requests.get(url).json()
             pickle.dump(response, open(cacheFile, "wb"))
 
+        print url
+
         if isinstance(response, dict) and response.get('status', False) == 'failure':
             raise Exception(response.get('error', 'Unknown Error'))
 
@@ -63,13 +66,19 @@ class Trakt(object):
     def getPosters(self, response):
         size = 138
         for item in response:
-            movieId = item.get('poster').rsplit('/', 1)[1]
+            if item.get('poster') is not None:
+                coverPath = item.get('poster')
+            elif item.get('images')['poster'] is not None:
+                coverPath = item.get('images')['poster']
 
-            url = IMAGE_URL % (movieId, size)
+            filename, extension = os.path.splitext(coverPath)
+            filename = filename.rsplit('/', 1)[1].split('.')[0]
+            url = IMAGE_URL % (filename, size)
+
             coverFile = os.path.join(self.cacheLocation, md5(url).hexdigest())
             if os.path.exists(coverFile):
                 pass  # Skip for now
             else:
-                urllib.urlretrieve(url, coverFile)
-
-           # print item.get('title') + ' -- '+ item.get('url') + ' -- '+ item.get('poster').rsplit('/', 1)[1]
+                r = requests.get(url)
+                with open(coverFile, 'wb') as c:
+                    c.write(r.content)

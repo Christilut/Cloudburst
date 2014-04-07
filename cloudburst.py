@@ -116,7 +116,8 @@ class Cloudburst():
 if __name__ == "__main__":
 
     trakt = Trakt('D:/temp/cache/')
-    trending = trakt.request('movies/trending')
+    #trending = trakt.request('movies/trending')
+    trakt.request('search/movies', params=['batman', '2'])
     #for item in trending['data']:
         #print item.get('poster')
 
