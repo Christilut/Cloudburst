@@ -17,13 +17,9 @@
         <li><input type="text" placeholder="Search" name="search" /></li>
     </ul>
 
-    <div class="demo-content">
-      <button class="toggle-loading">Toggle Overlay</button>
-    </div>
-
     <div style="clear: both"></div>
     <div id="isotopegallery" class="photos clearfix">
-       <div class="photo trending-movies" data-symbol="sherlock-holmes">
+        <!--<div class="photo trending-movies" data-symbol="sherlock-holmes">
             <img src="../images/covers/sherlock-holmes.jpg" alt="sherlock-holmes" width="134" height="197" />
         </div>
 
@@ -45,38 +41,24 @@
 
         <div class="photo trending-movies" data-symbol="world-war-z">
             <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="134" height="197" />
-        </div>
-
-         <div id="target"></div>
+        </div>-->
     </div>
 
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.isotope.js"></script>
     <script src="js/loading-overlay.min.js"></script>
     <script>
-        $(function(){
-            var $container = $('#isotopegallery');
+        jQuery(function ($) {
+            var container = $('#isotopegallery');
 
-            $container.isotope({
+            container.isotope({
                 itemSelector: '.photo'
             });
 
             $('#filters a').click(function(){
                 var selector = $(this).attr('data-filter');
-                $container.isotope({ filter: selector });
+                container.isotope({ filter: selector });
                 return false;
-            });
-        });
-
-        jQuery(function ($) {
-            var target = $('#target');
-
-            $('.toggle-loading').click(function () {
-                if (target.hasClass('loading')) {
-                    target.loadingOverlay('remove');
-                } else {
-                    target.loadingOverlay();
-                };
             });
         });
     </script>

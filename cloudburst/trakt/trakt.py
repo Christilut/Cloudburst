@@ -1,16 +1,16 @@
-try:
-    from urllib import quote_plus
-except ImportError:
-    from urllib.parse import quote_plus
-
 import os
 import time
+import urllib
 import requests
 from hashlib import md5
 import cPickle as pickle
 
+import sys
+from PIL import Image
+
 API_KEY = 'f4ec57f2eeb651e5719cc1adf8b3944c'
 TRAKT_URL =  'http://api.trakt.tv/%s.json/%s%s'
+IMAGE_URL = 'https://zapp.trakt.us/images/posters_movies/%s-%s.jpg'
 
 
 class Trakt(object):
@@ -57,5 +57,19 @@ class Trakt(object):
             return {'success': False, 'message': 'Unknown failure'}
 
         if type(response) is not dict or 'status' not in response:
-
+            self.getPosters(response)
             return {'success': True, 'data': response}
+
+    def getPosters(self, response):
+        size = 138
+        for item in response:
+            movieId = item.get('poster').rsplit('/', 1)[1]
+
+            url = IMAGE_URL % (movieId, size)
+            coverFile = os.path.join(self.cacheLocation, md5(url).hexdigest())
+            if os.path.exists(coverFile):
+                pass  # Skip for now
+            else:
+                urllib.urlretrieve(url, coverFile)
+
+           # print item.get('title') + ' -- '+ item.get('url') + ' -- '+ item.get('poster').rsplit('/', 1)[1]

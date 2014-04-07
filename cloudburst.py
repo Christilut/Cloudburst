@@ -118,8 +118,7 @@ if __name__ == "__main__":
     trakt = Trakt('D:/temp/cache/')
     trending = trakt.request('movies/trending')
     #for item in trending['data']:
-    #   print item
-    #Trakt.request('search/movies', params=['batman', '2'])
+        #print item.get('poster')
 
     # Set data dirs
     appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
