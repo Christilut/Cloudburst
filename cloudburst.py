@@ -1,5 +1,4 @@
 import platform
-from cloudburst.vlcInterface import VlcInterface
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -27,6 +26,7 @@ from cloudburst import window
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
 from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+from cloudburst.vlcInterface import VlcInterface
 
 class Cloudburst():
     CEF_DEBUG = False # If true, spams console with CEFPython debug messages
@@ -76,17 +76,17 @@ class Cloudburst():
         #         {"name": "Nested dictionary", "isNested": True},
         #         [1,"2", None]])
 
-        self.vlcInterface = VlcInterface(self, browser, jsBindings)
+        self.vlcInterface = VlcInterface.Instance()
+        self.vlcInterface.setBrowser(browser)
 
         jsBindings.SetObject("python", self.vlcInterface)
-        jsBindings.SetProperty('testProperty', 'hello')
         browser.SetJavascriptBindings(jsBindings)
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
         # Start the streaming back end
-        # self.streamingPlayer = StreamingPlayer(self)
-        # self.streamingPlayer.openTorrent('res/torrents/mp42.torrent') # TEMP
+        self.streamingPlayer = StreamingPlayer.Instance()
+        self.streamingPlayer.openTorrent('res/torrents/mkv2.torrent') # TEMP
 
         # blocking loop
         cefpython.MessageLoop()
@@ -94,7 +94,7 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        #self.streamingPlayer.shutdown()
+        self.streamingPlayer.shutdown()
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)
@@ -109,7 +109,6 @@ class Cloudburst():
 
     def OnLoadEnd(self, browser, frame, httpCode):
         self.isLoaded = True
-        self.vlcInterface.test()
 
 if __name__ == "__main__":
 

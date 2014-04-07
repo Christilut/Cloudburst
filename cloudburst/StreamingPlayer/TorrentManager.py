@@ -69,7 +69,7 @@ class TorrentManager():
         print 'Torrent piece size:', torrentInfo.piece_size(0) / 1024, 'kB'
         print 'Torrent total pieces:', torrentInfo.num_pieces()
         print 'Torrent total files:', torrentInfo.num_files()
-        print 'Video file offset pieces', self.filePiecesOffset
+        print 'Video file offset pieces:', self.filePiecesOffset
 
         if self.videoFileType == 'MKV':
             self.torrent = MKVTorrent(self, self.torrentHandle)

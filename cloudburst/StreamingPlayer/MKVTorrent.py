@@ -10,7 +10,7 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
     headerSize = 1 # size of the header (first x pieces)
     footerSize = 1 # size of the footer (last x pieces)
 
-    headerIncreaseSizeAmount = 3 # this many pieces are added to the front AND the back of the header buffer
+    headerIncreaseSizeAmount = 2 # this many pieces are added to the front AND the back of the header buffer
     headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
 
     # ATTRIBUTES (do not edit)
@@ -131,5 +131,17 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
         for n in iter(self.forwardBufferPieces):
             if not self.forwardBufferPieces[n]:
                 available = False
+
+        return available
+
+    def isHeaderAvailable(self):
+        available = True
+
+        super(MKVTorrent, self).isHeaderAvailable()
+
+        for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
+            if n in self.pieces:
+                if not self.pieces[n]:
+                    available = False
 
         return available

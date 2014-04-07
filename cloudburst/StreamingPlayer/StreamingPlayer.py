@@ -1,7 +1,10 @@
+from cloudburst.util.Singleton import Singleton
 from TorrentManager import TorrentManager
 import os.path, threading, time
 from threading import Timer
+from cloudburst.vlcInterface import VlcInterface
 
+@Singleton
 class StreamingPlayer():
 
     canPlay = False # True if video file is being played
@@ -22,9 +25,9 @@ class StreamingPlayer():
     bufferTimer = None
     waitForForwardBufferTimer = None
 
-    def __init__(self, parent):
-        self.parent = parent
+    vlcInterface = VlcInterface.Instance() # get the singleton instance
 
+    def __init__(self):
         self.isRunning = True
 
         # create the torrent manager
@@ -51,7 +54,7 @@ class StreamingPlayer():
         self.torrentManager.shutdown()
 
     def getVideoLength(self):
-        return self.parent.vlcInterface.getVideoLength()
+        return self.vlcInterface.getVideoLength()
 
     def setHeaderAvailable(self, available):
         self.headerAvailable = available
@@ -111,7 +114,7 @@ class StreamingPlayer():
             self.tryTorrentFilePlay()
 
     def tryTorrentFilePlay(self):
-
+        print 'trying to play...'
         if self.lastMediaPosition == None:
             self.playAtSeekpoint()
             self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.tryTorrentFilePlay)
@@ -154,26 +157,26 @@ class StreamingPlayer():
             print 'No file selected'
             return
 
-        self.parent.vlcInterface.openFile(self.currentFilePath)
+        self.vlcInterface.openFile(self.currentFilePath)
         print 'Opening file:', self.currentFilePath
 
     def playPause(self):
-        self.parent.vlcInterface.playPause()
+        self.vlcInterface.playPause()
 
     def playAtSeekpoint(self):
         print 'Playing at seekpoint:', self.desiredSeekPoint
         self.play()
-        self.parent.vlcInterface.setPosition(self.desiredSeekPoint)
+        self.vlcInterface.setPosition(self.desiredSeekPoint)
 
     def play(self):
         print 'Playing'
-        self.parent.vlcInterface.play()
+        self.vlcInterface.play()
 
     def pause(self):
-        self.parent.vlcInterface.pause()
+        self.vlcInterface.pause()
 
     def stop(self):
-        self.parent.vlcInterface.stop()
+        self.vlcInterface.stop()
         self.canPlay = False
         # self.desiredSeekPoint = 0
 
@@ -181,5 +184,5 @@ class StreamingPlayer():
         pass
 
     def getPosition(self):
-        return self.parent.vlcInterface.getPosition()
+        return self.vlcInterface.getPosition()
 

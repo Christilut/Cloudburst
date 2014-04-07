@@ -38,7 +38,7 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
         if available:
             self.parent.setDownloadLimit(True)
 
-    def isHeaderAvailable(self):
+    def isHeaderAvailable(self): # do not call super. Avi can only start from 0
         available = True
 
         for n in range(self.filePiecesOffset, self.filePiecesOffset + self.bufferSize):
