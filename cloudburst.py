@@ -95,6 +95,7 @@ class Cloudburst():
 
         # Shuts down threads and cancels running timers (these would otherwise block)
         self.streamingPlayer.shutdown()
+        print 'Shutdown complete'
 
     def closeWindow(self, windowHandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowHandle)

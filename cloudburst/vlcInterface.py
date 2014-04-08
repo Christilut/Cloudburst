@@ -15,6 +15,9 @@ class VlcInterface: # TODO make static
     videoPosition = 0.0
     videoPositionReceived = False
 
+    videoCurrentTime = 0
+    videoCurrentTimeReceived = False
+
     def __init__(self):
         pass
 
@@ -59,7 +62,7 @@ class VlcInterface: # TODO make static
         if timeWaiting >= 10:
             print 'Error! Could not get the video position from VLC'
             return -1
-
+        print self.videoPosition
         return self.videoPosition
 
     def videoPositionCallback(self, position): # JS calls this, cant be static
@@ -78,12 +81,31 @@ class VlcInterface: # TODO make static
         if timeWaiting >= 10:
             print 'Error! Could not get the video length from VLC'
             return -1
-
+        # print self.videoLength
         return self.videoLength
 
     def videoLengthCallback(self, length):
         self.videoLength = length
         self.videoLengthReceived = True
+
+    def getTime(self):
+        self.frame.ExecuteJavascript('javascript:python.videoCurrentTimeCallback(vlc.input.time)')
+
+        timeWaiting = 0
+        while not self.videoCurrentTimeReceived and timeWaiting < 10: # hacky but tests show it takes ~1ms during no load situations
+            time.sleep(0.001)
+
+        self.videoCurrentTimeReceived = False
+
+        if timeWaiting >= 10:
+            print 'Error! Could not get the video position from VLC'
+            return -1
+
+        return self.videoCurrentTime
+
+    def videoCurrentTimeCallback(self, time): # JS calls this, cant be static
+        self.videoCurrentTime = time
+        self.videoCurrentTimeReceived = True
 
     def setTime(self, ms):
         self.frame.ExecuteJavascript('vlc.input.time = ' + str(ms) + ';')

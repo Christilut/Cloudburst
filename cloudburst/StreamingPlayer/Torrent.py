@@ -184,17 +184,11 @@ class Torrent(object):
         return self.pieces.copy()
 
     def isHeaderAvailable(self):
-        # available = True
 
         for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
             if n in self.pieces: # if not in pieces, it was set to True and is already removed
                 if not self.pieces[n]:
                     available = False
-
-        # for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
-        #     if n in self.pieces:
-        #         if not self.pieces[n]:
-        #             available = False
 
         if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
             for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
@@ -202,7 +196,6 @@ class Torrent(object):
                     if not self.pieces[n]:
                         available = False
 
-        # return available
 
     # When header is in, call this function. Start to play movie and enable custom sequential download
     def setHeaderAvailable(self, available):

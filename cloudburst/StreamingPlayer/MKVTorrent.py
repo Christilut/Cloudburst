@@ -120,17 +120,19 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
 
         self.parent.setDownloadLimit(True)
 
-        print 'Forward buffer available'
+        if self.enableDebugInfo:
+            print 'Forward buffer available'
 
     def isForwardBufferAvailable(self, pieceNumber):
 
         if pieceNumber in self.forwardBufferPieces:
             self.forwardBufferPieces[pieceNumber] = True
 
-        available = True
+        available = True # start at True
+
         for n in iter(self.forwardBufferPieces):
             if not self.forwardBufferPieces[n]:
-                available = False
+                available = False # if any piece is false, set available to False
 
         return available
 
