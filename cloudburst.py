@@ -87,6 +87,7 @@ class Cloudburst():
         # Start the streaming back end
         self.streamingPlayer = StreamingPlayer.Instance()
         self.streamingPlayer.openTorrent('res/torrents/mkv2.torrent') # TEMP
+        self.streamingPlayer.torrentManager.startTorrent()
 
         # blocking loop
         cefpython.MessageLoop()

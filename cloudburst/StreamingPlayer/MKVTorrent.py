@@ -13,18 +13,15 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
     headerIncreaseSizeAmount = 2 # this many pieces are added to the front AND the back of the header buffer
     headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
 
-    # ATTRIBUTES (do not edit)
-
-    forwardBufferRequested = False
-    forwardBufferAvailable = False
-    forwardBufferPieces = {}
-
-    headerIncreaseSizeCurrent = 0 # starting value, do not edit # TODO figure out what to do with values that need not be edited
-
-
     def __init__(self, parent, torrentHandle):
 
         super(MKVTorrent, self).__init__(parent, torrentHandle)
+
+        self.forwardBufferRequested = False     # The forward buffer should only be requested once, after seeking
+        self.forwardBufferAvailable = False     # True if the forward buffer is available, which is the seekPointPieceNumber + bufferSize
+        self.forwardBufferPieces = {}           # Dict of the pieces we are waiting for, in order to determine if the forward buffer is available
+        self.headerIncreaseSizeCurrent = 0      # The seekpoint header (not forward buffer) grows by this amount in both directions. headerIncreaseSizeAmount is added every call
+
 
     def initializePieces(self):
 

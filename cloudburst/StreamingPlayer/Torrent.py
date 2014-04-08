@@ -10,28 +10,23 @@ class Torrent(object):
 
     enableDebugInfo = True
 
-    # ATTRIBUTES (do not edit)
-
-    torrentHandle = None
-    torrentStatus = None
-
-    isRunning = False
-
-    seekPointPieceNumber = 0 # TODO turn into properties, readonly
-    currentPieceNumber = 0
-    seekPoint = 0 # from 0 to 1
-    videoPieces = -1 # Total amount of pieces in the torrent
-    headerAvailable = False
-    filePiecesOffset = 0 # Amount of pieces the video file is offset by. These pieces include all skipped files before the video
-
-    totalPieces  = -1 # Total amount of pieces in the torrent
-
-    pieces = {}
 
     def __init__(self, parent, torrentHandle):
 
         self.parent = parent
         self.torrentHandle = torrentHandle
+
+        # Init vars, do not edit
+        self.torrentStatus = None       # Status object of the torrent, obtained from libtorrent
+        self.isRunning = False          # if the torrent has been started # TODO
+        self.seekPointPieceNumber = 0   # The piece that corresponds with the seekPoint
+        self.currentPieceNumber = 0     # current piece the torrent should be downloading (+ bufferSize)
+        self.seekPoint = 0              # from 0 to 1, point where the video wishes to play from
+        self.videoPieces = -1           # Total amount of pieces in the torrent
+        self.headerAvailable = False    # True if the header, footer and seekpoint are available
+        self.filePiecesOffset = 0       # Amount of pieces the video file is offset by. These pieces include all skipped files before the video
+        self.totalPieces  = -1          # Total amount of pieces in the torrent
+        self.pieces = {}                # Dict of the pieces that we are waiting for
 
         # Some sanity checks
         assert self.bufferSize >= self.paddingSize
@@ -42,8 +37,8 @@ class Torrent(object):
     def shutdown(self):
         self.isRunning = False
 
-    # Start the torrent and the required threads
-    def startTorrent(self, seekpoint, totalPieces, videoPieces, filePiecesOffset ):
+    # Open the torrent. Do not yet download. Peers will be requested. This will allow starting the download faster when actually required.
+    def openTorrent(self, seekpoint, totalPieces, videoPieces, filePiecesOffset ):
 
         assert seekpoint is not None
 
@@ -52,13 +47,18 @@ class Torrent(object):
         self.videoPieces = videoPieces
         self.filePiecesOffset = filePiecesOffset
 
+        # Download is not started yet but torrent is active. This results in finding peers without downloading.
+
+
+    # Start the torrent. This will enable pieces and actually start the download.
+    def startTorrent(self):
+        # Determine which pieces are wanted
         self.initializePieces()
 
         # start download thread
         downloadThread = threading.Thread(target=self.threadTorrentInfo)
         downloadThread.daemon = True
         downloadThread.start()
-
 
     # Check which pieces already exist in an existing file, if available
     def checkCache(self):
@@ -273,12 +273,12 @@ class Torrent(object):
         while not self.torrentHandle.is_seed() and self.isRunning: # while not finished
             self.torrentStatus = self.torrentHandle.status()
 
-            if self.torrentStatus.progress != 1:
-                state_str = ['queued', 'checking', 'downloading metadata',
-                        'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
-                print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
-                    (self.torrentStatus.download_rate / 1000,
-                    self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
+            # if self.torrentStatus.progress != 1: # if not finished
+            state_str = ['queued', 'checking', 'downloading metadata',
+                    'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
+            print '\rdown: %.1f kB/s, peers: %d, status: %s' % \
+                (self.torrentStatus.download_rate / 1000,
+                self.torrentStatus.num_peers, state_str[self.torrentStatus.state])
 
             if self.enableDebugInfo:
                 self.printTorrentDebug()

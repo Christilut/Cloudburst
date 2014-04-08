@@ -41,6 +41,9 @@ class TorrentManager():
     def setHeaderAvailable(self, available):
         self.parent.setHeaderAvailable(available)
 
+    def startTorrent(self):
+        self.torrent.startTorrent()
+
     def openTorrent(self, path, seekpoint = 0):
 
         if self.torrentHandle is not None:
@@ -65,6 +68,11 @@ class TorrentManager():
 
         self.videoFile = self.findVideoFile(torrentInfo.files())
 
+        # Disable all files, we do not want to download yet. Download starts when torrent.startTorrent() is called
+        # for n in range(0, torrentInfo.num_files()):
+        filesSkipped = [0] * torrentInfo.num_files()
+        self.torrentHandle.prioritize_files(filesSkipped)
+
         # Print some torrent stats
         print 'Torrent piece size:', torrentInfo.piece_size(0) / 1024, 'kB'
         print 'Torrent total pieces:', torrentInfo.num_pieces()
@@ -80,7 +88,7 @@ class TorrentManager():
 
         totalPieces = torrentInfo.num_pieces()
 
-        self.torrent.startTorrent(seekpoint, totalPieces, self.videoPieces, self.filePiecesOffset)
+        self.torrent.openTorrent(seekpoint, totalPieces, self.videoPieces, self.filePiecesOffset)
 
         # start alert thread
         alertThread = threading.Thread(target=self.threadAlert)

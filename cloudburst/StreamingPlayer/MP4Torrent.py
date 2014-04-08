@@ -4,12 +4,11 @@ import Torrent
 class MP4Torrent(Torrent.Torrent): # inherit from Torrent
     # VARS (can edit)
     # TODO calc buffer size or slowly increasing buffer so it sometimes plays sooner
-    bufferSize = 5 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
-    seekPointOffset = 0
     # TODO calc header size with mp4file (moov)
-    headerSize = 5 # size of the header (first x pieces) (min of 3 for test mp4)
-    seekPointSize = 50 # size of the seekpoint and amount of pieces after it (point + x pieces)
-    footerSize = 0 # size of the footer (last x pieces)
+    bufferSize = 5          # In pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
+    headerSize = 5          # Size of the header (first x pieces) (min of 3 for test mp4)
+    seekPointSize = 50      # Size of the seekpoint and amount of pieces after it (point + x pieces)
+    footerSize = 0          # Size of the footer (last x pieces)
 
     def __init__(self, parent, torrentHandle):
 
@@ -74,7 +73,7 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
         # if all pieces we currently want are downloaded
         if self.headerAvailable and piecesMissing == 0:
 
-            if self.firstBufferRequested == False:
+            if not self.firstBufferRequested:
                 self.increaseBuffer(increasePiecePosition=self.headerSize)
                 self.firstBufferRequested = True
             else:
