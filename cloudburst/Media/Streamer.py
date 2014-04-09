@@ -1,41 +1,32 @@
-from cloudburst.util.Singleton import Singleton
-from TorrentManager import TorrentManager
-import os.path, threading, time
+import os.path
 from threading import Timer
+
+from cloudburst.util.Singleton import Singleton
 from cloudburst.vlcInterface import VlcInterface
 
 @Singleton
-class StreamingPlayer():
+class Streamer():
 
     # Vars, can be edited
     bufferInterval = 0.5   # Time in s between buffer checks
     tryTorrentPlayInterval = 5 # Time in s between attempts to play the file while the header is being downloaded
 
-
-    vlcInterface = VlcInterface.Instance() # get the singleton instance
-
     def __init__(self):
-        self.isRunning = True
 
-        # create the torrent manager
-        self.torrentManager = TorrentManager(self)
+        self.vlcInterface = VlcInterface.Instance() # get the singleton instance
+
+        self.isRunning = True
 
         # init vars, should not be edited
         self.torrentPlayTimer = None         # timer, VLC will attempt to play the file every time this is called
         self.bufferTimer = None              # timer, time between checks if a) the file exists and b) the header is available
         self.waitForForwardBufferTimer = None # timer, tiem between checks if the forward buffer (only for MKV) is available
         self.forwardBufferAvailable = False  # if True, MKV can start playing from a seekpoint
-        self.currentFilePath = None          # Full path of current video file
         self.videoFileExists = False         # True if video file is present on disk. Use this bool to prevent unnecessary disk access
         self.headerAvailable = False         # True if header info of the video file is downloaded
         self.seekPointAvailable = False      # True if a buffer exists from the seek point onward
         self.desiredSeekPoint = 0            # from 0 to 1, the point where the video wishes to play from
         self.lastMediaPosition = None        # To determine if video is actually playing (based on media position difference)
-        self.canPlay = False                 # True if video file is being played
-
-
-        # TEMP open torrent
-        # self.setDesiredSeekpoint(0.4)
 
     def shutdown(self):
 
@@ -43,41 +34,24 @@ class StreamingPlayer():
 
         # cancelling timers is not required if they are set to .daemon = True
 
-        self.torrentManager.shutdown()
-
     def getVideoLength(self):
         return self.vlcInterface.getVideoLength()
 
     def setHeaderAvailable(self, available):
         self.headerAvailable = available
 
-    def setDesiredSeekpoint(self, seekpoint): # from 0 to 1
+    def waitForFileBuffer(self, path=None, seekpoint=None):
 
-        assert (seekpoint >= 0 and seekpoint < 1)
+        if self.bufferTimer is not None:
+            self.bufferTimer.cancel()
 
-        if self.torrentManager.videoFileType == 'AVI':
-            print '.avi files do not support seeking'
-            return # abort seeking
+        if seekpoint is not None:
+            self.desiredSeekPoint = seekpoint
 
-        self.desiredSeekPoint = seekpoint
+        if path is not None:
+            self.currentFilePath = path
 
-        if self.currentFilePath is not None:
-            self.stop() # TODO perhaps delete torrent object and start a new one when seeking?
-            self.torrentManager.torrent.setVideoPosition(seekpoint)
-            self.waitForFileBuffer()
 
-    def openTorrent(self, path):
-        if self.currentFilePath is not None:
-            print 'File path already entered'
-            return
-
-        self.currentFilePath = self.torrentManager.openTorrent(path, self.desiredSeekPoint)
-
-        print 'Waiting for file: ' + self.currentFilePath
-
-        self.waitForFileBuffer()
-
-    def waitForFileBuffer(self):
         if not self.videoFileExists:
             if not os.path.isfile(self.currentFilePath):
                 # print 'File does not yet exist, waiting 1 second...'
@@ -108,17 +82,21 @@ class StreamingPlayer():
             self.tryTorrentFilePlay()
 
     def tryTorrentFilePlay(self):
+        if self.torrentPlayTimer is not None:
+            self.torrentPlayTimer.cancel()
+
         print 'trying to play...', self.lastMediaPosition
 
-        currentTime = self.getTime()
+        currentMediaPosition = self.getTime()
+        print 'current pos:', currentMediaPosition
 
         if self.lastMediaPosition == None:
             self.playAtSeekpoint()
             self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.tryTorrentFilePlay)
             self.torrentPlayTimer.daemon = True
             self.torrentPlayTimer.start()
-
-        elif self.lastMediaPosition == currentTime or currentTime == 0:
+            
+        elif self.lastMediaPosition == currentMediaPosition or currentMediaPosition == 0:
             # TODO try to use the fact that get_position() returns 0.0 when seeking fails
             self.stop()
 
@@ -126,24 +104,26 @@ class StreamingPlayer():
             playTimer = Timer(0.1, self.playAtSeekpoint)
             playTimer.daemon = True
             playTimer.start()
-
+            
             self.torrentPlayTimer = Timer(self.tryTorrentPlayInterval, self.tryTorrentFilePlay)
             self.torrentPlayTimer.daemon = True
             self.torrentPlayTimer.start()
 
         else:
-            self.canPlay = True
+            from cloudburst.Media.TorrentManager import TorrentManager
+            torrentManager = TorrentManager.Instance()
+            torrentManager.torrent.setPlayable(True)
             print 'Can succesfully play'
-            self.torrentManager.torrent.updatePieceList(self.torrentManager.torrent.seekPointPieceNumber)
+            torrentManager.torrent.updatePieceList(torrentManager.torrent.seekPointPieceNumber)
 
-            if self.desiredSeekPoint != 0 and self.torrentManager.videoFileType == 'MKV':
+            if self.desiredSeekPoint != 0 and torrentManager.videoFileType == 'MKV':
                 self.pause()
 
                 self.waitForForwardBufferTimer = Timer(1, self.waitForForwardBuffer)
                 self.waitForForwardBufferTimer.daemon = True
                 self.waitForForwardBufferTimer.start()
 
-        self.lastMediaPosition = currentTime
+        self.lastMediaPosition = currentMediaPosition
 
     def waitForForwardBuffer(self):
 
@@ -180,7 +160,9 @@ class StreamingPlayer():
 
     def stop(self):
         self.vlcInterface.stop()
-        self.canPlay = False
+        from cloudburst.Media.TorrentManager import TorrentManager
+        torrentManager = TorrentManager.Instance()
+        torrentManager.torrent.setPlayable(False)
         # self.desiredSeekPoint = 0
 
     def setVolume(self, volume):

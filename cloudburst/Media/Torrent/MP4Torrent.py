@@ -5,14 +5,15 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
     # VARS (can edit)
     # TODO calc buffer size or slowly increasing buffer so it sometimes plays sooner
     # TODO calc header size with mp4file (moov)
-    bufferSize = 5          # In pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
+    bufferSize = 5          # In pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available,
+                            #  the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
     headerSize = 5          # Size of the header (first x pieces) (min of 3 for test mp4)
     seekPointSize = 50      # Size of the seekpoint and amount of pieces after it (point + x pieces)
     footerSize = 0          # Size of the footer (last x pieces)
 
-    def __init__(self, parent, torrentHandle):
+    def __init__(self, parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset):
 
-        super(MP4Torrent, self).__init__(parent, torrentHandle)
+        super(MP4Torrent, self).__init__(parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset)
 
         self.firstBufferRequested = False
 
@@ -41,7 +42,16 @@ class MP4Torrent(Torrent.Torrent): # inherit from Torrent
     def isHeaderAvailable(self):
         available = True
 
-        super(MP4Torrent, self).isHeaderAvailable()
+        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+            if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                if not self.pieces[n]:
+                    available = False
+
+        if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
+            for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
+                if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                    if not self.pieces[n]:
+                        available = False
 
         for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.seekPointSize):
             if n in self.pieces:

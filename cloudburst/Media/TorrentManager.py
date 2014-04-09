@@ -1,22 +1,26 @@
+import threading
 import libtorrent as lt
-from MKVTorrent import MKVTorrent
-from MP4Torrent import MP4Torrent
-from AVITorrent import AVITorrent
-import appdirs, threading
+import appdirs
 
+
+from cloudburst.util.Singleton import Singleton
+from cloudburst.Media.Torrent.MKVTorrent import MKVTorrent
+from cloudburst.Media.Torrent.MP4Torrent import MP4Torrent
+from cloudburst.Media.Torrent.AVITorrent import AVITorrent
+
+@Singleton
 class TorrentManager():
 
     torrent = None
     torrentHandle = None
     torrentSession = None
 
-    isRunning = False
-
     videoFile = lt.file_entry()
 
-    def __init__(self, parent):
+    def __init__(self):
 
-        self.parent = parent
+        # self.parent = parent
+        self.headerAvailable = False
 
         if lt.version != '0.16.16.0':
             print 'Wrong version of libtorrent detected, please install version 0.16.16.0, you have', lt.version
@@ -31,20 +35,29 @@ class TorrentManager():
 
         self.isRunning = True
 
+        from cloudburst.Media.Streamer import Streamer
+        self.streamer = Streamer.Instance()
+
     def shutdown(self):
         self.isRunning = False
-        self.torrent.shutdown()
+
+        if self.torrent is not None:
+            self.torrent.shutdown()
 
     def diskSpaceCheck(self): # TODO
         pass
 
-    def setHeaderAvailable(self, available):
-        self.parent.setHeaderAvailable(available)
+    # def setHeaderAvailable(self, available):
+    #     # self.headerAvailable = available
+    #     self.streamer.setHeaderAvailable(available)
 
-    def startTorrent(self):
-        self.torrent.startTorrent()
+    # def isHeaderAvailable(self):
+    #     return self.headerAvailable
 
-    def openTorrent(self, path, seekpoint = 0):
+    def startTorrent(self, seekpoint=0):
+        self.torrent.start(seekpoint)
+
+    def openTorrent(self, path):
 
         if self.torrentHandle is not None:
             print 'Another torrent is already in progress'
@@ -79,16 +92,10 @@ class TorrentManager():
         print 'Torrent total files:', torrentInfo.num_files()
         print 'Video file offset pieces:', self.filePiecesOffset
 
-        if self.videoFileType == 'MKV':
-            self.torrent = MKVTorrent(self, self.torrentHandle)
-        elif self.videoFileType == 'MP4':
-            self.torrent = MP4Torrent(self, self.torrentHandle)
-        elif self.videoFileType == 'AVI':
-            self.torrent = AVITorrent(self, self.torrentHandle)
 
-        totalPieces = torrentInfo.num_pieces()
+        self.totalPieces = torrentInfo.num_pieces()
 
-        self.torrent.openTorrent(seekpoint, totalPieces, self.videoPieces, self.filePiecesOffset)
+        self.createTorrent()
 
         # start alert thread
         alertThread = threading.Thread(target=self.threadAlert)
@@ -97,6 +104,14 @@ class TorrentManager():
 
         return self.downloadDirectory + self.videoFile.path
 
+    # Instantiates the torrent object
+    def createTorrent(self):
+        if self.videoFileType == 'MKV':
+            self.torrent = MKVTorrent(self, self.torrentHandle, self.totalPieces, self.videoPieces, self.filePiecesOffset)
+        elif self.videoFileType == 'MP4':
+            self.torrent = MP4Torrent(self, self.torrentHandle, self.totalPieces, self.videoPieces, self.filePiecesOffset)
+        elif self.videoFileType == 'AVI':
+            self.torrent = AVITorrent(self, self.torrentHandle, self.totalPieces, self.videoPieces, self.filePiecesOffset)
 
     # Determine which file in the torrent is the video file. Currently based on size and is checked for extension.
     def findVideoFile(self, fileList):
@@ -156,7 +171,7 @@ class TorrentManager():
         if limited:
 
             videoFileSize = float(self.videoFile.size) # in bytes
-            videoFileLength = float(self.parent.getVideoLength()) / 1000 # in s
+            videoFileLength = float(self.streamer.getVideoLength()) / 1000 # in s
 
             if videoFileLength > 0: # VLC may report -1 or 0 if it cant find the file length (seems to happen on AVI's)
 

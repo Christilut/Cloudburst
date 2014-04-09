@@ -7,9 +7,9 @@ class AVITorrent(Torrent.Torrent): # inherit from Torrent
     bufferSize = 5 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
 
 
-    def __init__(self, parent, torrentHandle):
+    def __init__(self, parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset):
 
-        super(AVITorrent, self).__init__(parent, torrentHandle)
+        super(AVITorrent, self).__init__(parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset)
 
     def initializePieces(self):
 

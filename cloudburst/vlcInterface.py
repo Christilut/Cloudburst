@@ -1,6 +1,6 @@
 import time
 from cloudburst.util.Singleton import Singleton
-# from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
+
 
 @Singleton
 class VlcInterface: # TODO make static
@@ -55,6 +55,7 @@ class VlcInterface: # TODO make static
 
         timeWaiting = 0
         while not self.videoPositionReceived and timeWaiting < 10: # hacky but tests show it takes ~1ms during no load situations
+            timeWaiting += 1
             time.sleep(0.001)
 
         self.videoPositionReceived = False
@@ -74,6 +75,7 @@ class VlcInterface: # TODO make static
 
         timeWaiting = 0
         while not self.videoLengthReceived and timeWaiting < 10: # hacky but tests show it takes ~1ms during no load situations
+            timeWaiting += 1
             time.sleep(0.001)
 
         self.videoLengthReceived = False
@@ -81,7 +83,7 @@ class VlcInterface: # TODO make static
         if timeWaiting >= 10:
             print 'Error! Could not get the video length from VLC'
             return -1
-        # print self.videoLength
+
         return self.videoLength
 
     def videoLengthCallback(self, length):
@@ -93,13 +95,14 @@ class VlcInterface: # TODO make static
 
         timeWaiting = 0
         while not self.videoCurrentTimeReceived and timeWaiting < 10: # hacky but tests show it takes ~1ms during no load situations
+            timeWaiting += 1
             time.sleep(0.001)
 
         self.videoCurrentTimeReceived = False
 
         if timeWaiting >= 10:
-            print 'Error! Could not get the video position from VLC'
-            return -1
+            print 'Error! Could not get the current video time from VLC'
+            return None
 
         return self.videoCurrentTime
 
@@ -111,5 +114,5 @@ class VlcInterface: # TODO make static
         self.frame.ExecuteJavascript('vlc.input.time = ' + str(ms) + ';')
 
     def changePositionCallback(self, position):
-        from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer # cant call it at the top
-        StreamingPlayer.Instance().setDesiredSeekpoint(position)
+        from cloudburst.MediaManager import MediaManager
+        MediaManager.Instance().setVideoPosition(position)

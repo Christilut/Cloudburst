@@ -1,4 +1,3 @@
-import libtorrent as lt
 import threading
 import time
 
@@ -11,10 +10,13 @@ class Torrent(object):
     enableDebugInfo = True
 
 
-    def __init__(self, parent, torrentHandle):
+    def __init__(self, parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset):
 
         self.parent = parent
         self.torrentHandle = torrentHandle
+        self.totalPieces = totalPieces              # Total amount of pieces in the torrent
+        self.videoPieces = videoPieces              # Total amount of pieces in the video file
+        self.filePiecesOffset = filePiecesOffset    # Amount of pieces the video file is offset by. These pieces include all skipped files before the video
 
         # Init vars, do not edit
         self.torrentStatus = None       # Status object of the torrent, obtained from libtorrent
@@ -22,11 +24,9 @@ class Torrent(object):
         self.seekPointPieceNumber = 0   # The piece that corresponds with the seekPoint
         self.currentPieceNumber = 0     # current piece the torrent should be downloading (+ bufferSize)
         self.seekPoint = 0              # from 0 to 1, point where the video wishes to play from
-        self.videoPieces = -1           # Total amount of pieces in the torrent
         self.headerAvailable = False    # True if the header, footer and seekpoint are available
-        self.filePiecesOffset = 0       # Amount of pieces the video file is offset by. These pieces include all skipped files before the video
-        self.totalPieces  = -1          # Total amount of pieces in the torrent
         self.pieces = {}                # Dict of the pieces that we are waiting for
+        self.playable = False
 
         # Some sanity checks
         assert self.bufferSize >= self.paddingSize
@@ -34,31 +34,29 @@ class Torrent(object):
 
         self.isRunning = True
 
-    def shutdown(self):
-        self.isRunning = False
-
-    # Open the torrent. Do not yet download. Peers will be requested. This will allow starting the download faster when actually required.
-    def openTorrent(self, seekpoint, totalPieces, videoPieces, filePiecesOffset ):
-
-        assert seekpoint is not None
-
-        self.setSeekpoint(seekpoint)
-        self.totalPieces = totalPieces
-        self.videoPieces = videoPieces
-        self.filePiecesOffset = filePiecesOffset
+        # start thread that displays torrent info
+        downloadThread = threading.Thread(target=self.threadTorrentInfo)
+        downloadThread.daemon = True
+        downloadThread.start()
 
         # Download is not started yet but torrent is active. This results in finding peers without downloading.
 
 
+    def shutdown(self):
+        self.isRunning = False
+
     # Start the torrent. This will enable pieces and actually start the download.
-    def startTorrent(self):
+    def start(self, seekpoint):
+
+        # Seekpoint position
+        self.seekPoint = seekpoint
+        self.currentPieceNumber = int(float(self.videoPieces) / 1 * seekpoint) + self.filePiecesOffset
+        self.seekPointPieceNumber = self.currentPieceNumber
+
+        self.setHeaderAvailable(False)
+
         # Determine which pieces are wanted
         self.initializePieces()
-
-        # start download thread
-        downloadThread = threading.Thread(target=self.threadTorrentInfo)
-        downloadThread.daemon = True
-        downloadThread.start()
 
     # Check which pieces already exist in an existing file, if available
     def checkCache(self):
@@ -66,6 +64,9 @@ class Torrent(object):
             if self.torrentHandle.have_piece(n):
                 if self.pieces[n]:
                     self.updatePieceList(n)
+
+    def setPlayable(self, playable):
+        self.playable = playable
 
     def getBytesDownloaded(self):
         return self.torrentStatus.total_wanted_done
@@ -183,41 +184,16 @@ class Torrent(object):
         # Return the list but use a copy otherwise a reference is used which will reflect changes in both ends
         return self.pieces.copy()
 
-    def isHeaderAvailable(self):
-
-        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
-            if n in self.pieces: # if not in pieces, it was set to True and is already removed
-                if not self.pieces[n]:
-                    available = False
-
-        if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
-            for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
-                if n in self.pieces: # if not in pieces, it was set to True and is already removed
-                    if not self.pieces[n]:
-                        available = False
-
-
     # When header is in, call this function. Start to play movie and enable custom sequential download
     def setHeaderAvailable(self, available):
-        self.parent.setHeaderAvailable(available)
         self.headerAvailable = available
+
+        from cloudburst.Media.Streamer import Streamer
+        Streamer.Instance().setHeaderAvailable(available)
 
         if self.enableDebugInfo:
             print 'Header available?', available
             self.printTorrentDebug()
-
-
-    # Seekpoint is the float from 0 to 1 where the video should play from
-    def setVideoPosition(self, position):
-
-        if self.enableDebugInfo:
-            print 'Seekpoint set to:', position
-
-        self.setSeekpoint(position)
-
-        self.initializePieces()
-
-        self.setHeaderAvailable(False)
 
     def updatePieceList(self, pieceNumber): # TODO incorporate timer that sets deadlines and increases buffer
         if self.enableDebugInfo:
@@ -230,13 +206,6 @@ class Torrent(object):
         if not self.headerAvailable:
             if self.isHeaderAvailable():
                 self.setHeaderAvailable(True)
-
-
-    def setSeekpoint(self, seekpoint):
-        # Seekpoint position
-        self.seekPoint = seekpoint
-        self.currentPieceNumber = int(float(self.videoPieces) / 1 * seekpoint) + self.filePiecesOffset + self.seekPointOffset
-        self.seekPointPieceNumber = self.currentPieceNumber
 
     def initializePieces(self):
 

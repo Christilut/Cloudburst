@@ -20,12 +20,11 @@ else:
 import win32con
 import win32gui
 import appdirs
-import threading
 
 from cloudburst import window
+from cloudburst.MediaManager import MediaManager
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
-from cloudburst.StreamingPlayer.StreamingPlayer import StreamingPlayer
 from cloudburst.vlcInterface import VlcInterface
 
 class Cloudburst():
@@ -84,10 +83,7 @@ class Cloudburst():
 
         browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
 
-        # Start the streaming back end
-        self.streamingPlayer = StreamingPlayer.Instance()
-        self.streamingPlayer.openTorrent('res/torrents/mkv2.torrent') # TEMP
-        self.streamingPlayer.torrentManager.startTorrent()
+        mediaManager = MediaManager.Instance()
 
         # blocking loop
         cefpython.MessageLoop()
@@ -95,7 +91,7 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        self.streamingPlayer.shutdown()
+        mediaManager.shutdown()
         print 'Shutdown complete'
 
     def closeWindow(self, windowHandle, message, wparam, lparam):

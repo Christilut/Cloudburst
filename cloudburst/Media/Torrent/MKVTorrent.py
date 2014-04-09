@@ -5,7 +5,6 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
     # VARS (can edit)
 
     bufferSize = 5 # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, the buffer needs to be big enough to re-initialize the torrent (around 10 should do) (based on bitrate)
-    seekPointOffset = 0
 
     headerSize = 1 # size of the header (first x pieces)
     footerSize = 1 # size of the footer (last x pieces)
@@ -13,9 +12,9 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
     headerIncreaseSizeAmount = 2 # this many pieces are added to the front AND the back of the header buffer
     headerIncreaseOffset = 1 # if this many pieces are missing from the header, headerIncreaseSizeAmount amount are added. Must be higher than headerIncreaseSizeAmount
 
-    def __init__(self, parent, torrentHandle):
+    def __init__(self, parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset):
 
-        super(MKVTorrent, self).__init__(parent, torrentHandle)
+        super(MKVTorrent, self).__init__(parent, torrentHandle, totalPieces, videoPieces, filePiecesOffset)
 
         self.forwardBufferRequested = False     # The forward buffer should only be requested once, after seeking
         self.forwardBufferAvailable = False     # True if the forward buffer is available, which is the seekPointPieceNumber + bufferSize
@@ -62,12 +61,12 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
             if self.isForwardBufferAvailable(pieceNumber):
                 self.setForwardBufferAvailable()
 
-        if self.parent.parent.canPlay: # TODO fix this nastyness
+        if self.playable:
             assert self.headerAvailable
 
         # if header available, the mkv may not yet play. increase the buffer on both ends and keep trying to play.
         if piecesMissing == 0:
-            if not self.parent.parent.canPlay:
+            if not self.playable:
                     self.increaseHeader()
 
             else: # if header + extra pieces large enough (so actually playing), start sequential download
@@ -113,7 +112,9 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
 
     def setForwardBufferAvailable(self):
         self.forwardBufferAvailable = True
-        self.parent.parent.forwardBufferAvailable = True
+
+        from cloudburst.Media.Streamer import Streamer
+        Streamer.Instance().forwardBufferAvailable = True
 
         self.parent.setDownloadLimit(True)
 
@@ -136,7 +137,16 @@ class MKVTorrent(Torrent.Torrent): # inherit from Torrent
     def isHeaderAvailable(self):
         available = True
 
-        super(MKVTorrent, self).isHeaderAvailable()
+        for n in range(self.filePiecesOffset, self.filePiecesOffset + self.headerSize):
+            if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                if not self.pieces[n]:
+                    available = False
+
+        if self.seekPointPieceNumber != self.filePiecesOffset: # footer does not get added when playing starts from beginning of file (= 0 + filePiecesOffset), so dont check it
+            for n in range(self.videoPieces + self.filePiecesOffset - self.footerSize, self.videoPieces + self.filePiecesOffset):
+                if n in self.pieces: # if not in pieces, it was set to True and is already removed
+                    if not self.pieces[n]:
+                        available = False
 
         for n in range(self.seekPointPieceNumber, self.seekPointPieceNumber + self.bufferSize):
             if n in self.pieces:
