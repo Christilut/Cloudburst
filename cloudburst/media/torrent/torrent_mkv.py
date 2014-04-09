@@ -28,7 +28,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         self.forward_buffer_available = False
 
         # Set the entire priority list to skip
-        piecelist = [0] * self.num_total_pieces # This fills a list of size videoPieces with 0's
+        piecelist = [0] * self.num_total_pieces     # This fills a list of size videoPieces with 0's
 
         super(TorrentMKV, self).initialize_pieces()
 
@@ -68,10 +68,10 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
             if not self.playable:
                     self.increase_header()
 
-            else: # if header + extra pieces large enough (so actually playing), start sequential download
+            else:   # if header + extra pieces large enough (so actually playing), start sequential download
 
                     if not self.forward_buffer_requested:
-                        self.current_piece += self.header_increase_size_current # add the additional pieces amount
+                        self.current_piece += self.header_increase_size_current     # add the additional pieces amount
                         self.forward_buffer_pieces = self.increase_buffer(piece_increase_amount=0)
                         self.forward_buffer_requested = True
                     else:

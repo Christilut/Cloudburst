@@ -27,6 +27,7 @@ class Torrent(object):
         self.header_available = False   # True if the header, footer and seekpoint are available
         self.pieces = {}                # Dict of the pieces that we are waiting for
         self.playable = False           # True if the file is playable
+        self.header_increase_size_current = 0
 
         # Some sanity checks
         assert self.buffer_size >= self.padding_size
@@ -75,7 +76,7 @@ class Torrent(object):
 
     def print_torrent_debug(self):
 
-        infoSize = 55
+        info_size = 55
 
         print 'Avail.\t(', self.current_piece, ')\t:',
 
@@ -90,7 +91,7 @@ class Torrent(object):
             print '#',
 
         # Seekpoint
-        for n in range(max(self.current_piece - infoSize, self.num_video_offset_pieces), min(self.current_piece + infoSize, self.num_video_pieces + self.num_video_offset_pieces - 1)):
+        for n in range(max(self.current_piece - info_size, self.num_video_offset_pieces), min(self.current_piece + info_size, self.num_video_pieces + self.num_video_offset_pieces - 1)):
             if self.torrenthandle.have_piece(n):
                 print '1',
             else:
@@ -121,7 +122,7 @@ class Torrent(object):
             print '#',
 
         # Seekpoint
-        for n in range(max(self.current_piece - infoSize, self.num_video_offset_pieces), min(self.current_piece + infoSize, self.num_video_pieces + self.num_video_offset_pieces - 1)):
+        for n in range(max(self.current_piece - info_size, self.num_video_offset_pieces), min(self.current_piece + info_size, self.num_video_pieces + self.num_video_offset_pieces - 1)):
             if self.torrenthandle.piece_priority(n):
                 print '1',
             else:
@@ -182,7 +183,7 @@ class Torrent(object):
             print 'Header available?', available
             self.print_torrent_debug()
 
-    def update_pieces(self, piece_number): # TODO incorporate timer that sets deadlines and increases buffer
+    def update_pieces(self, piece_number):  # TODO incorporate timer that sets deadlines and increases buffer
         if self.enable_debug_info:
             print 'Updated piece', piece_number
 
@@ -224,10 +225,10 @@ class Torrent(object):
 
     def thread_torrent_info(self):  # thread
 
-        while not self.torrenthandle.is_seed() and self.running: # while not finished
+        while not self.torrenthandle.is_seed() and self.running:    # while not finished
             self.torrent_status = self.torrenthandle.status()
 
-            # if self.torrentStatus.progress != 1: # if not finished
+            # if self.torrentStatus.progress != 1:  # if not finished
             state_str = ['queued', 'checking', 'downloading metadata',
                          'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']
 

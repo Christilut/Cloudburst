@@ -4,6 +4,7 @@ from threading import Timer
 from cloudburst.util.Singleton import Singleton
 from cloudburst.vlc import VLC
 
+
 @Singleton
 class Player():
 
@@ -76,7 +77,7 @@ class Player():
             # At this point, buffer is large enough and the video should be playable
             self.open_file()
 
-            self.previous_video_position = None # initial value for tryTorrentFilePlay, reset here incase of seeking
+            self.previous_video_position = None     # initial value for tryTorrentFilePlay, reset here incase of seeking
             self.await_video_playable()
 
     def await_video_playable(self):

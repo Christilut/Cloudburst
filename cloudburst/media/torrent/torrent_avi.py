@@ -1,7 +1,7 @@
 import torrent
 
 
-class TorrentAVI(torrent.Torrent): # inherit from Torrent
+class TorrentAVI(torrent.Torrent):  # inherit from Torrent
     # VARS (can edit)
     # TODO calc buffer size or slowly increasing buffer so it sometimes plays sooner
     buffer_size = 5  # in pieces, should be a minimum of paddingSize. Since the peers are lost when the header is available, \

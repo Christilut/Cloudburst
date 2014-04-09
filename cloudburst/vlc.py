@@ -66,11 +66,11 @@ class VLC:
         print self.video_position
         return self.video_position
 
-    def video_position_callback(self, position): # JS calls this, cant be static
+    def video_position_callback(self, position):    # JS calls this, cant be static
         self.video_position = position
         self.video_position_received = True
 
-    def get_video_length(self): # TODO can this be less hacky?
+    def get_video_length(self):  # TODO can this be less hacky?
         self.frame.ExecuteJavascript('javascript:python.video_length_callback(vlc.input.length)')
 
         t = 0
@@ -94,7 +94,7 @@ class VLC:
         self.frame.ExecuteJavascript('javascript:python.video_current_time_callback(vlc.input.time)')
 
         t = 0
-        while not self.video_current_time_received and t < 10: # hacky but tests show it takes ~1ms during no load situations
+        while not self.video_current_time_received and t < 10:  # hacky but tests show it takes ~1ms during no load situations
             t += 1
             time.sleep(0.001)
 

@@ -7,6 +7,7 @@ from cloudburst.media.torrent.torrent_mkv import TorrentMKV
 from cloudburst.media.torrent.torrent_mp4 import TorrentMP4
 from cloudburst.media.torrent.torrent_avi import TorrentAVI
 
+
 @Singleton
 class TorrentManager():
 
@@ -66,7 +67,7 @@ class TorrentManager():
 
         # Allocation settings (these should be default but make sure they are correct)
         settings = lt.session_settings()
-        settings.close_redundant_connections = False # This keeps peers connected
+        settings.close_redundant_connections = False    # This keeps peers connected
         settings.disk_io_write_mode = lt.io_buffer_mode_t.enable_os_cache
         settings.disk_io_read_mode = lt.io_buffer_mode_t.enable_os_cache
 
@@ -75,7 +76,7 @@ class TorrentManager():
         e = lt.bdecode(open(path, 'rb').read())
         torrentinfo = lt.torrent_info(e)
 
-        self.torrenthandle = self.torrent_session.add_torrent({'ti': torrentinfo, 'save_path': self.download_directory, 'storage_mode' : lt.storage_mode_t.storage_mode_sparse})
+        self.torrenthandle = self.torrent_session.add_torrent({'ti': torrentinfo, 'save_path': self.download_directory, 'storage_mode': lt.storage_mode_t.storage_mode_sparse})
 
         self.video_file = self.find_video_file(torrentinfo.files())
 
@@ -124,7 +125,7 @@ class TorrentManager():
 
         for n in range(0, len(filelist)):
             if not n == video_file_index:   # dont skip the video file
-                self.torrenthandle.file_priority(n, 0);
+                self.torrenthandle.file_priority(n, 0)
 
         piece_priorities = self.torrenthandle.piece_priorities()
 
