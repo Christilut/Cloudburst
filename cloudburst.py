@@ -22,68 +22,69 @@ import win32gui
 import appdirs
 
 from cloudburst import window
-from cloudburst.MediaManager import MediaManager
+from cloudburst.media_manager import MediaManager
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
-from cloudburst.vlcInterface import VlcInterface
+from cloudburst.vlc import VLC
+
 
 class Cloudburst():
     CEF_DEBUG = False # If true, spams console with CEFPython debug messages
-    isLoaded = False # True is HTML page is done loading
-    isRunning = False # Thread running
-    vlcInterface = None
+    html_loaded = False # True is HTML page is done loading
+    running = False # Thread running
+    vlc = None
 
     def __init__(self):
 
-        self.isRunning = True
+        self.running = True
 
         sys.excepthook = exceptionHook
-        applicationSettings = dict()
+        applicationsettings = dict()
 
         if self.CEF_DEBUG:
             window.g_debug = True
-            applicationSettings['debug'] = True
-            applicationSettings['release_dcheck_enabled'] = True
+            applicationsettings['debug'] = True
+            applicationsettings['release_dcheck_enabled'] = True
 
-        applicationSettings['log_file'] = getApplicationPath('debug.log')
-        applicationSettings['log_severity'] = cefpython.LOGSEVERITY_INFO
-        applicationSettings['browser_subprocess_path'] = '%s/%s' % (cefpython.GetModuleDirectory(), 'subprocess')
-        cefpython.Initialize(applicationSettings)
+        applicationsettings['log_file'] = getApplicationPath('debug.log')
+        applicationsettings['log_severity'] = cefpython.LOGSEVERITY_INFO
+        applicationsettings['browser_subprocess_path'] = '%s/%s' % (cefpython.GetModuleDirectory(), 'subprocess')
+        cefpython.Initialize(applicationsettings)
 
-        browserSettings = dict()
-        browserSettings['file_access_from_file_urls_allowed'] = True
-        browserSettings['universal_access_from_file_urls_allowed'] = True
+        browsersettings = dict()
+        browsersettings['file_access_from_file_urls_allowed'] = True
+        browsersettings['universal_access_from_file_urls_allowed'] = True
 
-        windowHandles = {
-            win32con.WM_CLOSE: self.closeWindow,
-            win32con.WM_DESTROY: self.quitApplication,
+        windowhandles = {
+            win32con.WM_CLOSE: self.close_window,
+            win32con.WM_DESTROY: self.quit,
             win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
             win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
             win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
         }
 
-        windowHandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
-                                           icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+        windowhandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
+                                           icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowhandles)
 
-        windowInfo = cefpython.WindowInfo()
-        windowInfo.SetAsChild(windowHandle)
-        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+        windowinfo = cefpython.WindowInfo()
+        windowinfo.SetAsChild(windowhandle)
+        browser = cefpython.CreateBrowserSync(windowinfo, browsersettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
 
-        jsBindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
+        jsbindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
         # jsBindings.SetProperty("pyProperty", "This was set in Python") # TODO figure out how to set these properties in js
         # self.jsBindings.SetProperty("pyConfig", ["This was set in Python",
         #         {"name": "Nested dictionary", "isNested": True},
         #         [1,"2", None]])
 
-        self.vlcInterface = VlcInterface.Instance()
-        self.vlcInterface.setBrowser(browser)
+        self.vlc = VLC.instance()
+        self.vlc.set_browser(browser)
 
-        jsBindings.SetObject("python", self.vlcInterface)
-        browser.SetJavascriptBindings(jsBindings)
+        jsbindings.SetObject("python", self.vlc)
+        browser.SetJavascriptBindings(jsbindings)
 
-        browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
+        browser.SetClientCallback("OnLoadEnd", self.on_load_end)
 
-        mediaManager = MediaManager.Instance()
+        media_manager = MediaManager.instance()
 
         # blocking loop
         cefpython.MessageLoop()
@@ -91,22 +92,21 @@ class Cloudburst():
 
 
         # Shuts down threads and cancels running timers (these would otherwise block)
-        mediaManager.shutdown()
+        media_manager.shutdown()
         print 'Shutdown complete'
 
-    def closeWindow(self, windowHandle, message, wparam, lparam):
-        browser = cefpython.GetBrowserByWindowHandle(windowHandle)
+    def close_window(self, windowhandle, message, wparam, lparam):
+        browser = cefpython.GetBrowserByWindowHandle(windowhandle)
         browser.CloseBrowser()
-        return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
+        return win32gui.DefWindowProc(windowhandle, message, wparam, lparam)
 
-
-    def quitApplication(self, windowHandle, message, wparam, lparam):
-        self.isRunning = False
+    def quit(self, windowhandle, message, wparam, lparam):
+        self.running = False
         win32gui.PostQuitMessage(0)
         return 0
 
-    def OnLoadEnd(self, browser, frame, httpCode):
-        self.isLoaded = True
+    def on_load_end(self, browser, frame, http_code):
+        self.html_loaded = True
 
 if __name__ == "__main__":
 
@@ -116,4 +116,4 @@ if __name__ == "__main__":
     appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
 
 
-    Cloudburst() # blocking until window closed
+    Cloudburst()                            # blocking until window closed
