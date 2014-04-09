@@ -1,5 +1,5 @@
 import time
-from cloudburst.util.Singleton import Singleton
+from singleton.singleton import Singleton
 
 
 @Singleton

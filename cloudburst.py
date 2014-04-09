@@ -25,7 +25,7 @@ from cloudburst import window
 from cloudburst.media_manager import MediaManager
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
-from cloudburst.vlc import VLC
+from cloudburst.media.vlc import VLC
 
 
 class Cloudburst():

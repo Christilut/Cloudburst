@@ -36,7 +36,7 @@ class Torrent(object):
         self.running = True
 
         # start thread that displays torrent info
-        thread_torrent_info = threading.Thread(target=self.thread_torrent_info)
+        thread_torrent_info = threading.Thread(target=self._thread_torrent_info)
         thread_torrent_info.daemon = True
         thread_torrent_info.start()
 
@@ -56,10 +56,10 @@ class Torrent(object):
         self.set_header_available(False)
 
         # Determine which pieces are wanted
-        self.initialize_pieces()
+        self._initialize_pieces()
 
     # Check which pieces already exist in an existing file, if available
-    def check_cache(self):
+    def _check_cache(self):
         for n in iter(self.pieces):
             if self.torrenthandle.have_piece(n):
                 if self.pieces[n]:
@@ -74,7 +74,7 @@ class Torrent(object):
     def get_bytes_wanted(self):
         return self.torrent_status.total_wanted
 
-    def print_torrent_debug(self):
+    def _print_torrent_debug(self):
 
         info_size = 55
 
@@ -140,7 +140,7 @@ class Torrent(object):
         print ''
 
     # Sets the torrent to download the video data starting from the seekpoint
-    def increase_buffer(self, piece_increase_amount):
+    def _increase_buffer(self, piece_increase_amount):
 
         # Deadline in ms for normal pieces (not the missing ones)
         piece_deadline = 5000
@@ -181,7 +181,7 @@ class Torrent(object):
 
         if self.enable_debug_info:
             print 'Header available?', available
-            self.print_torrent_debug()
+            self._print_torrent_debug()
 
     def update_pieces(self, piece_number):  # TODO incorporate timer that sets deadlines and increases buffer
         if self.enable_debug_info:
@@ -192,17 +192,17 @@ class Torrent(object):
                 self.pieces[piece_number] = True
 
         if not self.header_available:
-            if self.check_header_available():
+            if self._check_header_available():
                 self.set_header_available(True)
 
-    def initialize_pieces(self):
+    def _initialize_pieces(self):
 
         # Reset some vars incase of seeking
         self.parent.set_download_limit(False)
         self.header_increase_size_current = 0
 
         # Check cache once, in case the file already existed
-        # self.checkCache() # TODO test this works
+        # self._checkCache() # TODO test this works
 
         # Clear header list incase of seeking an already playing video
         self.pieces.clear()
@@ -223,7 +223,7 @@ class Torrent(object):
         if self.current_piece < self.num_video_offset_pieces:
             self.current_piece = self.num_video_offset_pieces
 
-    def thread_torrent_info(self):  # thread
+    def _thread_torrent_info(self):  # thread
 
         while not self.torrenthandle.is_seed() and self.running:    # while not finished
             self.torrent_status = self.torrenthandle.status()
@@ -237,6 +237,6 @@ class Torrent(object):
                  self.torrent_status.num_peers, state_str[self.torrent_status.state])
 
             if self.enable_debug_info:
-                self.print_torrent_debug()
+                self._print_torrent_debug()
 
             time.sleep(3)

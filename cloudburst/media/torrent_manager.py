@@ -2,12 +2,12 @@ import threading
 import libtorrent as lt
 import appdirs
 
-from cloudburst.util.Singleton import Singleton
+from singleton.singleton import Singleton
 from cloudburst.media.torrent.torrent_mkv import TorrentMKV
 from cloudburst.media.torrent.torrent_mp4 import TorrentMP4
 from cloudburst.media.torrent.torrent_avi import TorrentAVI
 
-
+from cloudburst.config import Config
 @Singleton
 class TorrentManager():
 
@@ -50,7 +50,7 @@ class TorrentManager():
         if self.torrent is not None:
             self.torrent.shutdown()
 
-    def disk_space_check(self):     # TODO
+    def _disk_space_check(self):     # TODO
         pass
 
     def start_torrent(self, seekpoint=0):
@@ -78,7 +78,7 @@ class TorrentManager():
 
         self.torrenthandle = self.torrent_session.add_torrent({'ti': torrentinfo, 'save_path': self.download_directory, 'storage_mode': lt.storage_mode_t.storage_mode_sparse})
 
-        self.video_file = self.find_video_file(torrentinfo.files())
+        self.video_file = self._find_video_file(torrentinfo.files())
 
         # Disable all files, we do not want to download yet. Download starts when torrent.startTorrent() is called
         # for n in range(0, torrentInfo.num_files()):
@@ -93,17 +93,17 @@ class TorrentManager():
 
         self.num_total_pieces = torrentinfo.num_pieces()
 
-        self.create_torrent()
+        self._create_torrent()
 
         # start alert thread
-        thread_alert = threading.Thread(target=self.thread_alert)
+        thread_alert = threading.Thread(target=self._thread_alert)
         thread_alert.daemon = True
         thread_alert.start()
 
         return self.download_directory + self.video_file.path
 
     # Instantiates the torrent object
-    def create_torrent(self):
+    def _create_torrent(self):
         if self.video_file_extension == 'MKV':
             self.torrent = TorrentMKV(self, self.torrenthandle, self.num_total_pieces, self.num_video_pieces, self.num_video_offset_pieces)
         elif self.video_file_extension == 'MP4':
@@ -112,7 +112,7 @@ class TorrentManager():
             self.torrent = TorrentAVI(self, self.torrenthandle, self.num_total_pieces, self.num_video_pieces, self.num_video_offset_pieces)
 
     # Determine which file in the torrent is the video file. Currently based on size and is checked for extension.
-    def find_video_file(self, filelist):
+    def _find_video_file(self, filelist):
         video_file = lt.file_entry()
         video_file_index = None
 
@@ -187,7 +187,7 @@ class TorrentManager():
             print 'Disabled speed limit'
             self.torrent_session.set_download_rate_limit(-1)
 
-    def thread_alert(self):    # Thread. Checks torrent alert messages (like piece ready) and processes them
+    def _thread_alert(self):    # Thread. Checks torrent alert messages (like piece ready) and processes them
         text_piece = 'piece successful'     # Libtorrent always reports this when a piece is succesful, with an int attached
 
         while not self.torrenthandle.is_seed() and self.running:

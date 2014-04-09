@@ -1,8 +1,8 @@
 import os.path
 from threading import Timer
 
-from cloudburst.util.Singleton import Singleton
-from cloudburst.vlc import VLC
+from singleton.singleton import Singleton
+from cloudburst.media.vlc import VLC
 
 
 @Singleton
@@ -78,9 +78,9 @@ class Player():
             self.open_file()
 
             self.previous_video_position = None     # initial value for tryTorrentFilePlay, reset here incase of seeking
-            self.await_video_playable()
+            self._await_video_playable()
 
-    def await_video_playable(self):
+    def _await_video_playable(self):
         if self.play_timer is not None:
             self.play_timer.cancel()
 
@@ -91,7 +91,7 @@ class Player():
 
         if self.previous_video_position is None:
             self.play_seekpoint()
-            self.play_timer = Timer(self.tryTorrentPlayInterval, self.await_video_playable)
+            self.play_timer = Timer(self.tryTorrentPlayInterval, self._await_video_playable)
             self.play_timer.daemon = True
             self.play_timer.start()
             
@@ -104,7 +104,7 @@ class Player():
             onetime_play_timer.daemon = True
             onetime_play_timer.start()
             
-            self.play_timer = Timer(self.tryTorrentPlayInterval, self.await_video_playable)
+            self.play_timer = Timer(self.tryTorrentPlayInterval, self._await_video_playable)
             self.play_timer.daemon = True
             self.play_timer.start()
 
@@ -113,23 +113,23 @@ class Player():
             torrent_manager = TorrentManager.instance()
             torrent_manager.torrent.set_playable(True)
             print 'Can succesfully play'
-            torrent_manager.torrent.update_pieces(torrent_manager.torrent.seekpoint_piece)
+            torrent_manager.torrent.update_pieces(torrent_manager.torrent.seekpoint_piece)     # TODO
 
             if self.desired_seekpoint != 0 and torrent_manager.video_file_extension == 'MKV':
                 self.pause()
 
-                self.forward_buffer_timer = Timer(1, self.await_forward_buffer)
+                self.forward_buffer_timer = Timer(1, self._await_forward_buffer)
                 self.forward_buffer_timer.daemon = True
                 self.forward_buffer_timer.start()
 
         self.previous_video_position = current_video_position
 
-    def await_forward_buffer(self):
+    def _await_forward_buffer(self):
 
         if self.forward_buffer_available:
             self.play_seekpoint()
         else:
-            self.forward_buffer_timer = Timer(0.1, self.await_forward_buffer)
+            self.forward_buffer_timer = Timer(0.1, self._await_forward_buffer)
             self.forward_buffer_timer.daemon = True
             self.forward_buffer_timer.start()
 

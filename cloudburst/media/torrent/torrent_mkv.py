@@ -22,7 +22,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         self.forward_buffer_pieces = {}           # Dict of the pieces we are waiting for, in order to determine if the forward buffer is available
         self.header_increase_size_current = 0     # The seekpoint header (not forward buffer) grows by this amount in both directions. headerIncreaseSizeAmount is added every call
 
-    def initialize_pieces(self):
+    def _initialize_pieces(self):
 
         self.forward_buffer_requested = False
         self.forward_buffer_available = False
@@ -30,7 +30,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         # Set the entire priority list to skip
         piecelist = [0] * self.num_total_pieces     # This fills a list of size videoPieces with 0's
 
-        super(TorrentMKV, self).initialize_pieces()
+        super(TorrentMKV, self)._initialize_pieces()
 
         # Save pieces so we can check them later
         self.pieces[self.current_piece] = False
@@ -57,8 +57,8 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
                 pieces_missing += 1
 
         if not self.forward_buffer_available and self.forward_buffer_requested:
-            if self.check_forward_buffer_available(piece_number):
-                self.set_forward_buffer_available()
+            if self._check_forward_buffer_available(piece_number):
+                self._set_forward_buffer_available()
 
         if self.playable:
             assert self.header_available
@@ -66,19 +66,19 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         # if header available, the mkv may not yet play. increase the buffer on both ends and keep trying to play.
         if pieces_missing == 0:
             if not self.playable:
-                    self.increase_header()
+                    self._increase_header()
 
             else:   # if header + extra pieces large enough (so actually playing), start sequential download
 
                     if not self.forward_buffer_requested:
                         self.current_piece += self.header_increase_size_current     # add the additional pieces amount
-                        self.forward_buffer_pieces = self.increase_buffer(piece_increase_amount=0)
+                        self.forward_buffer_pieces = self._increase_buffer(piece_increase_amount=0)
                         self.forward_buffer_requested = True
                     else:
-                        self.increase_buffer(piece_increase_amount=self.buffer_size)
+                        self._increase_buffer(piece_increase_amount=self.buffer_size)
 
     # Increase the header at the front and the back of the header, in order to find the point from where mkv can play.
-    def increase_header(self):
+    def _increase_header(self):
 
         # Deadline in ms for normal pieces
         piece_deadline = 5000
@@ -108,7 +108,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         # Tell libtorrent to prioritize this list
         self.torrenthandle.prioritize_pieces(piecelist)
 
-    def set_forward_buffer_available(self):
+    def _set_forward_buffer_available(self):
         self.forward_buffer_available = True
 
         from cloudburst.media.player import Player
@@ -119,7 +119,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
         if self.enable_debug_info:
             print 'Forward buffer available'
 
-    def check_forward_buffer_available(self, piece_number):
+    def _check_forward_buffer_available(self, piece_number):
         if piece_number in self.forward_buffer_pieces:
             self.forward_buffer_pieces[piece_number] = True
 
@@ -131,7 +131,7 @@ class TorrentMKV(torrent.Torrent):      # inherit from Torrent
 
         return available
 
-    def check_header_available(self):
+    def _check_header_available(self):
         available = True
 
         for n in range(self.num_video_offset_pieces, self.num_video_offset_pieces + self.header_size):

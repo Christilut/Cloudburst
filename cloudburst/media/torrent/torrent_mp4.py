@@ -16,14 +16,14 @@ class TorrentMP4(torrent.Torrent):  # inherit from Torrent
 
         self.first_buffer_requested = False
 
-    def initialize_pieces(self):
+    def _initialize_pieces(self):
 
         self.first_buffer_requested = False
 
         # Set the entire priority list to skip
         piecelist = [0] * self.num_total_pieces     # This fills a list of size videoPieces with 0's
 
-        super(TorrentMP4, self).initialize_pieces()
+        super(TorrentMP4, self)._initialize_pieces()
 
         # Save pieces so we can check them later
         if self.seekpoint_piece != self.num_video_offset_pieces:    # if not starting at 0
@@ -38,7 +38,7 @@ class TorrentMP4(torrent.Torrent):  # inherit from Torrent
         # Set the list to the torrent handle
         self.torrenthandle.prioritize_pieces(piecelist)
 
-    def check_header_available(self):
+    def _check_header_available(self):
         available = True
 
         for n in range(self.num_video_offset_pieces, self.num_video_offset_pieces + self.headerSize):
@@ -75,14 +75,14 @@ class TorrentMP4(torrent.Torrent):  # inherit from Torrent
                 pieces_missing += 1
 
         if not self.header_available:
-            if self.check_header_available():
+            if self._check_header_available():
                 self.set_header_available(True)
 
         # if all pieces we currently want are downloaded
         if self.header_available and pieces_missing == 0:
 
             if not self.first_buffer_requested:
-                self.increase_buffer(piece_increase_amount=self.headerSize)
+                self._increase_buffer(piece_increase_amount=self.headerSize)
                 self.first_buffer_requested = True
             else:
-                self.increase_buffer(piece_increase_amount=self.bufferSize)
+                self._increase_buffer(piece_increase_amount=self.bufferSize)

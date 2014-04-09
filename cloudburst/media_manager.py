@@ -1,6 +1,6 @@
 from cloudburst.media.player import Player
 from cloudburst.media.torrent_manager import TorrentManager
-from cloudburst.util.Singleton import Singleton
+from singleton.singleton import Singleton
 
 
 @Singleton

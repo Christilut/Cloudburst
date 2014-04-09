@@ -10,10 +10,10 @@ class TorrentAVI(torrent.Torrent):  # inherit from Torrent
     def __init__(self, parent, torrenthandle, num_total_pieces, num_video_pieces, num_video_offset_pieces):
         super(TorrentAVI, self).__init__(parent, torrenthandle, num_total_pieces, num_video_pieces, num_video_offset_pieces)
 
-    def initialize_pieces(self):
+    def _initialize_pieces(self):
 
         # Check cache once, in case the file already existed
-        # self.checkCache()     # TODO test this works
+        # self._checkCache()     # TODO test this works
 
         # Header pieces
         for n in range(self.num_video_offset_pieces, self.num_video_offset_pieces + self.buffer_size):
@@ -37,7 +37,7 @@ class TorrentAVI(torrent.Torrent):  # inherit from Torrent
         if available:
             self.parent.set_download_limit(True)
 
-    def check_header_available(self):   # do not call super. Avi can only start from 0
+    def _check_header_available(self):   # do not call super. Avi can only start from 0
         available = True
 
         for n in range(self.num_video_offset_pieces, self.num_video_offset_pieces + self.buffer_size):
@@ -56,13 +56,13 @@ class TorrentAVI(torrent.Torrent):  # inherit from Torrent
                 pieces_missing += 1
 
         if not self.header_available:
-            if self.check_header_available():
+            if self._check_header_available():
                 self.set_header_available(True)
 
         # if all pieces we currently want are downloaded
         if self.header_available and pieces_missing == 0:
 
-            self.increase_buffer(piece_increase_amount=self.buffer_size)
+            self._increase_buffer(piece_increase_amount=self.buffer_size)
 
     def set_video_position(self, position):
         print 'AVI does not support seeking'
