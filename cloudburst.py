@@ -90,7 +90,7 @@ class Cloudburst():
         browserSettings['file_access_from_file_urls_allowed'] = True
         browserSettings['universal_access_from_file_urls_allowed'] = True
 
-        windowHandles = {
+        window_handles = {
             win32con.WM_CLOSE: self.close_window,
             win32con.WM_DESTROY: self.quit,
             win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
@@ -99,11 +99,11 @@ class Cloudburst():
         }
 
         windowHandle = window.createWindow(title='Cloudburst', className='Cloudburst', width=800, height=700,
-                                           icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=windowHandles)
+                                           icon=getApplicationPath('res/images/cloudburst.ico'), windowHandle=window_handles)
 
         windowInfo = cefpython.WindowInfo()
         windowInfo.SetAsChild(windowHandle)
-        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
+        browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath('res/views/index.html'))
 
         jsbindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
         # jsBindings.SetProperty("pyProperty", "This was set in Python") # TODO figure out how to set these properties in js
@@ -119,7 +119,7 @@ class Cloudburst():
 
         browser.SetClientCallback("OnLoadEnd", self.on_load_end)
 
-        media_manager = MediaManager.instance()
+        #media_manager = MediaManager.instance()
 
         cloudburst.BROWSER = browser
 
@@ -127,7 +127,7 @@ class Cloudburst():
         cefpython.MessageLoop()
         cefpython.Shutdown()
 
-        media_manager.shutdown()
+        #media_manager.shutdown()
         print 'Shutdown complete'
 
     def close_window(self, windowhandle, message, wparam, lparam):

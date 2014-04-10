@@ -1,96 +1,95 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Cloudburst</title>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Cloudburst</title>
 
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
-    <link rel="stylesheet" href="css/style.css"/>
-</head>
+        <link rel="stylesheet" href="css/style.css"/>
+    </head>
 
-<body>
+    <body>
+        <ul>
+            <li><a href="#" data-filter=".news">News</a></li>
+            <li><a href="#" data-filter=".community">Community</a></li>
+            <li><a href="#" data-filter=".resources">Resources</a></li>
+        </ul>
 
-<section id="options" class="clearfix">
+        <div id="container" class="photos clearfix">
 
-    <h3>Sort direction</h3>
+            <div class="photo news" data-symbol="sherlock-holmes">
+                <img src="../images/covers/sherlock-holmes.jpg" alt="sherlock-holmes" width="138" height="203" />
+            </div>
 
-    <button id="randomize" data-filter="*">Randomize</button>
-    <button id="sortByTitle" data-filter="*">Sort By Title</button>
+            <div class="photo community" data-symbol="ted">
+                <img src="../images/covers/ted.jpg" alt="ted" width="138" height="203" />
+            </div>
 
-</section>
+            <div class="photo community" data-symbol="the-hunger-games">
+                <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games" width="138" height="203" />
+            </div>
 
-<div id="container" class="photos clearfix">
+            <div class="photo community" data-symbol="the-hunger-games-mockingjay-part-1">
+                <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1" width="138" height="203" />
+            </div>
 
-    <div class="photo" data-symbol="sherlock-holmes">
-        <img src="../images/covers/sherlock-holmes.jpg" alt="sherlock-holmes"/>
-    </div>
+            <div class="photo community" data-symbol="underworld-awakening">
+                <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening" width="138" height="203" />
+            </div>
 
-    <div class="photo" data-symbol="ted">
-        <img src="../images/covers/ted.jpg" alt="ted"/>
-    </div>
+            <div class="photo resources" data-symbol="world-war-z">
+                <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="138" height="203" />
+            </div>
+        </div>
+        <!-- #container -->
 
-    <div class="photo" data-symbol="the-hunger-games">
-        <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games"/>
-    </div>
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <script src="js/jquery.isotope.js"></script>
+        <script>
+            (function( $ ) {
+                "use strict";
 
-    <div class="photo" data-symbol="the-hunger-games-mockingjay-part-1">
-        <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1"/>
-    </div>
+                $(function() {
 
-    <div class="photo" data-symbol="underworld-awakening">
-        <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening"/>
-    </div>
+                    $(window).load(function() {
 
-    <div class="photo" data-symbol="world-war-z">
-        <img src="../images/covers/world-war-z.jpg" alt="world-war-z"/>
-    </div>
-</div>
-<!-- #container -->
+                        var $container = $('#container');
 
-<script src="js/jquery-1.7.1.min.js"></script>
-<script src="js/jquery.isotope.js"></script>
-<script src="js/fake-element.js"></script>
-<script>
-            $(function(){
-                //Isotope base
-                var $container = jQuery('#container');
-                $container.imagesLoaded( function(){
-                    $container.isotope({
-                        itemSelector : '.photo',
-                        masonry: {
-                            coumnWidth: 270,
-                            gutterWidth: 10
-                        }
+                        // initialize Isotope
+                        $container.imagesLoaded( function(){
+                            $container.isotope({
+                                // options...
+                                gutterWidth: 0,
+                                // set columnWidth to a percentage of container width
+                                masonry: { columnWidth: $container.width() / 3 }
+                            });
+                        });
+
+                        // update columnWidth on window resize
+                        $(window).smartresize(function(){
+                            $container.isotope({
+                                // update columnWidth to a percentage of container width
+                                masonry: { columnWidth: $container.width() / 3 }
+                            });
+                        });
+
+                        // filter restaurants by location
+                        $('#filters a').not('.external').click(function(){
+                            var selector = $(this).attr('data-filter');
+                            $(this).parents('#filters').find('.active').removeClass('active');
+                            $(this).addClass('active');
+                            $container.isotope({ filter: selector });
+                            return false;
+                        });
+
                     });
                 });
 
-                //Isotope filter buttons
-                jQuery('#filters button').click(function(){
-                  var selector = jQuery(this).attr('data-filter');
-                  $container.isotope({ filter: selector });
-                  return false;
-                });
+            }(jQuery));
 
-                //Isotope sort data
-                $container.isotope({
-                  getSortData : {
-                    title : function ( $elem ) {
-                      return $elem.find('.title').text();
-                    }
-                  }
-                });
 
-                jQuery('#randomize').click(function(){
-                    $container.isotope( 'shuffle' );
-                });
-
-                jQuery('#sortByTitle').click(function(){
-                    $container.isotope({ sortBy : 'title'});
-                });
-            });
-
-</script>
-</body>
+        </script>
+    </body>
 </html>
