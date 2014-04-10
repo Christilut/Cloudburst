@@ -1,5 +1,4 @@
 import platform
-#from cloudburst.vlcInterface import VlcInterface
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -18,29 +17,66 @@ if os.path.exists(libcefDll):  # If the libcef dll exists use that for imports
 else:
     from cefpython3 import cefpython  # Import cefpython from package
 
+import cloudburst
+
+import locale
 import win32con
 import win32gui
 import appdirs
 import threading
 
 from cloudburst import window
+from cloudburst.media_manager import MediaManager
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
+from cloudburst.media.vlc import VLC
+
 
 class Cloudburst():
-    DEBUG = True
-    isLoaded = False # True is HTML page is done loading
-    isRunning = False # Thread running
-    vlcInterface = None
+    CEF_DEBUG = False # If true, spams console with CEFPython debug messages
+    html_loaded = False # True is HTML page is done loading
+    running = False # Thread running
+    vlc = None
 
     def __init__(self):
+        appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
+        appdirs.appname = 'Cloudburst'
+        appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
 
-        self.isRunning = True
+        self.running = True
+
+        cloudburst.FULLNAME = os.path.normpath(os.path.abspath(__file__))
+        cloudburst.NAME = os.path.basename(cloudburst.FULLNAME)
+        cloudburst.WORKING_DIR = os.path.dirname(cloudburst.FULLNAME)
+        cloudburst.DATA_DIR = cloudburst.WORKING_DIR
+        cloudburst.ARGS = sys.argv[1:]
+        cloudburst.DEBUG = True
+
+        cloudburst.CONFIG_FILE = os.path.join(cloudburst.DATA_DIR, 'config.ini')
+
+        try:
+            locale.setlocale(locale.LC_ALL, '')
+            cloudburst.SYS_ENCODING = locale.getpreferredencoding()
+        except (locale.Error, IOError):
+            cloudburst.SYS_ENCODING = None
+
+        # When there is no encoding found or wrongly configured, force utf-8
+        if not cloudburst.SYS_ENCODING or cloudburst.SYS_ENCODING in ('ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
+            cloudburst.SYS_ENCODING = 'UTF-8'
+
+        # TODO: Find out why?
+        if not hasattr(sys, 'setdefaultencoding'):
+            reload(sys)
+
+        threading.currentThread().name = 'Main'
+
+        cloudburst.initialize()
+        cloudburst.start()
 
         sys.excepthook = exceptionHook
         applicationSettings = dict()
 
-        if self.DEBUG:
+        if cloudburst.DEBUG:
             window.g_debug = True
             applicationSettings['debug'] = True
             applicationSettings['release_dcheck_enabled'] = True
@@ -55,8 +91,8 @@ class Cloudburst():
         browserSettings['universal_access_from_file_urls_allowed'] = True
 
         windowHandles = {
-            win32con.WM_CLOSE: self.closeWindow,
-            win32con.WM_DESTROY: self.quitApplication,
+            win32con.WM_CLOSE: self.close_window,
+            win32con.WM_DESTROY: self.quit,
             win32con.WM_SIZE: cefpython.WindowUtils.OnSize,
             win32con.WM_SETFOCUS: cefpython.WindowUtils.OnSetFocus,
             win32con.WM_ERASEBKGND: cefpython.WindowUtils.OnEraseBackground
@@ -69,54 +105,43 @@ class Cloudburst():
         windowInfo.SetAsChild(windowHandle)
         browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=getApplicationPath("res/views/vlc-test.html"))
 
-        jsBindings = cefpython.JavascriptBindings(
-                bindToFrames=False, bindToPopups=True)
-        jsBindings.SetProperty("pyProperty", "This was set in Python")
-        jsBindings.SetProperty("pyConfig", ["This was set in Python",
-                {"name": "Nested dictionary", "isNested": True},
-                [1,"2", None]])
+        jsbindings = cefpython.JavascriptBindings(bindToFrames=False, bindToPopups=True)
+        # jsBindings.SetProperty("pyProperty", "This was set in Python") # TODO figure out how to set these properties in js
+        # self.jsBindings.SetProperty("pyConfig", ["This was set in Python",
+        #         {"name": "Nested dictionary", "isNested": True},
+        #         [1,"2", None]])
 
-        #self.vlcInterface = VlcInterface(browser)
+        self.vlc = VLC.instance()
+        self.vlc.set_browser(browser)
 
-        #jsBindings.SetObject("external", self.vlcInterface)
-        browser.SetJavascriptBindings(jsBindings)
+        jsbindings.SetObject("python", self.vlc)
+        browser.SetJavascriptBindings(jsbindings)
 
-        browser.SetClientCallback("OnLoadEnd", self.OnLoadEnd)
+        browser.SetClientCallback("OnLoadEnd", self.on_load_end)
 
+        media_manager = MediaManager.instance()
 
-        # Start the streaming back end
-        #streamingPlayer = StreamingPlayer(self)
-        #streamingPlayer.start()
-        # streamingPlayer.OpenTorrent('res/torrents/big_movie.torrent') # TEMP
+        cloudburst.BROWSER = browser
 
         # blocking loop
         cefpython.MessageLoop()
         cefpython.Shutdown()
 
+        media_manager.shutdown()
+        print 'Shutdown complete'
 
-        # Shuts down threads and cancels running timers (these would otherwise block)
-        #streamingPlayer.Shutdown()
-
-    def closeWindow(self, windowHandle, message, wparam, lparam):
-        browser = cefpython.GetBrowserByWindowHandle(windowHandle)
+    def close_window(self, windowhandle, message, wparam, lparam):
+        browser = cefpython.GetBrowserByWindowHandle(windowhandle)
         browser.CloseBrowser()
-        return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
+        return win32gui.DefWindowProc(windowhandle, message, wparam, lparam)
 
-
-    def quitApplication(self, windowHandle, message, wparam, lparam):
-        self.isRunning = False
+    def quit(self, windowhandle, message, wparam, lparam):
+        self.running = False
         win32gui.PostQuitMessage(0)
         return 0
 
-    def OnLoadEnd(self, browser, frame, httpCode):
-        self.isLoaded = True
+    def on_load_end(self, browser, frame, http_code):
+        self.html_loaded = True
 
-if __name__ == "__main__":
-
-    # Set data dirs
-    appdirs.appauthor = 'Cloudburst'        # USAGE: https://pypi.python.org/pypi/appdirs/1.2.0
-    appdirs.appname = 'Cloudburst'
-    appdirs.dirs = appdirs.AppDirs(appdirs.appname, appdirs.appauthor)
-
-
-    Cloudburst() # blocking until window closed
+if __name__ == '__main__':
+    Cloudburst()  # blocking until window closed
