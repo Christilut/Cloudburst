@@ -3,12 +3,12 @@ from ConfigParser import SafeConfigParser
 
 class Config():
 
-    CONFIG_FILE = 'config.ini'
+    __CONFIG_FILE = 'config.ini'
 
-    config_loaded = False
+    __config_loaded = False
 
-    config_dictionary = {}
-    config_parser = SafeConfigParser()
+    __config_dictionary = {}
+    __config_parser = SafeConfigParser()
 
     @staticmethod
     def set_general_option(option, value):
@@ -34,31 +34,35 @@ class Config():
 
 
 
-
+    @staticmethod
+    def option_exists(section, option):
+        """ Returns True if the option exists in the specified section """
+        Config._load_config()
+        return Config.__config_parser.has_option(section, option)
 
     @staticmethod
     def getboolean(section, option):
         """ Get a boolean from the specified section """
         Config._load_config()
-        return Config.config_parser.getboolean(section, option)
+        return Config.__config_parser.getboolean(section, option)
 
     @staticmethod
     def getint(section, option):
         """ Get an int from the specified section """
         Config._load_config()
-        return Config.config_parser.getint(section, option)
+        return Config.__config_parser.getint(section, option)
 
     @staticmethod
     def getfloat(section, option):
         """ Get a float from the specified section """
         Config._load_config()
-        return Config.config_parser.getfloat(section, option)
+        return Config.__config_parser.getfloat(section, option)
 
     @staticmethod
     def getstring(section, option):
         """ Get a string from the specified section """
         Config._load_config()
-        return Config.config_parser.get(section, option)
+        return Config.__config_parser.get(section, option)
 
 
     # Internal functions
@@ -66,13 +70,13 @@ class Config():
     @staticmethod
     def _load_config():
         """ Loads the config file from disk into the config_parses object """
-        if not Config.config_loaded:
-            Config.config_loaded = True
+        if not Config.__config_loaded:
+            Config.__config_loaded = True
 
             # Load the config file into the config_parses object
             try:
                 with Config._open_config_file(read=True) as config_file:
-                    Config.config_parser.readfp(fp=config_file)
+                    Config.__config_parser.readfp(fp=config_file)
             except IOError:
                 pass    # File does not exist, do not load it but don't create it either (what use is an empty file?)
 
@@ -83,21 +87,21 @@ class Config():
         if read: mode += 'r'
         if write: mode += 'w'
 
-        return open(Config.CONFIG_FILE, mode)
+        return open(Config.__CONFIG_FILE, mode)
 
     @staticmethod
     def _write_config():
         """ Open the config file and write the config parses contents """
         with Config._open_config_file(write=True) as fp:
-            Config.config_parser.write(fp)
+            Config.__config_parser.write(fp)
 
     @staticmethod
     def _set(section, option, value):
         """ Set an option in a specified section and write it to disk """
-        if not Config.config_parser.has_section(section):
-            Config.config_parser.add_section(section)
+        if not Config.__config_parser.has_section(section):
+            Config.__config_parser.add_section(section)
 
-        Config.config_parser.set(section, option, str(value))
+        Config.__config_parser.set(section, option, str(value))
 
         Config._write_config()
 
