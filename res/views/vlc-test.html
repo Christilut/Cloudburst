@@ -2,21 +2,18 @@
 <html>
 <head>
     <title>VLC Test Page</title>
-    <script src="js/jquery-1.7.1.min.js"></script>
-    <script src="js/jquery.timer.js"></script>
 
     <script>
-        var fileID;
-
-        function openFile(arg)  {
+        function loadAndPlay(arg) {
             var vlc = document.getElementById("vlc");
-
-            vlc.playlist.items.clear();
             var options = new Array(":aspect-ratio=4:3", "--rtsp-tcp");
-            fileID = vlc.playlist.add(arg, "fancy name", options);
-
+            var id = vlc.playlist.add(arg, "fancy name", options);
+            vlc.playlist.playItem(id);
         }
 
+        function getPostion() {
+            return vlc.input.position
+        }
     </script>
 </head>
 <body>
@@ -29,7 +26,7 @@
 <input type="button" name="Play" value="Play" onclick="vlc.playlist.play()"/>
 <input type="button" name="Pause" value="Pause" onclick="vlc.playlist.togglePause()"/>
 <input type="button" name="Stop" value="Stop" onclick="vlc.playlist.stop()"/>
-<input type="button" name="setPosTest" value="Set to 50%" onclick="javascript:python.change_position_callback(0.5)"/>
-
+<input type="button" name="Fullscreen" value="Fullscreen" onclick="vlc.video.toggleFullscreen()"/>
+<input type="button" name="LoadAndPlay" value="Load and play" onclick="javascript:external.loadVideo(loadAndPlay)"/>
 </body>
 </html>
