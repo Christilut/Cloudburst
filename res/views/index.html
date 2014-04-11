@@ -7,58 +7,82 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
+    <link rel="stylesheet" href="css/isotope.css" />
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
     <ul id="filters" class="clearfix">
-        <li><a href="javascript:external.trendingmovies()" data-filter=".trending-movies">Trending movies</a><li>
+        <!--<li><a href="javascript:external.trendingmovies()" data-filter=".trending-movies" class="current">Trending movies</a><li>-->
+        <li><a href="javascript:trendingmovies();" data-filter=".trending-movies" class="current">Trending movies</a><li>
         <li><a href="#" data-filter=".trending-series">Trending series</a></li>
         <li><input type="text" placeholder="Search" name="search" /></li>
     </ul>
 
     <div style="clear: both"></div>
-    <div id="isotopegallery" class="photos clearfix">
-        <div class="photo trending-movies" data-symbol="sherlock-holmes">
-            <img src="D:\temp\cache\856ab5145ba1cc3d6754dde7cbe37ac6" width="138" height="205" />
+    <div id="movie-overview" class="movie-overview clearfix">
+        <!--<div class="cover trending-movies" data-symbol="ted">
+            <img src="../images/covers/ted.jpg" alt="ted" width="138" height="203" />
         </div>
 
-        <!--<div class="photo trending-movies" data-symbol="ted">
-            <img src="../images/covers/ted.jpg" alt="ted" width="134" height="197" />
+        <div class="cover trending-series" data-symbol="the-hunger-games">
+            <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games" width="138" height="203" />
         </div>
 
-        <div class="photo trending-series" data-symbol="the-hunger-games">
-            <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games" width="134" height="197" />
+        <div class="cover trending-movies" data-symbol="the-hunger-games-mockingjay-part-1">
+            <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1" width="138" height="203" />
         </div>
 
-        <div class="photo trending-movies" data-symbol="the-hunger-games-mockingjay-part-1">
-            <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1" width="134" height="197" />
+        <div class="cover trending-movies" data-symbol="underworld-awakening">
+            <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening" width="138" height="203" />
         </div>
 
-        <div class="photo trending-movies" data-symbol="underworld-awakening">
-            <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening" width="134" height="197" />
-        </div>
-
-        <div class="photo trending-movies" data-symbol="world-war-z">
-            <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="134" height="197" />
+        <div class="cover trending-movies" data-symbol="world-war-z">
+            <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="138" height="203" />
         </div>-->
     </div>
 
-    <script src="js/jquery-1.7.1.min.js"></script>
-    <script src="js/jquery.isotope.js"></script>
-    <script src="js/loading-overlay.min.js"></script>
-    <script>
-        jQuery(function ($) {
-            var container = $('#isotopegallery');
+    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.isotope.js"></script>
+    <script type="text/javascript">
 
-            container.isotope({
-                itemSelector: '.photo'
+    var transform =
+        { 'tag': 'div', 'class': 'cover trending-movies', 'children': [
+            { 'tag': 'span', 'html': '${label}' }
+        ]}
+
+     //Callback Function
+     function trendingmovies() {
+        console.log('Trendingmovies')
+        if(json !== undefined )
+            $('#googleFeed').json2html(json.feed.entry,transform);
+     }
+
+        $(window).load(function(){
+            var $container = $('#movie-overview');
+            $container.isotope({
+                filter: '*',
+                animationOptions: {
+                    duration: 750,
+                    easing: 'linear',
+                    queue: false
+                }
             });
 
-            $('#filters a').click(function(){
+            $('#filters a').click(function() {
+                $('#filters li a.current').removeClass('current');
+                $(this).addClass('current');
+
                 var selector = $(this).attr('data-filter');
-                container.isotope({ filter: selector });
-                return false;
+                $container.isotope({
+                    filter: selector,
+                    animationOptions: {
+                        duration: 750,
+                        easing: 'linear',
+                        queue: false
+                    }
+                 });
+                 return false;
             });
         });
     </script>
