@@ -1,90 +1,147 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Cloudburst</title>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Cloudburst</title>
 
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+		<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
-    <link rel="stylesheet" href="css/isotope.css" />
-    <link rel="stylesheet" href="css/style.css" />
-</head>
+		<link rel="stylesheet" href="css/isotope.css" />
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
 
-<body>
-    <ul id="filters" class="clearfix">
-        <!--<li><a href="javascript:external.trendingmovies()" data-filter=".trending-movies" class="current">Trending movies</a><li>-->
-        <li><a href="javascript:trendingmovies();" data-filter=".trending-movies" class="current">Trending movies</a><li>
-        <li><a href="#" data-filter=".trending-series">Trending series</a></li>
-        <li><input type="text" placeholder="Search" name="search" /></li>
-    </ul>
+	<body>
+		<h1>imagesLoaded with jQuery</h1>
+		<div id="demo">
+		  <div class="buttons">
+			<button id="add">Add images</button>
+			<button id="reset">Reset</button>
+		  </div>
+		  <div id="status">
+			<progress max="7" value="0"></progress>
+		  </div>
+		  <div id="image-container"></div>
+		</div>
+		
 
-    <div style="clear: both"></div>
-    <div id="movie-overview" class="movie-overview clearfix">
-        <!--<div class="cover trending-movies" data-symbol="ted">
-            <img src="../images/covers/ted.jpg" alt="ted" width="138" height="203" />
-        </div>
+		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery.isotope.js"></script>
+		<script type="text/javascript" src="js/json2html.js"></script>
+		<script type="text/javascript" src="js/jquery.json2html.js"></script>
+		<script type="text/javascript" src="js/imagesloaded.pkgd.js"></script>
+		<script type="text/javascript">
+			( function( window ) {
 
-        <div class="cover trending-series" data-symbol="the-hunger-games">
-            <img src="../images/covers/the-hunger-games.jpg" alt="the-hunger-games" width="138" height="203" />
-        </div>
+			'use strict';
 
-        <div class="cover trending-movies" data-symbol="the-hunger-games-mockingjay-part-1">
-            <img src="../images/covers/the-hunger-games-mockingjay-part-1.jpg" alt="the-hunger-games-mockingjay-part-1" width="138" height="203" />
-        </div>
+			var $progress, $status;
+			var supportsProgress;
+			var loadedImageCount, imageCount;
 
-        <div class="cover trending-movies" data-symbol="underworld-awakening">
-            <img src="../images/covers/underworld-awakening.jpg" alt="underworld-awakening" width="138" height="203" />
-        </div>
+			$( function() {
+			  var $demo = $('#demo');
+			  var $container = $demo.find('#image-container');
+			  $status = $demo.find('#status');
+			  $progress = $demo.find('progress');
 
-        <div class="cover trending-movies" data-symbol="world-war-z">
-            <img src="../images/covers/world-war-z.jpg" alt="world-war-z" width="138" height="203" />
-        </div>-->
-    </div>
+			  supportsProgress = $progress[0] &&
+				// IE does not support progress
+				$progress[0].toString().indexOf('Unknown') === -1;
 
-    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery.isotope.js"></script>
-    <script type="text/javascript">
+			  $('#add').click( function() {
+				// add new images
+				
+				var items = getImageItem('ted');
+				items += getImageItem('the-hunger-games');
+				items += getImageItem('the-hunger-games-mockingjay-part-1');
+				items += getImageItem('underworld-awakening');
+	
+				console.log( items );
+				$container.prepend( $(items) );
+				// use ImagesLoaded
+				$container.imagesLoaded()
+				  .progress( onProgress )
+				  .always( onAlways );
+				// reset progress counter
+				imageCount = $container.find('img').length;
+				resetProgress();
+				updateProgress( 0 );
+			  });
 
-    var transform =
-        { 'tag': 'div', 'class': 'cover trending-movies', 'children': [
-            { 'tag': 'span', 'html': '${label}' }
-        ]}
+			  // reset container
+			  $('#reset').click( function() {
+				$container.empty();
+			  });
+			});
 
-     //Callback Function
-     function trendingmovies() {
-        console.log('Trendingmovies')
-        if(json !== undefined )
-            $('#googleFeed').json2html(json.feed.entry,transform);
-     }
+			// -----  ----- //
 
-        $(window).load(function(){
-            var $container = $('#movie-overview');
-            $container.isotope({
-                filter: '*',
-                animationOptions: {
-                    duration: 750,
-                    easing: 'linear',
-                    queue: false
-                }
-            });
+			// return doc fragment with
+			function getItems() {
+			  var items = '';
+			  for ( var i = 0; i < 7; i++ ) {
+				items += getImageItem();
+			  }
+			  return items;
+			}
 
-            $('#filters a').click(function() {
-                $('#filters li a.current').removeClass('current');
-                $(this).addClass('current');
+			// return an <li> with a <img> in it
+			function getImageItem(name) {
+			  var item = '<li class="is-loading">';
+			  item.className = 'is-loading';
+			  var size = Math.random() * 3 + 1;
+			  var width = Math.random() * 110 + 100;
+			  width = Math.round( width * size );
+			  var height = Math.round( 140 * size );
+			  var rando = Math.ceil( Math.random() * 1000 );
+			  // 10% chance of broken image src
+			  // random parameter to prevent cached images
+			  
+			  item += '<img src="../images/covers/' + name + '.jpg" /></li>';
+			  return item;
+			}
 
-                var selector = $(this).attr('data-filter');
-                $container.isotope({
-                    filter: selector,
-                    animationOptions: {
-                        duration: 750,
-                        easing: 'linear',
-                        queue: false
-                    }
-                 });
-                 return false;
-            });
-        });
-    </script>
-</body>
+			// -----  ----- //
+
+			function resetProgress() {
+			  $status.css({ opacity: 1 });
+			  loadedImageCount = 0;
+			  if ( supportsProgress ) {
+				$progress.attr( 'max', imageCount );
+			  }
+			}
+
+			function updateProgress( value ) {
+			  if ( supportsProgress ) {
+				$progress.attr( 'value', value );
+			  } else {
+				// if you don't support progress elem
+				$status.text( value + ' / ' + imageCount );
+			  }
+			}
+
+			// triggered after each item is loaded
+			function onProgress( imgLoad, image ) {
+			  // change class if the image is loaded or broken
+			  var $item = $( image.img ).parent();
+			  $item.removeClass('is-loading');
+			  if ( !image.isLoaded ) {
+				$item.addClass('is-broken');
+			  }
+			  // update progress element
+			  loadedImageCount++;
+			  updateProgress( loadedImageCount );
+			}
+
+			// hide status when done
+			function onAlways() {
+			  $status.css({ opacity: 0 });
+			}
+
+			})( window );
+		
+		
+		</script>
+	</body>
 </html>

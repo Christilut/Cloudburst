@@ -26,7 +26,6 @@ import appdirs
 import threading
 
 from cloudburst import window
-from cloudburst.media_manager import MediaManager
 from cloudburst.exceptions.exceptionHook import exceptionHook
 from cloudburst.util.applicationPath import getApplicationPath
 from cloudburst.media.vlc import VLC
