@@ -116,3 +116,13 @@ class VLC:
     def change_position_callback(self, position):
         from cloudburst.media_manager import MediaManager
         MediaManager.instance().set_video_position(position)
+
+    def trendingmovies(self, jsObject):
+        jsCallback = jsObject['callback'];
+        jsCallback.Call('[{ "name":"ted","type":"movie"},{"name":"the-hunger-games","type":"movie"},{"name":"world-war-z","type":"movie"},{"name":"the-hunger-games-mockingjay-part-1","type":"movie"}]')
+
+        #jsCallback.Call('[{ name: "tom", text: "tasty" },{ name: "tom", text: "tasty" },{ name: "tom", text: "tasty" },{ name: "tom", text: "tasty" },{ name: "tom", text: "tasty" }]');
+        #jsCallback.Call('[{ "name": "John" }, { "name": "Doe" }]');
+
+        #jsCallback = jsObject["myCallback"];
+        #jsCallback.Call(1, None, 2.14, "string", ["list", ["nested list",  {"nested object":None}]], {"nested list next":[{"deeply nested object":1}]})

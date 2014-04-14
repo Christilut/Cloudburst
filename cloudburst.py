@@ -129,6 +129,7 @@ class Cloudburst():
         #media_manager.shutdown()
         print 'Shutdown complete'
 
+
     def close_window(self, windowhandle, message, wparam, lparam):
         browser = cefpython.GetBrowserByWindowHandle(windowhandle)
         browser.CloseBrowser()
