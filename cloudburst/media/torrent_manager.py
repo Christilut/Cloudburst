@@ -56,7 +56,7 @@ class TorrentManager():
     def start_torrent(self, seekpoint=0):
         self.torrent.start(seekpoint)
 
-    def open_torrent(self, path):
+    def open_torrent(self, path, magnet=None):
 
         if self.torrenthandle is not None:
             print 'Another torrent is already in progress'
@@ -73,10 +73,17 @@ class TorrentManager():
 
         self.torrent_session.set_settings(settings)
 
-        e = lt.bdecode(open(path, 'rb').read())
-        torrentinfo = lt.torrent_info(e)
+        e = None
+        torrentinfo = None
 
-        self.torrenthandle = self.torrent_session.add_torrent({'ti': torrentinfo, 'save_path': self.download_directory, 'storage_mode': lt.storage_mode_t.storage_mode_sparse})
+        if magnet:
+            params = {"save_path": self.download_directory,"allocation": lt.storage_mode_t.storage_mode_sparse,}
+            self.torrenthandle = lt.add_magnet_uri(self.torrent_session, str(magnet), params)
+            torrentinfo = self.torrenthandle.get_torrent_info()
+        else:
+            e = lt.bdecode(open(path, 'rb').read())
+            torrentinfo = lt.torrent_info(e)
+            self.torrenthandle = self.torrent_session.add_torrent({'ti': torrentinfo, 'save_path': self.download_directory, 'storage_mode': lt.storage_mode_t.storage_mode_sparse})
 
         self.video_file = self._find_video_file(torrentinfo.files())
 
